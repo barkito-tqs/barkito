@@ -8,12 +8,12 @@
 
 ## Project team
 
-| Name | Role |
-|------|------|
-| TBD | Team Coordinator |
-| TBD | Product Owner |
-| TBD | QA Engineer |
-| TBD | DevOps Master |
+| Name | Student no. | Role |
+|------|-------------|------|
+| Claudino Martins | 127368 | Team Coordinator |
+| Gonçalo Vila | 125990 | Product Owner |
+| Rodrigo Simões | 125514 | QA Engineer |
+| Simão Pinto | 126099 | DevOps Master |
 
 All members are developers.
 
