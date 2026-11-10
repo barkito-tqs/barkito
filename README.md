@@ -19,7 +19,7 @@ All members are developers.
 
 ## Project bookmarks
 
-- Jira backlog: TBD
+- Jira backlog: <https://barkito-tqs.atlassian.net/jira/software/projects/BRK/boards/1/backlog>
 - Related repositories: none
 - API documentation: TBD
 - Static analysis dashboard: TBD
