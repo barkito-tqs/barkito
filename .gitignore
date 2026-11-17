@@ -1,0 +1,43 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+
+# Java
+*.class
+*.log
+*.jar
+*.war
+hs_err_pid*
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# VS Code / Eclipse
+.vscode/
+.classpath
+.project
+.settings/
+
+# Spring Boot local config and secrets
+application-local.*
+.env
+*.env
+
+# OWASP Dependency-Check
+dependency-check-report.*
+
+# Node (frontend)
+node_modules/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
