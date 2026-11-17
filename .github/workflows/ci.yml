@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build and run tests
+        run: ./mvnw --batch-mode verify
+
+  jira-key:
+    name: Jira key in branch and PR title
+    # Release PRs (develop -> main) and Dependabot updates have no story key.
+    if: >-
+      github.event_name == 'pull_request'
+      && github.head_ref != 'develop'
+      && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name and PR title
+        env:
+          BRANCH: ${{ github.head_ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          status=0
+          if ! [[ "$BRANCH" =~ ^(feature/|fix/)?BRK-[0-9]+- ]]; then
+            echo "::error::Branch name '$BRANCH' must contain the Jira key, e.g. feature/BRK-12-short-description"
+            status=1
+          fi
+          if ! [[ "$TITLE" =~ ^BRK-[0-9]+[[:space:]] ]]; then
+            echo "::error::PR title '$TITLE' must start with the Jira key, e.g. 'BRK-12 Add dock availability'"
+            status=1
+          fi
+          exit $status
