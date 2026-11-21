@@ -1,6 +1,6 @@
 # Barkito: user story split
 
-Who implements each user story of the backlog (`docs/barkito-backlog.md`). Stories are grouped by module, so each member owns one area of the code and the stories that depend on each other stay with the same person. Every story still needs a review by another member before it is merged (QA Manual 4.1).
+Who implements each user story of the backlog (`docs/barkito-backlog.md`). Each story is assigned to its owner in Jira; the key in brackets is the Jira story (BRK-<n>). Stories are grouped by module, so each member owns one area of the code and the stories that depend on each other stay with the same person. Every story still needs a review by another member before it is merged (QA Manual 4.1).
 
 The backlog has 39 stories and 100 points; each member gets about 25.
 
@@ -8,10 +8,10 @@ The backlog has 39 stories and 100 points; each member gets about 25.
 
 | Member | Area | Stories | Points |
 |---|---|---|---|
-| Rodrigo Simões | Finding and reserving boats; user dashboard; points and promotions | US-09, US-10, US-11, US-12, US-29, US-33, US-34, US-35, US-36 | 25 |
-| Simão Pinto | Accounts and roles; telemetry; trip end and its reactions to telemetry; technical metrics; GBFS | US-01, US-02, US-07, US-08, US-13, US-14, US-15, US-32, US-37, US-38 | 26 |
-| Gonçalo Vila | Payments; client backoffice; business KPIs | US-04, US-16, US-17, US-18, US-19, US-20, US-26, US-27, US-28, US-31 | 25 |
-| Claudino Martins | Fleet lifecycle; maintenance tickets; operator dashboard | US-03, US-05, US-06, US-21, US-22, US-23, US-24, US-25, US-30, US-39 | 24 |
+| Rodrigo Simões | Finding and reserving boats; user dashboard; points and promotions | US-09 (BRK-46), US-10 (BRK-50), US-11 (BRK-51), US-12 (BRK-52), US-29 (BRK-71), US-33 (BRK-75), US-34 (BRK-76), US-35 (BRK-77), US-36 (BRK-78) | 25 |
+| Simão Pinto | Accounts and roles; telemetry; trip end and its reactions to telemetry; technical metrics; GBFS | US-01 (BRK-47), US-02 (BRK-41), US-07 (BRK-45), US-08 (BRK-49), US-13 (BRK-53), US-14 (BRK-63), US-15 (BRK-64), US-32 (BRK-74), US-37 (BRK-79), US-38 (BRK-61) | 26 |
+| Gonçalo Vila | Payments; client backoffice; business KPIs | US-04 (BRK-43), US-16 (BRK-54), US-17 (BRK-55), US-18 (BRK-56), US-19 (BRK-57), US-20 (BRK-65), US-26 (BRK-68), US-27 (BRK-69), US-28 (BRK-70), US-31 (BRK-73) | 25 |
+| Claudino Martins | Fleet lifecycle; maintenance tickets; operator dashboard | US-03 (BRK-42), US-05 (BRK-44), US-06 (BRK-48), US-21 (BRK-58), US-22 (BRK-59), US-23 (BRK-60), US-24 (BRK-66), US-25 (BRK-67), US-30 (BRK-72), US-39 (BRK-62) | 24 |
 
 ## Split by iteration
 
