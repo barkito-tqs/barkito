@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
-import pt.ua.tqs.barkito.fleet.application.BoatRepository;
+import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 
 @Repository

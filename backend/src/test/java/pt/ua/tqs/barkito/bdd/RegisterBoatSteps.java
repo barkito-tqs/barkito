@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import pt.ua.tqs.barkito.fleet.application.DockRepository;
+import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 import pt.ua.tqs.barkito.fleet.domain.Dock;
 
 public class RegisterBoatSteps {

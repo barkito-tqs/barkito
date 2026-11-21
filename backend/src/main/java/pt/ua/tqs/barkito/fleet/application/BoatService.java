@@ -8,7 +8,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import pt.ua.tqs.barkito.fleet.domain.Boat;
+import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
+import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 
 /** Fleet use cases for the operator. */
 @Service

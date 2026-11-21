@@ -15,7 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import pt.ua.tqs.barkito.fleet.domain.Boat;
+import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
+import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 
 @ExtendWith(MockitoExtension.class)
 class BoatServiceRefusalTest {
