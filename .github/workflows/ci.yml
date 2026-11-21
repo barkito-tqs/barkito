@@ -46,13 +46,24 @@ jobs:
         run: ./mvnw --batch-mode verify
 
       - name: Sonar analysis and quality gate
-        if: ${{ env.SONAR_TOKEN != '' }}
+        # Pull requests (the gate) and the long-lived branches (the dashboard); feature-branch pushes are covered by their PR.
+        if: >-
+          ${{ env.SONAR_TOKEN != ''
+          && (github.event_name == 'pull_request'
+          || github.ref == 'refs/heads/develop'
+          || github.ref == 'refs/heads/main') }}
         run: >-
           ./mvnw --batch-mode org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.qualitygate.wait=true
 
       - name: Import test results into Xray
-        if: ${{ always() && env.XRAY_CLIENT_ID != '' && env.XRAY_CLIENT_SECRET != '' }}
+        # One Test Execution per merge into develop; main only receives code already tested there.
+        if: >-
+          ${{ always()
+          && github.event_name == 'push'
+          && github.ref == 'refs/heads/develop'
+          && env.XRAY_CLIENT_ID != ''
+          && env.XRAY_CLIENT_SECRET != '' }}
         run: |
           python3 - <<'PY'
           import glob
