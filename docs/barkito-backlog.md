@@ -13,18 +13,18 @@ Conventions, following the QA Manual (2.2):
 
 | ID | Epic | Story | Rules | Pts | It. |
 |---|---|---|---|---|---|
-| US-01 | Accounts and roles | Register and sign in | BR1 | 3 | I2 |
+| US-01 | Accounts and roles | Register and sign in | BR1 | 3 | I3 |
 | US-02 | Accounts and roles | Role-based areas | — | 2 | I2 |
 | US-03 | Fleet and docks | Register a boat | — | 2 | I2 |
 | US-04 | Fleet and docks | Register docks and berths | — | 2 | I2 |
 | US-05 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
 | US-06 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
-| US-08 | Telemetry | Low-battery alerts during a trip | BR7 | 2 | I3 |
+| US-08 | Telemetry | Low-battery alerts during a trip | BR7, BR14 | 2 | I3 |
 | US-09 | Reservations and trips | Find available boats by dock and type | BR5, BR14 | 3 | I2 |
 | US-10 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8, BR9 | 3 | I3 |
 | US-11 | Reservations and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
-| US-12 | Reservations and trips | Unlock a boat | BR1–BR6, BR8, BR13 | 3 | I3 |
+| US-12 | Reservations and trips | Unlock a boat with its QR code | BR1–BR6, BR8, BR13 | 3 | I3 |
 | US-13 | Reservations and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
 | US-14 | Reservations and trips | Abandoned boat ends the trip | BR15, BR20 | 3 | I4 |
 | US-15 | Reservations and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
@@ -53,7 +53,7 @@ Conventions, following the QA Manual (2.2):
 | US-36 | Extensions | Seasonal campaign | BR22, BR23, BR24 | 3 | I5 |
 | US-37 | Extensions | Public GBFS feed | — | 3 | I5 |
 
-Iteration 2 total: 7 stories, 18 points.
+Iteration 2 total: 6 stories, 15 points.
 
 ---
 
@@ -67,7 +67,7 @@ Iteration 2 total: 7 stories, 18 points.
 - A new account gets the end-user role.
 - A request to a protected endpoint without a valid token is refused with 401.
 
-**Points:** 3 · **Iteration:** I2
+**Points:** 3 · **Iteration:** I3
 
 ### US-02 Role-based areas
 **As a** user with a role, **I want** to see only the area of my role, **so that** each actor can do only what they are allowed to.
@@ -132,9 +132,10 @@ Iteration 2 total: 7 stories, 18 points.
 **Points:** 3 · **Iteration:** I2
 
 ### US-08 Low-battery alerts during a trip
-**As an** end user and as an operator, **I want** to be warned when a boat's battery runs low during a trip, **so that** the user can return to a dock in time and the operator can act.
+**As an** end user and as an operator, **I want** to be warned when a boat's battery runs low during a trip, **so that** the user can return to the nearest dock in time and the operator can act.
 
 - At 20 % or less the user is warned; at 21 % there is no warning (BR7).
+- The warning tells the user to return to the nearest dock with a free berth in service and shows that dock (BR14).
 - At 10 % or less the operator is alerted; at 11 % there is no alert (BR7).
 - Each alert is sent once per trip, over WebSocket.
 
@@ -179,10 +180,13 @@ Iteration 2 total: 7 stories, 18 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-12 Unlock a boat
-**As an** end user, **I want** to unlock a boat, reserved or not, **so that** I can start my trip.
+### US-12 Unlock a boat with its QR code
+**As an** end user, **I want** to unlock a boat, reserved or not, by scanning its QR code or typing the code printed below it, **so that** I can start my trip at the boat.
 
-- A reserved boat can be unlocked only by the user who reserved it, and the hold fee is added to the trip (BR8).
+- Each boat carries a QR code with its unlock code printed below it. The user unlocks the boat by scanning the QR code in the app; a user without a camera can type the code instead, with the same result.
+- An unknown code is refused and no unlock command is sent.
+- A reserved boat can be unlocked only by the user who reserved it, who still has to be at the boat and scan its QR code (or type its code); the hold fee is added to the trip (BR8).
+- If another user scans the QR code (or types the code) of a RESERVED boat, the app shows that the boat is reserved and the unlock is refused with 409; the boat stays RESERVED.
 - Without a reservation, the checks of BR1, BR2, BR3, BR5 and BR6 apply.
 - The number of passengers cannot exceed the capacity: Standard 5 accepted / 6 refused; XL 10 accepted / 11 refused (BR4).
 - Unlocking is accepted until 21:59; at 22:00 it is refused (BR6).
