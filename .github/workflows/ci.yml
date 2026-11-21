@@ -45,6 +45,13 @@ jobs:
       - name: Build and run tests
         run: ./mvnw --batch-mode verify
 
+      - name: Debug secret shape
+        run: |
+          for n in SONAR_TOKEN XRAY_CLIENT_ID XRAY_CLIENT_SECRET; do
+            v="${!n}"
+            echo "$n length=${#v} nonprintable=$(printf '%s' "$v" | tr -d '[:print:]' | wc -c) spaces=$(printf '%s' "$v" | tr -cd ' ' | wc -c)"
+          done
+
       - name: Sonar analysis and quality gate
         if: ${{ env.SONAR_TOKEN != '' }}
         run: >-
@@ -62,15 +69,23 @@ jobs:
               merged.append(ET.parse(path).getroot())
           ET.ElementTree(merged).write("target/xray-junit.xml")
           PY
-          token=$(curl --fail --silent --show-error -X POST \
+          code=$(curl --silent --show-error -o target/xray-auth.txt -w '%{http_code}' -X POST \
             -H "Content-Type: application/json" \
             --data "{\"client_id\":\"$XRAY_CLIENT_ID\",\"client_secret\":\"$XRAY_CLIENT_SECRET\"}" \
-            https://xray.cloud.getxray.app/api/v2/authenticate | tr -d '"')
-          curl --fail --silent --show-error -X POST \
+            https://xray.cloud.getxray.app/api/v2/authenticate)
+          if [ "$code" != "200" ]; then
+            echo "::error::Xray authenticate failed: HTTP $code"; cat target/xray-auth.txt; exit 1
+          fi
+          token=$(tr -d '"' < target/xray-auth.txt)
+          code=$(curl --silent --show-error -o target/xray-import.txt -w '%{http_code}' -X POST \
             -H "Content-Type: text/xml" \
             -H "Authorization: Bearer $token" \
             --data @target/xray-junit.xml \
-            "https://xray.cloud.getxray.app/api/v2/import/execution/junit?projectKey=BRK"
+            "https://xray.cloud.getxray.app/api/v2/import/execution/junit?projectKey=BRK")
+          cat target/xray-import.txt; echo
+          if [ "$code" != "200" ]; then
+            echo "::error::Xray import failed: HTTP $code"; exit 1
+          fi
 
   web:
     name: Web UI build and test
