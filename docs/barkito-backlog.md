@@ -21,13 +21,14 @@ Conventions, following the QA Manual (2.2):
 | US-06 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
 | US-08 | Telemetry | Low-battery alerts during a trip | BR7 | 2 | I3 |
-| US-09 | Reservations and trips | Find available boats by dock and type | BR5 | 3 | I2 |
-| US-10 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8 | 3 | I3 |
+| US-09 | Reservations and trips | Find available boats by dock and type | BR5, BR14 | 3 | I2 |
+| US-10 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8, BR9 | 3 | I3 |
 | US-11 | Reservations and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
 | US-12 | Reservations and trips | Unlock a boat | BR1–BR6, BR8, BR13 | 3 | I3 |
 | US-13 | Reservations and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
-| US-14 | Reservations and trips | Abandoned boat ends the trip | BR15 | 3 | I4 |
+| US-14 | Reservations and trips | Abandoned boat ends the trip | BR15, BR20 | 3 | I4 |
 | US-15 | Reservations and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
+| US-38 | Reservations and trips | Report a problem with the boat | BR20 | 2 | I3 |
 | US-16 | Payments | Save a payment method | BR2 | 3 | I3 |
 | US-17 | Payments | Deposit held and settled | BR2, BR13 | 3 | I3 |
 | US-18 | Payments | Trip price | BR8, BR11 | 2 | I3 |
@@ -38,6 +39,7 @@ Conventions, following the QA Manual (2.2):
 | US-23 | Maintenance | Operator reassigns a ticket | BR17 | 1 | I3 |
 | US-24 | Maintenance | Overdue tickets alert the operator | BR18 | 2 | I4 |
 | US-25 | Maintenance | Towing and recovery | BR16, BR17, BR18, BR20 | 3 | I4 |
+| US-39 | Maintenance | Assign Field Technicians to docks | BR17 | 2 | I3 |
 | US-26 | Client backoffice | Set the rules of use | BR1, BR6, BR8, BR12 | 3 | I4 |
 | US-27 | Client backoffice | Set berths in service per dock | BR14 | 2 | I4 |
 | US-28 | Client backoffice | Set SLA deadlines | BR18 | 2 | I4 |
@@ -146,6 +148,7 @@ Iteration 2 total: 7 stories, 18 points.
 - The list can be filtered by dock and by type (Standard or XL).
 - Only AVAILABLE boats with battery at or above 30 % can be booked: 29 % is not bookable, 30 % is (BR5).
 - Each boat shows its type and battery level.
+- Each dock shows how many of its berths in service are free, so the user can check the destination dock before leaving (BR14).
 - A dock with no bookable boats shows none.
 - Performance target: SLO1.
 
@@ -157,6 +160,7 @@ Iteration 2 total: 7 stories, 18 points.
 - Minimum age: Standard 17 refused / 18 accepted; XL 20 refused / 21 accepted (BR1).
 - A valid payment method and no debt are required: debt 0.00 € accepted / 0.01 € refused (BR2).
 - An account can hold only one active boat; a second reservation is refused while one is active (BR3).
+- After two expired reservations within 24 hours, a new reservation is refused until 00:00; with one expired reservation it is accepted (BR9).
 - The boat must be AVAILABLE with battery ≥ 30 % (BR5).
 - Reservations are accepted until 21:45; at 21:46 they are refused (BR6).
 - The boat becomes RESERVED and is held for 15 minutes (BR8).
@@ -204,6 +208,7 @@ Iteration 2 total: 7 stories, 18 points.
 - After 5 minutes stationary, the user is warned (BR15).
 - After 10 minutes, the trip ends and is charged until the moment the boat stopped (BR15).
 - If the boat is outside a dock, it goes to RETURN_REQUIRED and a recovery fee is taken from the deposit: Standard 20 €, XL 40 € (BR15).
+- If the boat is moored in a berth of a dock, there is no recovery fee and the boat state follows BR20.
 
 **Points:** 3 · **Iteration:** I4
 
@@ -215,6 +220,15 @@ Iteration 2 total: 7 stories, 18 points.
 - A RETURN_REQUIRED boat whose battery runs out also goes to TOW_REQUIRED (transition 22).
 
 **Points:** 2 · **Iteration:** I4
+
+### US-38 Report a problem with the boat
+**As an** end user, **I want** to report a problem with the boat when I end my trip, **so that** the next user does not get a broken boat.
+
+- When ending a trip, the user can report a problem with a category (engine, hull, battery or other) and an optional note.
+- A reported problem sends the boat to REPAIR_REQUIRED, ahead of the charger and battery checks (BR20), and opens a REPAIR ticket with the user's note (US-21).
+- Reporting a problem does not change the price of the trip.
+
+**Points:** 2 · **Iteration:** I3
 
 ## Epic: Payments
 
@@ -233,6 +247,7 @@ Iteration 2 total: 7 stories, 18 points.
 - On unlock, a deposit is authorised with manual capture: Standard 30 €, XL 60 € (BR13).
 - At the end of the trip, the amount due is captured up to the deposit and the rest is released (BR13).
 - Any amount above the deposit becomes debt, which blocks new reservations and unlocks (BR2, BR13).
+- If the deposit authorisation is declined, the unlock is refused, no unlock command is sent and the boat stays AVAILABLE or RESERVED (BR13).
 
 **Points:** 3 · **Iteration:** I3
 
@@ -269,7 +284,7 @@ Iteration 2 total: 7 stories, 18 points.
 **As an** operator, **I want** a ticket to be opened and assigned automatically whenever a boat needs a technician, **so that** every problem has an owner and a deadline.
 
 - A ticket of type CHARGE, REPAIR, TOW or RETURN is opened when a boat enters CHARGE_REQUIRED, REPAIR_REQUIRED, TOW_REQUIRED or RETURN_REQUIRED.
-- The ticket is assigned to the Field Technician of the boat's dock, or of the nearest dock when the boat is outside one (BR17).
+- The ticket is assigned to the Field Technician who covers the boat's dock, or to the technician of the nearest covered dock; a technician at the maximum of open tickets is skipped (BR17, US-39).
 - The ticket gets an SLA deadline from the SLA policy for its type (BR18).
 
 **Points:** 3 · **Iteration:** I3
@@ -305,9 +320,20 @@ Iteration 2 total: 7 stories, 18 points.
 **As a** Field Technician, **I want** to record that I towed or brought back a boat left on the canal, **so that** it returns to service or goes to repair.
 
 - Once a towed boat (TOW_REQUIRED) or a boat brought back (RETURN_REQUIRED) is moored at a dock, its state follows BR20: a fault gives REPAIR_REQUIRED; otherwise CHARGING, AVAILABLE or CHARGE_REQUIRED depending on the charger and the battery.
+- For a TOW ticket, the technician records the arrival on site: arriving at 30:00 meets the on-site target, at 30:01 it is breached and the operator is alerted (BR18).
 - Closing the ticket follows the SLA rules of US-24.
 
 **Points:** 3 · **Iteration:** I4
+
+### US-39 Assign Field Technicians to docks
+**As an** operator, **I want** to assign each Field Technician to the docks they cover, **so that** tickets can be assigned automatically (US-21).
+
+- A technician covers one or more docks; a dock may have no technician of its own (BR17).
+- A ticket goes to the technician who covers the boat's dock; when the dock has no technician, or the boat is outside a dock, it goes to the technician of the nearest covered dock (BR17).
+- If that technician already has the maximum number of open tickets set by the operator, the ticket goes to the technician with the fewest open tickets, the nearest one on a tie.
+- Changing which docks a technician covers applies to tickets opened afterwards; open tickets keep their technician unless reassigned (US-23).
+
+**Points:** 2 · **Iteration:** I3
 
 ## Epic: Client backoffice
 
@@ -401,6 +427,7 @@ Iteration 2 total: 7 stories, 18 points.
 ### US-36 Seasonal campaign
 **As an** operator, **I want** to run a seasonal campaign for long-standing customers, **so that** they keep using the service.
 
+- The operator creates the campaign with a name, a discount percentage and a start and end date; outside that period it is not applied (BR22).
 - One-time discount (e.g. 25 %) on one trip started within the campaign period (BR22).
 - Eligible accounts are older than 30 days with at least 3 completed trips; 30 days or 2 trips are refused (BR22).
 - Discounts apply only to the unlock fee and normal minutes (BR23); only one discount per trip (BR24).
