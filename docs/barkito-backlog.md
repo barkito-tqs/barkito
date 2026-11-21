@@ -38,7 +38,7 @@ Conventions, following the QA Manual (2.2):
 | US-23 | Maintenance | Operator reassigns a ticket | BR17 | 1 | I3 |
 | US-24 | Maintenance | Overdue tickets alert the operator | BR18 | 2 | I4 |
 | US-25 | Maintenance | Towing and recovery | BR16, BR17, BR18 | 3 | I4 |
-| US-26 | Client backoffice | Set the rules of use | BR1, BR6, BR12 | 3 | I4 |
+| US-26 | Client backoffice | Set the rules of use | BR1, BR6, BR8, BR12 | 3 | I4 |
 | US-27 | Client backoffice | Set berths in service per dock | BR14 | 2 | I4 |
 | US-28 | Client backoffice | Set SLA deadlines | BR18 | 2 | I4 |
 | US-29 | Dashboards and KPIs | User dashboard | BR11, BR12 | 3 | I4 |
@@ -316,6 +316,7 @@ Iteration 2 total: 7 stories, 18 points.
 **As a** client manager, **I want** to set the maximum trip duration, the operating hours and the minimum age per boat type, **so that** the service follows the city's rules.
 
 - The client manager can change the maximum duration (default 90 min), the operating hours (default 08:00–22:00) and the minimum age per type (default Standard 18, XL 21) (BR1, BR6, BR12).
+- Reservations close one reservation hold (15 min) before the end of the operating hours: with hours until 20:00, reserving at 19:45 is accepted and at 19:46 refused (BR6, BR8).
 - New values apply to the next trips; trips in progress keep the values they started with.
 
 **Points:** 3 · **Iteration:** I4
@@ -428,7 +429,3 @@ These have no direct user value, so they are Tasks under the epic "Quality engin
 - AGENTS.md in the repository (AI2).
 - QA Manual v1: compliance table, 2.3, 3.3, 3.4, 4.2, 5.1–5.4, 6.2–6.4.
 - Repository tag `iter2` with both reports as PDF in `docs/`.
-
-## Open points for the Product Owner
-
-- **Reservation closing time:** BR6 closes reservations 15 minutes before the end of operating hours (21:45). Decide whether this margin is fixed or set by the municipality with the operating hours (US-26).
