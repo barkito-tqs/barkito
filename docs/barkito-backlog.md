@@ -34,10 +34,10 @@ Conventions, following the QA Manual (2.2):
 | US-19 | Payments | Hold fee for cancelled or expired reservations | BR8 | 2 | I3 |
 | US-20 | Payments | Overtime | BR12 | 3 | I4 |
 | US-21 | Maintenance | Tickets opened and assigned automatically | BR17, BR18 | 3 | I3 |
-| US-22 | Maintenance | Technician works on own tickets | BR18 | 3 | I3 |
+| US-22 | Maintenance | Technician works on own tickets | BR18, BR20 | 3 | I3 |
 | US-23 | Maintenance | Operator reassigns a ticket | BR17 | 1 | I3 |
 | US-24 | Maintenance | Overdue tickets alert the operator | BR18 | 2 | I4 |
-| US-25 | Maintenance | Towing and recovery | BR16, BR17, BR18 | 3 | I4 |
+| US-25 | Maintenance | Towing and recovery | BR16, BR17, BR18, BR20 | 3 | I4 |
 | US-26 | Client backoffice | Set the rules of use | BR1, BR6, BR8, BR12 | 3 | I4 |
 | US-27 | Client backoffice | Set berths in service per dock | BR14 | 2 | I4 |
 | US-28 | Client backoffice | Set SLA deadlines | BR18 | 2 | I4 |
@@ -279,7 +279,7 @@ Iteration 2 total: 7 stories, 18 points.
 
 - A technician sees only the tickets assigned to them, ordered by SLA deadline.
 - A technician can add notes and leave a ticket open, for example when a repair needs the workshop.
-- Closing a CHARGE ticket (boat plugged in) moves the boat to CHARGING (transition 14); closing a REPAIR ticket moves it to CHARGING (transition 19).
+- Closing a CHARGE ticket (boat plugged in) moves the boat from CHARGE_REQUIRED to CHARGING; after a REPAIR ticket is closed, the boat state follows BR20 (CHARGING, AVAILABLE or CHARGE_REQUIRED).
 - The closing time is recorded for the time-to-repair KPI.
 
 **Points:** 3 · **Iteration:** I3
@@ -304,8 +304,7 @@ Iteration 2 total: 7 stories, 18 points.
 ### US-25 Towing and recovery
 **As a** Field Technician, **I want** to record that I towed or brought back a boat left on the canal, **so that** it returns to service or goes to repair.
 
-- A towed boat with no fault becomes CHARGING; with a fault, REPAIR_REQUIRED (transitions 24 and 25).
-- A boat brought back from RETURN_REQUIRED becomes CHARGING (transition 23).
+- Once a towed boat (TOW_REQUIRED) or a boat brought back (RETURN_REQUIRED) is moored at a dock, its state follows BR20: a fault gives REPAIR_REQUIRED; otherwise CHARGING, AVAILABLE or CHARGE_REQUIRED depending on the charger and the battery.
 - Closing the ticket follows the SLA rules of US-24.
 
 **Points:** 3 · **Iteration:** I4
