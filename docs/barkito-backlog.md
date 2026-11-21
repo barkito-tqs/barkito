@@ -21,13 +21,13 @@ Conventions, following the QA Manual (2.2):
 | US-06 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
 | US-08 | Telemetry | Low-battery alerts during a trip | BR7 | 2 | I3 |
-| US-09 | Booking and trips | Find available boats by dock and type | BR5 | 3 | I2 |
-| US-10 | Booking and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8 | 3 | I3 |
-| US-11 | Booking and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
-| US-12 | Booking and trips | Unlock a boat | BR1–BR6, BR8, BR13 | 3 | I3 |
-| US-13 | Booking and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
-| US-14 | Booking and trips | Abandoned boat ends the trip | BR15 | 3 | I4 |
-| US-15 | Booking and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
+| US-09 | Reservations and trips | Find available boats by dock and type | BR5 | 3 | I2 |
+| US-10 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8 | 3 | I3 |
+| US-11 | Reservations and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
+| US-12 | Reservations and trips | Unlock a boat | BR1–BR6, BR8, BR13 | 3 | I3 |
+| US-13 | Reservations and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
+| US-14 | Reservations and trips | Abandoned boat ends the trip | BR15 | 3 | I4 |
+| US-15 | Reservations and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
 | US-16 | Payments | Save a payment method | BR2 | 3 | I3 |
 | US-17 | Payments | Deposit held and settled | BR2, BR13 | 3 | I3 |
 | US-18 | Payments | Trip price | BR8, BR11 | 2 | I3 |
@@ -138,7 +138,7 @@ Iteration 2 total: 7 stories, 18 points.
 
 **Points:** 2 · **Iteration:** I3
 
-## Epic: Booking and trips
+## Epic: Reservations and trips
 
 ### US-09 Find available boats by dock and type (specification-driven, AI4)
 **As an** end user, **I want** to see the boats available at each dock, by type, **so that** I know where to go before I walk to a dock.
@@ -431,5 +431,4 @@ These have no direct user value, so they are Tasks under the epic "Quality engin
 
 ## Open points for the Product Owner
 
-- **Reservation or booking:** the domain model and rules say Reservation, while section 4.3 and the QA Manual (3.1) say Booking. Choose one term for code, Jira and Gherkin.
 - **Reservation closing time:** BR6 closes reservations 15 minutes before the end of operating hours (21:45). Decide whether this margin is fixed or set by the municipality with the operating hours (US-26).
