@@ -23,7 +23,7 @@ All members are developers.
 
 - Jira backlog: <https://barkito-tqs.atlassian.net/jira/software/projects/BRK/boards/1/backlog>
 - Related repositories: none
-- API documentation: TBD
+- API documentation: Swagger UI at `/swagger-ui.html` on the running backend (locally <http://localhost:8080/swagger-ui.html>); OpenAPI document at `/v3/api-docs`
 - Static analysis dashboard: TBD
 - Observability dashboard: TBD
 - Deployed application: TBD

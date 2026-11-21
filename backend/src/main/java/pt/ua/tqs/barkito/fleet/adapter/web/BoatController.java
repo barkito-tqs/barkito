@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
@@ -19,6 +22,7 @@ import pt.ua.tqs.barkito.fleet.domain.Boat;
 /** Operator endpoints for the fleet. Access by role comes with US-02. */
 @RestController
 @RequestMapping("/api/boats")
+@Tag(name = "Fleet", description = "Boats of the fleet")
 public class BoatController {
 
 	private final BoatService boatService;
@@ -27,17 +31,26 @@ public class BoatController {
 		this.boatService = boatService;
 	}
 
+	@Operation(summary = "Register a boat", description = "US-03: the new boat starts INACTIVE and joins the fleet list.")
+	@ApiResponse(responseCode = "201", description = "Boat registered")
+	@ApiResponse(responseCode = "400", description = "Missing code, code too long, or a type other than STANDARD or XL")
+	@ApiResponse(responseCode = "404", description = "The home dock does not exist")
+	@ApiResponse(responseCode = "409", description = "A boat with this code is already registered")
 	@PostMapping
 	public ResponseEntity<BoatResponse> register(@Valid @RequestBody RegisterBoatRequest request) {
 		Boat boat = boatService.register(request.code(), request.type(), request.homeDockId());
 		return ResponseEntity.created(URI.create("/api/boats/" + boat.id())).body(BoatResponse.from(boat));
 	}
 
+	@Operation(summary = "List the fleet", description = "The operator's fleet list, ordered by code.")
 	@GetMapping
 	public List<BoatResponse> list() {
 		return boatService.findAll().stream().map(BoatResponse::from).toList();
 	}
 
+	@Operation(summary = "Get a boat")
+	@ApiResponse(responseCode = "200", description = "The boat")
+	@ApiResponse(responseCode = "404", description = "No boat with this id")
 	@GetMapping("/{id}")
 	public ResponseEntity<BoatResponse> get(@PathVariable UUID id) {
 		return ResponseEntity.of(boatService.findById(id).map(BoatResponse::from));
