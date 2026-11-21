@@ -45,13 +45,6 @@ jobs:
       - name: Build and run tests
         run: ./mvnw --batch-mode verify
 
-      - name: Debug secret shape
-        run: |
-          for n in SONAR_TOKEN XRAY_CLIENT_ID XRAY_CLIENT_SECRET; do
-            v="${!n}"
-            echo "$n length=${#v} nonprintable=$(printf '%s' "$v" | tr -d '[:print:]' | wc -c) spaces=$(printf '%s' "$v" | tr -cd ' ' | wc -c)"
-          done
-
       - name: Sonar analysis and quality gate
         if: ${{ env.SONAR_TOKEN != '' }}
         run: >-
