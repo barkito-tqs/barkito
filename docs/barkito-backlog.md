@@ -17,7 +17,7 @@ Conventions, following the QA Manual (2.2):
 | US-02 | Accounts and roles | Role-based areas | — | 2 | I2 |
 | US-03 | Fleet and docks | Register a boat | — | 2 | I2 |
 | US-04 | Fleet and docks | Register docks and berths | — | 2 | I2 |
-| US-05 | Fleet and docks | Activate and deactivate a boat | BR19 | 3 | I2 |
+| US-05 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
 | US-06 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
 | US-08 | Telemetry | Low-battery alerts during a trip | BR7 | 2 | I3 |
@@ -99,7 +99,8 @@ Iteration 2 total: 7 stories, 18 points.
 ### US-05 Activate and deactivate a boat
 **As an** operator, **I want** to activate and deactivate a boat, **so that** I control which boats are in service.
 
-- Activating an INACTIVE boat makes it CHARGING at 29 % battery and AVAILABLE at 30 % (BR19).
+- An INACTIVE boat can be activated only when telemetry reports it moored in a berth and plugged in; otherwise activation is refused with 409 (BR19).
+- On activation the boat becomes CHARGING, and AVAILABLE once its battery is ≥ 30 %: 29 % stays CHARGING, 30 % becomes AVAILABLE (BR19, BR5).
 - An AVAILABLE or CHARGING boat can be deactivated and becomes INACTIVE.
 - Deactivating an IN_USE or RESERVED boat is refused with 409 (BR19).
 - An INACTIVE boat is not shown to end users.
@@ -430,7 +431,6 @@ These have no direct user value, so they are Tasks under the epic "Quality engin
 
 ## Open points for the Product Owner
 
-- **BR19 vs transition 2:** BR19 says activation gives AVAILABLE or CHARGING depending on battery, but the lifecycle table only has INACTIVE → CHARGING. US-05 follows BR19; the table should add INACTIVE → AVAILABLE or explain the difference.
 - **BR20 vs transition 10:** BR20 says "plugged in and < 30 % → CHARGING", while transition 10 sends every plugged-in boat to CHARGING. Both reach AVAILABLE at 30 %, but the rule and the table should say the same.
 - **Reservation or booking:** the domain model and rules say Reservation, while section 4.3 and the QA Manual (3.1) say Booking. Choose one term for code, Jira and Gherkin.
 - **Reservation closing time:** BR6 closes reservations 15 minutes before the end of operating hours (21:45). Decide whether this margin is fixed or set by the municipality with the operating hours (US-26).
