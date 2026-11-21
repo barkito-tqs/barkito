@@ -1,0 +1,76 @@
+/*
+ * Barkito design tokens. Colours come from the logo:
+ * navy hull (brand, primary actions), sky wave, teal wake and the coral location pin (accent, used sparingly).
+ * White text on coral fails WCAG AA, so coral never carries text on its own; primary buttons are navy.
+ */
+:root {
+  color-scheme: light;
+
+  --navy-950: #021f38;
+  --navy-900: #032d51;
+  --navy-800: #053e6d;
+  --navy-700: #0a5089;
+  --navy-100: #e4edf5;
+  --sky-600: #0284c0;
+  --sky-500: #06a6e3;
+  --sky-100: #e1f3fb;
+  --teal-500: #0badc3;
+  --coral-500: #ff5a47;
+  --coral-700: #c73524;
+  --coral-50: #fff0ee;
+
+  --ink: #0d2236;
+  --ink-2: #33495f;
+  --muted: #5f7489;
+  --hairline: #dbe3eb;
+  --hairline-strong: #c3cfdb;
+  --canvas: #f4f7fa;
+  --canvas-2: #eaf0f5;
+  --surface: #ffffff;
+
+  --ok: #0f7a57;
+  --ok-bg: #e3f5ee;
+  --warn: #9a5b00;
+  --warn-bg: #fff4dc;
+  --danger: #b8321f;
+  --danger-bg: #fdecea;
+  --idle: #5f7489;
+  --idle-bg: #edf1f5;
+
+  /* Red Hat Display for titles and large figures; Red Hat Text is tuned for small UI sizes. */
+  --font-display: 'Red Hat Display Variable', 'Red Hat Text Variable', system-ui, sans-serif;
+  --font-text: 'Red Hat Text Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-md: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --shadow-1: 0 1px 2px rgb(3 45 81 / 0.06), 0 2px 8px rgb(3 45 81 / 0.05);
+  --shadow-2: 0 4px 16px rgb(3 45 81 / 0.1);
+  --shadow-3: 0 12px 40px rgb(3 45 81 / 0.18);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --sidebar-w: 248px;
+  --tabbar-h: 64px;
+  --topbar-h: 60px;
+}
