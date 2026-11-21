@@ -193,7 +193,7 @@ Iteration 2 total: 7 stories, 18 points.
 - A trip ends only when telemetry reports the boat moored in a free berth in service; otherwise the request is refused with 409 and the app shows the nearest dock with a free berth (BR14).
 - Two boats cannot end a trip in the same berth (BR14).
 - A lock command is sent, and the charges are settled (US-17, US-18).
-- After the trip, the boat state follows BR20: a fault or reported problem gives REPAIR_REQUIRED (takes priority); plugged in and < 30 % gives CHARGING; not plugged in and < 30 % gives CHARGE_REQUIRED; ≥ 30 % gives AVAILABLE.
+- After the trip, the boat state follows BR20: a fault or reported problem gives REPAIR_REQUIRED (takes priority); otherwise, plugged in gives CHARGING (AVAILABLE once at 30 %); not plugged in gives CHARGE_REQUIRED at 29 % and AVAILABLE at 30 %.
 - A trip in progress at 22:00 continues and can be ended after closing time (BR6).
 
 **Points:** 3 · **Iteration:** I3
@@ -431,6 +431,5 @@ These have no direct user value, so they are Tasks under the epic "Quality engin
 
 ## Open points for the Product Owner
 
-- **BR20 vs transition 10:** BR20 says "plugged in and < 30 % → CHARGING", while transition 10 sends every plugged-in boat to CHARGING. Both reach AVAILABLE at 30 %, but the rule and the table should say the same.
 - **Reservation or booking:** the domain model and rules say Reservation, while section 4.3 and the QA Manual (3.1) say Booking. Choose one term for code, Jira and Gherkin.
 - **Reservation closing time:** BR6 closes reservations 15 minutes before the end of operating hours (21:45). Decide whether this margin is fixed or set by the municipality with the operating hours (US-26).
