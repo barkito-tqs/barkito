@@ -1,4 +1,3 @@
-@wip
 @BRK-45
 Feature: Boat state updated from telemetry
   As an operator, I want each boat's battery, position, charging state and faults to be updated from telemetry,
