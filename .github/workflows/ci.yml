@@ -1,7 +1,10 @@
 name: CI
 
+# Feature branches are built by their pull request; pushes build only the long-lived branches,
+# so each PR runs the pipeline once.
 on:
   push:
+    branches: [develop, main]
   pull_request:
     branches: [develop, main]
 
