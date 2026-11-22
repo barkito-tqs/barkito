@@ -19,6 +19,7 @@
 		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 		<cucumber.version>8.0.4</cucumber.version>
 		<archunit.version>1.4.1</archunit.version>
+		<json-schema-validator.version>3.0.9</json-schema-validator.version>
 		<springdoc.version>3.0.2</springdoc.version>
 	</properties>
 	<dependencyManagement>
@@ -89,6 +90,11 @@
 			<artifactId>archunit-junit5</artifactId>
 			<version>${archunit.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>${json-schema-validator.version}</version>
 		</dependency>
 	</dependencies>
 

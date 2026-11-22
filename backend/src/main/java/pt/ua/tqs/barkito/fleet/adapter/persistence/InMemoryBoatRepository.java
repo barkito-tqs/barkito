@@ -34,6 +34,11 @@ public class InMemoryBoatRepository implements BoatRepository {
 	}
 
 	@Override
+	public Optional<Boat> findByCode(String code) {
+		return boats.values().stream().filter(boat -> boat.code().equals(code)).findFirst();
+	}
+
+	@Override
 	public List<Boat> findAll() {
 		return boats.values().stream().sorted(Comparator.comparing(Boat::code)).toList();
 	}
