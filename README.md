@@ -8,6 +8,23 @@
 
 > Concretization details (city, institutional client, rules of use) to be finalized after approval at checkpoint I1.
 
+## Run with Docker Compose
+
+Needs Docker with the Compose plugin; no Java or Node installation.
+
+```bash
+docker compose up --build -d   # build the images and start the system
+docker compose ps              # both services should be running, the backend "healthy"
+docker compose down            # stop and remove the containers
+```
+
+| Service | URL |
+|---|---|
+| Web UI | <http://localhost:3000> (calls to `/api` are proxied to the backend) |
+| Backend API | <http://localhost:8080> (Swagger UI at `/swagger-ui.html`, health at `/actuator/health`) |
+
+The repositories are still in memory, so data resets when the backend container restarts. A database service joins the Compose file when persistence arrives.
+
 ## Project team
 
 | Name | Student no. | Role |

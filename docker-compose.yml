@@ -1,0 +1,25 @@
+name: barkito
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # dps vem o postgre e tals
+  
+  web:
+    build: ./frontend
+    ports:
+      - "3000:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
