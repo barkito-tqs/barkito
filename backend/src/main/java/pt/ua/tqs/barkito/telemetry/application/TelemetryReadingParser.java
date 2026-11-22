@@ -57,7 +57,7 @@ public class TelemetryReadingParser {
 	private TelemetryReading toReading(JsonNode json) {
 		JsonNode berth = json.get("berth");
 		JsonNode position = json.get("position");
-		List<String> faults = json.get("faults").values().stream().map(JsonNode::asString).toList();
+		List<String> faults = json.get("faults").values().stream().map(node -> node.asString()).toList();
 		BoatStatus status = new BoatStatus(
 				json.get("battery").asInt(),
 				berth == null ? null : UUID.fromString(berth.asString()),
