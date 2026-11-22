@@ -24,4 +24,12 @@ class InMemoryBoatRepositoryTest {
 		assertThat(repository.existsByCode("B-03")).isFalse();
 		assertThat(repository.findAll()).containsExactly(b1, b2);
 	}
+
+	@Test
+	void findsABoatByCode() {
+		Boat b1 = repository.save(Boat.register("B-01", BoatType.XL, UUID.randomUUID()));
+
+		assertThat(repository.findByCode("B-01")).contains(b1);
+		assertThat(repository.findByCode("B-09")).isEmpty();
+	}
 }

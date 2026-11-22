@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
+import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 
@@ -37,6 +38,15 @@ public class BoatService {
 			throw new DockNotFoundException(homeDockId);
 		}
 		return boats.save(Boat.register(normalisedCode, type, homeDockId));
+	}
+
+	/**
+	 * Records a telemetry reading for the boat with that code, returning the updated boat, or empty (saving
+	 * nothing) when no boat has the code. Synchronised so that two readings for one boat do not lose an update.
+	 */
+	public synchronized Optional<Boat> recordStatus(String code, BoatStatus status) {
+		String normalisedCode = code.trim().toUpperCase(Locale.ROOT);
+		return boats.findByCode(normalisedCode).map(boat -> boats.save(boat.applyStatus(status)));
 	}
 
 	public Optional<Boat> findById(UUID id) {
