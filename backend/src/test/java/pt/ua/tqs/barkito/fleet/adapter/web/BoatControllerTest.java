@@ -23,7 +23,10 @@ import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DuplicateBoatCodeException;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
+import pt.ua.tqs.barkito.fleet.domain.BoatState;
+import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
+import pt.ua.tqs.barkito.fleet.domain.Position;
 
 @WebMvcTest(BoatController.class)
 class BoatControllerTest {
@@ -137,5 +140,42 @@ class BoatControllerTest {
         .perform(get("/api/v1/boats/" + boat.id()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value("B-16"));
+  }
+
+  @Test
+  void aBoatWithAStatusShowsIt() throws Exception {
+    UUID berth = UUID.randomUUID();
+    Boat boat =
+        Boat.restore(
+            UUID.randomUUID(),
+            "B-16",
+            BoatType.XL,
+            DOCK,
+            BoatState.CHARGING,
+            new BoatStatus(
+                64, berth, new Position(40.64, -8.65), true, true, List.of("MOTOR_OVERHEAT")));
+    when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
+
+    mockMvc
+        .perform(get("/api/v1/boats/" + boat.id()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status.batteryPercent").value(64))
+        .andExpect(jsonPath("$.status.berthId").value(berth.toString()))
+        .andExpect(jsonPath("$.status.latitude").value(40.64))
+        .andExpect(jsonPath("$.status.longitude").value(-8.65))
+        .andExpect(jsonPath("$.status.locked").value(true))
+        .andExpect(jsonPath("$.status.pluggedIn").value(true))
+        .andExpect(jsonPath("$.status.faults[0]").value("MOTOR_OVERHEAT"));
+  }
+
+  @Test
+  void aBoatWithoutAStatusHasNoStatus() throws Exception {
+    Boat boat = Boat.register("B-16", BoatType.XL, DOCK);
+    when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
+
+    mockMvc
+        .perform(get("/api/v1/boats/" + boat.id()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").doesNotExist());
   }
 }

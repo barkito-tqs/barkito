@@ -16,5 +16,7 @@ public interface BoatRepository {
 
   Optional<Boat> findById(UUID id);
 
+  Optional<Boat> findByCode(String code);
+
   List<Boat> findAll();
 }
