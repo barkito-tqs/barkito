@@ -25,6 +25,8 @@ import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DuplicateBoatCodeException;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
+import pt.ua.tqs.barkito.fleet.domain.BoatState;
+import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 
 @WebMvcTest(BoatController.class)
@@ -116,5 +118,31 @@ class BoatControllerTest {
 		mockMvc.perform(get("/api/v1/boats/" + boat.id()))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("B-16"));
+	}
+
+	@Test
+	void aBoatWithAStatusShowsIt() throws Exception {
+		UUID berth = UUID.randomUUID();
+		Boat boat = Boat.restore(UUID.randomUUID(), "B-16", BoatType.XL, DOCK, BoatState.CHARGING,
+				new BoatStatus(64, berth, null, true, true, List.of("MOTOR_OVERHEAT")));
+		when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
+
+		mockMvc.perform(get("/api/v1/boats/" + boat.id()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.status.batteryPercent").value(64))
+				.andExpect(jsonPath("$.status.berthId").value(berth.toString()))
+				.andExpect(jsonPath("$.status.locked").value(true))
+				.andExpect(jsonPath("$.status.pluggedIn").value(true))
+				.andExpect(jsonPath("$.status.faults[0]").value("MOTOR_OVERHEAT"));
+	}
+
+	@Test
+	void aBoatWithoutAStatusHasNoStatus() throws Exception {
+		Boat boat = Boat.register("B-16", BoatType.XL, DOCK);
+		when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
+
+		mockMvc.perform(get("/api/v1/boats/" + boat.id()))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.status").doesNotExist());
 	}
 }
