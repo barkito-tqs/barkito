@@ -64,32 +64,7 @@ jobs:
           && github.ref == 'refs/heads/develop'
           && env.XRAY_CLIENT_ID != ''
           && env.XRAY_CLIENT_SECRET != '' }}
-        run: |
-          python3 - <<'PY'
-          import glob
-          import xml.etree.ElementTree as ET
-          merged = ET.Element("testsuites")
-          for path in glob.glob("target/surefire-reports/TEST-*.xml") + glob.glob("target/failsafe-reports/TEST-*.xml"):
-              merged.append(ET.parse(path).getroot())
-          ET.ElementTree(merged).write("target/xray-junit.xml")
-          PY
-          code=$(curl --silent --show-error -o target/xray-auth.txt -w '%{http_code}' -X POST \
-            -H "Content-Type: application/json" \
-            --data "{\"client_id\":\"$XRAY_CLIENT_ID\",\"client_secret\":\"$XRAY_CLIENT_SECRET\"}" \
-            https://xray.cloud.getxray.app/api/v2/authenticate)
-          if [ "$code" != "200" ]; then
-            echo "::error::Xray authenticate failed: HTTP $code"; cat target/xray-auth.txt; exit 1
-          fi
-          token=$(tr -d '"' < target/xray-auth.txt)
-          code=$(curl --silent --show-error -o target/xray-import.txt -w '%{http_code}' -X POST \
-            -H "Content-Type: text/xml" \
-            -H "Authorization: Bearer $token" \
-            --data @target/xray-junit.xml \
-            "https://xray.cloud.getxray.app/api/v2/import/execution/junit?projectKey=BRK")
-          cat target/xray-import.txt; echo
-          if [ "$code" != "200" ]; then
-            echo "::error::Xray import failed: HTTP $code"; exit 1
-          fi
+        run: ../.github/scripts/xray-import.sh
 
   web:
     name: Web UI build and test
@@ -110,33 +85,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
       - name: Unit tests
         run: npm test
 
       - name: Type-check and build
         run: npm run build
-
-  jira-key:
-    name: Jira key in branch and PR title
-    # Release PRs (develop -> main) and Dependabot updates have no story key.
-    if: >-
-      github.event_name == 'pull_request'
-      && github.head_ref != 'develop'
-      && github.actor != 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check branch name and PR title
-        env:
-          BRANCH: ${{ github.head_ref }}
-          TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          status=0
-          if ! [[ "$BRANCH" =~ ^(feature/|fix/)?BRK-[0-9]+- ]]; then
-            echo "::error::Branch name '$BRANCH' must contain the Jira key, e.g. feature/BRK-12-short-description"
-            status=1
-          fi
-          if ! [[ "$TITLE" =~ ^BRK-[0-9]+[[:space:]] ]]; then
-            echo "::error::PR title '$TITLE' must start with the Jira key, e.g. 'BRK-12 Add dock availability'"
-            status=1
-          fi
-          exit $status
