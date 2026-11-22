@@ -11,10 +11,14 @@ type Action = 'activate' | 'deactivate' | 'retire';
 const RETIRABLE: BoatState[] = ['INACTIVE', 'REPAIR_REQUIRED', 'TOW_REQUIRED', 'RETURN_REQUIRED'];
 const DEACTIVATABLE: BoatState[] = ['AVAILABLE', 'CHARGING'];
 
-const COPY: Record<Action, { title: (b: Boat) => string; body: (b: Boat) => string; confirm: (b: Boat) => string }> = {
+const COPY: Record<
+  Action,
+  { title: (b: Boat) => string; body: (b: Boat) => string; confirm: (b: Boat) => string }
+> = {
   activate: {
     title: (b) => `Activate ${b.code}?`,
-    body: () => 'The boat starts charging and appears to users once its battery reaches 30 %. It must be moored in a berth and plugged in.',
+    body: () =>
+      'The boat starts charging and appears to users once its battery reaches 30 %. It must be moored in a berth and plugged in.',
     confirm: (b) => `Activate ${b.code}`,
   },
   deactivate: {
@@ -64,16 +68,25 @@ export function BoatDetail() {
     const run = { activate: activateBoat, deactivate: deactivateBoat, retire: retireBoat }[pending];
     try {
       run(boat.id);
-      setResult({ tone: 'ok', text: `${boat.code}: ${pending === 'retire' ? 'retired' : pending === 'activate' ? 'activated' : 'deactivated'}.` });
+      setResult({
+        tone: 'ok',
+        text: `${boat.code}: ${pending === 'retire' ? 'retired' : pending === 'activate' ? 'activated' : 'deactivated'}.`,
+      });
     } catch (e) {
-      setResult({ tone: 'danger', text: e instanceof ApiError ? e.message : 'Something went wrong.' });
+      setResult({
+        tone: 'danger',
+        text: e instanceof ApiError ? e.message : 'Something went wrong.',
+      });
     }
     setPending(null);
   }
 
   return (
     <>
-      <Link to={fromDock ? `/docks/${fromDock.id}` : '/fleet'} className="btn btn-ghost btn-sm back-link">
+      <Link
+        to={fromDock ? `/docks/${fromDock.id}` : '/fleet'}
+        className="btn btn-ghost btn-sm back-link"
+      >
         <ArrowLeft aria-hidden="true" /> {fromDock ? fromDock.name : 'Fleet'}
       </Link>
 
@@ -121,7 +134,8 @@ export function BoatDetail() {
               <h3>Open Tickets</h3>
               {open.map((t) => (
                 <p key={t.id} className="small">
-                  <span className="code">{t.id}</span> · {TICKET_LABEL[t.type]} · due {formatTime(t.dueAt)}
+                  <span className="code">{t.id}</span> · {TICKET_LABEL[t.type]} · due{' '}
+                  {formatTime(t.dueAt)}
                 </p>
               ))}
             </div>
@@ -171,7 +185,11 @@ export function BoatDetail() {
               <button type="button" className="btn btn-secondary" onClick={() => setPending(null)}>
                 Cancel
               </button>
-              <button type="button" className={`btn ${pending === 'retire' ? 'btn-danger-solid' : 'btn-primary'}`} onClick={confirm}>
+              <button
+                type="button"
+                className={`btn ${pending === 'retire' ? 'btn-danger-solid' : 'btn-primary'}`}
+                onClick={confirm}
+              >
                 {COPY[pending].confirm(boat)}
               </button>
             </div>
@@ -206,7 +224,12 @@ function ActionRow({
         <strong>{title}</strong>
         <span className="small muted">{enabled ? text : disabledText}</span>
       </div>
-      <button type="button" className={`btn btn-sm ${danger ? 'btn-danger' : 'btn-secondary'}`} disabled={!enabled} onClick={onClick}>
+      <button
+        type="button"
+        className={`btn btn-sm ${danger ? 'btn-danger' : 'btn-secondary'}`}
+        disabled={!enabled}
+        onClick={onClick}
+      >
         {title}
       </button>
     </div>

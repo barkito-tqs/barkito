@@ -46,7 +46,8 @@
 }
 
 .main {
-  padding: var(--space-5) var(--space-4) calc(var(--tabbar-h) + var(--space-8) + env(safe-area-inset-bottom));
+  padding: var(--space-5) var(--space-4)
+    calc(var(--tabbar-h) + var(--space-8) + env(safe-area-inset-bottom));
   min-width: 0;
 }
 
@@ -125,7 +126,9 @@
     text-decoration: none;
     font-weight: 600;
     font-size: var(--text-sm);
-    transition: background-color 0.15s, color 0.15s;
+    transition:
+      background-color 0.15s,
+      color 0.15s;
   }
   .sidebar nav a svg {
     width: 20px;
@@ -201,7 +204,11 @@
   font-size: var(--text-sm);
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.15s var(--ease-out);
+  transition:
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    transform 0.15s var(--ease-out);
   white-space: nowrap;
 }
 .btn svg {
@@ -534,7 +541,9 @@
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--ink);
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 .textarea {
   min-height: 92px;
@@ -591,7 +600,9 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 .segmented a:hover,
 .segmented button:hover {
@@ -1100,7 +1111,6 @@
   gap: var(--space-2);
 }
 
-
 .facts {
   margin: 0;
   display: grid;
@@ -1523,8 +1533,7 @@
   gap: var(--space-4);
   padding: var(--space-8) var(--space-5);
   background:
-    radial-gradient(60% 50% at 80% 100%, rgb(6 166 227 / 0.35), transparent),
-    var(--navy-800);
+    radial-gradient(60% 50% at 80% 100%, rgb(6 166 227 / 0.35), transparent), var(--navy-800);
   color: #fff;
 }
 .signin-hero img {
@@ -1573,7 +1582,10 @@
   background: var(--surface);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s, transform 0.15s var(--ease-out), box-shadow 0.15s;
+  transition:
+    border-color 0.15s,
+    transform 0.15s var(--ease-out),
+    box-shadow 0.15s;
 }
 .persona:hover {
   border-color: var(--navy-800);
@@ -1592,7 +1604,9 @@
   width: 20px;
   height: 20px;
   color: var(--muted);
-  transition: transform 0.15s var(--ease-out), color 0.15s;
+  transition:
+    transform 0.15s var(--ease-out),
+    color 0.15s;
 }
 .persona:hover > svg {
   transform: translateX(3px);
@@ -1638,8 +1652,12 @@
   font-size: var(--text-md);
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.9), var(--shadow-3);
-  transition: background-color 0.15s, transform 0.15s var(--ease-out);
+  box-shadow:
+    0 0 0 4px rgb(255 255 255 / 0.9),
+    var(--shadow-3);
+  transition:
+    background-color 0.15s,
+    transform 0.15s var(--ease-out);
 }
 .fab svg {
   width: 24px;

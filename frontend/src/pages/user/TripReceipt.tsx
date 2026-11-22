@@ -11,7 +11,12 @@ export function TripReceipt({ trip }: { trip: Trip }) {
   const maxMinutes = useStore((s) => s.settings.maxTripMinutes);
   const boat = boats.find((b) => b.id === trip.boatId);
   if (!boat || trip.endedAt === null) return null;
-  const charges = tripCharges(boat.type, (trip.endedAt - trip.startedAt) / 1000, trip.holdSeconds, maxMinutes);
+  const charges = tripCharges(
+    boat.type,
+    (trip.endedAt - trip.startedAt) / 1000,
+    trip.holdSeconds,
+    maxMinutes,
+  );
   const from = docks.find((d) => d.id === trip.fromDockId)?.name ?? '—';
   const to = docks.find((d) => d.id === trip.toDockId)?.name ?? '—';
 
@@ -47,7 +52,8 @@ export function TripReceipt({ trip }: { trip: Trip }) {
         {charges.overtimeMinutes > 0 && (
           <div>
             <dt>
-              {charges.overtimeMinutes} min overtime × {formatCents(PRICES.overtimePerMinute[boat.type])}
+              {charges.overtimeMinutes} min overtime ×{' '}
+              {formatCents(PRICES.overtimePerMinute[boat.type])}
             </dt>
             <dd>{formatCents(charges.overtimeCost)}</dd>
           </div>

@@ -27,7 +27,16 @@ function boat(overrides: Partial<Boat> = {}): Boat {
 }
 
 function dock(overrides: Partial<Dock> = {}): Dock {
-  return { id: 'd1', name: 'Dock', district: 'Centre', x: 0, y: 0, berths: 4, berthsInService: 4, ...overrides };
+  return {
+    id: 'd1',
+    name: 'Dock',
+    district: 'Centre',
+    x: 0,
+    y: 0,
+    berths: 4,
+    berthsInService: 4,
+    ...overrides,
+  };
 }
 
 function at(hours: number, minutes: number): Date {

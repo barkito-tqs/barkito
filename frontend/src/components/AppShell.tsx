@@ -22,7 +22,8 @@ const TONE_ICON = { info: Info, warning: AlertTriangle, danger: Siren };
 function Notices() {
   const { user } = useSession();
   const notices = useStore((s) => s.notices);
-  const audience = user?.role === 'END_USER' ? 'USER' : user?.role === 'OPERATOR' ? 'OPERATOR' : null;
+  const audience =
+    user?.role === 'END_USER' ? 'USER' : user?.role === 'OPERATOR' ? 'OPERATOR' : null;
   const visible = notices.filter((n) => n.audience === audience).slice(-3);
   return (
     <div className="toasts" aria-live="polite">
@@ -32,7 +33,12 @@ function Notices() {
           <div key={n.id} className={`toast ${n.tone}`}>
             <Icon className="lead" aria-hidden="true" />
             <p>{n.text}</p>
-            <button type="button" className="icon-btn" aria-label="Dismiss notification" onClick={() => dismissNotice(n.id)}>
+            <button
+              type="button"
+              className="icon-btn"
+              aria-label="Dismiss notification"
+              onClick={() => dismissNotice(n.id)}
+            >
               <X aria-hidden="true" />
             </button>
           </div>
@@ -93,9 +99,7 @@ export function AppShell() {
             </NavLink>
           ))}
         </nav>
-        <p className="sidebar-foot">
-          {ROLE_LABEL[user.role]} · Ria Nova
-        </p>
+        <p className="sidebar-foot">{ROLE_LABEL[user.role]} · Ria Nova</p>
       </aside>
 
       <div>

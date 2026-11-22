@@ -66,7 +66,11 @@ export function App() {
       <Route path="/" element={<Home />} />
       <Route element={<AppShell />}>
         {AREAS.map(({ path, role, element }) => (
-          <Route key={path} path={path} element={<RequireRole role={role}>{element}</RequireRole>} />
+          <Route
+            key={path}
+            path={path}
+            element={<RequireRole role={role}>{element}</RequireRole>}
+          />
         ))}
         <Route path="*" element={<NotFound />} />
       </Route>

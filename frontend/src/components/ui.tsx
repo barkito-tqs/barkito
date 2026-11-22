@@ -27,7 +27,15 @@ export function PageHead({
   );
 }
 
-export function Badge({ tone, children, plain }: { tone: Tone; children: ReactNode; plain?: boolean }) {
+export function Badge({
+  tone,
+  children,
+  plain,
+}: {
+  tone: Tone;
+  children: ReactNode;
+  plain?: boolean;
+}) {
   return <span className={`badge badge-${tone}${plain ? ' badge-plain' : ''}`}>{children}</span>;
 }
 
@@ -36,11 +44,16 @@ export function StateBadge({ state }: { state: BoatState }) {
 }
 
 export function TypeChip({ type }: { type: BoatType }) {
-  return <span className={`chip-type${type === 'XL' ? ' xl' : ''}`}>{BOAT_TYPE_LABEL[type].toUpperCase()}</span>;
+  return (
+    <span className={`chip-type${type === 'XL' ? ' xl' : ''}`}>
+      {BOAT_TYPE_LABEL[type].toUpperCase()}
+    </span>
+  );
 }
 
 export function Battery({ level }: { level: number }) {
-  const tone = level < RULES.operatorAlertBattery + 1 ? 'critical' : level < RULES.minBattery ? 'low' : 'ok';
+  const tone =
+    level < RULES.operatorAlertBattery + 1 ? 'critical' : level < RULES.minBattery ? 'low' : 'ok';
   return (
     <span className={`battery ${tone}`} aria-label={`Battery ${level} %`}>
       <span className="battery-track" aria-hidden="true">
@@ -63,7 +76,15 @@ export function Alert({ tone, children }: { tone: keyof typeof ALERT_ICON; child
   );
 }
 
-export function Stat({ label, value, hint }: { label: string; value: ReactNode; hint?: ReactNode }) {
+export function Stat({
+  label,
+  value,
+  hint,
+}: {
+  label: string;
+  value: ReactNode;
+  hint?: ReactNode;
+}) {
   return (
     <div className="stat">
       <dt>{label}</dt>
@@ -75,7 +96,15 @@ export function Stat({ label, value, hint }: { label: string; value: ReactNode; 
   );
 }
 
-export function Empty({ icon, title, children }: { icon: ReactNode; title: string; children?: ReactNode }) {
+export function Empty({
+  icon,
+  title,
+  children,
+}: {
+  icon: ReactNode;
+  title: string;
+  children?: ReactNode;
+}) {
   return (
     <div className="empty">
       {icon}

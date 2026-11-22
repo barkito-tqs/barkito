@@ -42,7 +42,9 @@ export function MyTrip() {
     return (
       <>
         <PageHead eyebrow="Trip ended" title="Thanks for Sailing with Barkito" />
-        <Alert tone="ok">The boat is locked and the deposit is released, minus the amount below.</Alert>
+        <Alert tone="ok">
+          The boat is locked and the deposit is released, minus the amount below.
+        </Alert>
         <TripReceipt trip={ended} />
         <div className="row">
           <Link to="/boats" className="btn btn-primary">
@@ -106,7 +108,12 @@ function ReservationCountdown() {
           <h2 id="countdown-title" className="visually-hidden">
             Time left
           </h2>
-          <div className="ring" style={{ ['--p' as string]: progress }} role="timer" aria-label={`${formatClock(left / 1000)} left`}>
+          <div
+            className="ring"
+            style={{ ['--p' as string]: progress }}
+            role="timer"
+            aria-label={`${formatClock(left / 1000)} left`}
+          >
             <div>
               <span className="ring-time num">{formatClock(left / 1000)}</span>
               <span className="ring-label">left to unlock</span>
@@ -134,14 +141,22 @@ function ReservationCountdown() {
             <Link to="/unlock" className="btn btn-primary btn-lg btn-block">
               <QrCode aria-hidden="true" /> Scan the QR Code
             </Link>
-            <button type="button" className="btn btn-danger btn-block" onClick={() => setConfirming(true)}>
+            <button
+              type="button"
+              className="btn btn-danger btn-block"
+              onClick={() => setConfirming(true)}
+            >
               Cancel Reservation
             </button>
           </div>
         </section>
         <CanalMap
           label="Dock of your reserved boat"
-          markers={docks.map((d) => ({ dock: d, count: d.id === dock?.id ? 1 : 0, tone: d.id === dock?.id ? 'ok' : 'empty' }))}
+          markers={docks.map((d) => ({
+            dock: d,
+            count: d.id === dock?.id ? 1 : 0,
+            tone: d.id === dock?.id ? 'ok' : 'empty',
+          }))}
           selectedId={dock?.id}
         />
       </div>
@@ -149,8 +164,9 @@ function ReservationCountdown() {
       <Dialog open={confirming} onClose={() => setConfirming(false)} labelledBy="cancel-title">
         <h2 id="cancel-title">Cancel Your Reservation?</h2>
         <p className="muted">
-          You pay the minutes {boat.code} was held: {formatCents(feeSoFar)} so far ({formatCents(PRICES.holdPerMinute[boat.type])} per
-          started minute). The boat goes back to other users.
+          You pay the minutes {boat.code} was held: {formatCents(feeSoFar)} so far (
+          {formatCents(PRICES.holdPerMinute[boat.type])} per started minute). The boat goes back to
+          other users.
         </p>
         <div className="dialog-actions">
           <button type="button" className="btn btn-secondary" onClick={() => setConfirming(false)}>
@@ -168,7 +184,9 @@ function ReservationCountdown() {
           </button>
         </div>
       </Dialog>
-      {cancelledFee !== null && <Alert tone="ok">Reservation cancelled. {formatCents(cancelledFee)} was charged.</Alert>}
+      {cancelledFee !== null && (
+        <Alert tone="ok">Reservation cancelled. {formatCents(cancelledFee)} was charged.</Alert>
+      )}
     </>
   );
 }
@@ -205,7 +223,12 @@ function TripInProgress({ trip, onEnded }: { trip: Trip; onEnded: (t: Trip) => v
       return;
     }
     try {
-      const done = endTrip(user.id, dockId, pluggedIn, reporting ? { category: problem, note } : undefined);
+      const done = endTrip(
+        user.id,
+        dockId,
+        pluggedIn,
+        reporting ? { category: problem, note } : undefined,
+      );
       onEnded(done);
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Something went wrong. Try again.');
@@ -234,12 +257,14 @@ function TripInProgress({ trip, onEnded }: { trip: Trip; onEnded: (t: Trip) => v
       )}
       {minutes >= maxMinutes ? (
         <Alert tone="danger">
-          You reached the {maxMinutes}-minute maximum. Every extra minute costs {formatCents(PRICES.overtimePerMinute[boat.type])}.
+          You reached the {maxMinutes}-minute maximum. Every extra minute costs{' '}
+          {formatCents(PRICES.overtimePerMinute[boat.type])}.
         </Alert>
       ) : (
         minutes >= warnAt && (
           <Alert tone="warn">
-            {Math.ceil(maxMinutes - minutes)} minutes left before overtime ({formatCents(PRICES.overtimePerMinute[boat.type])}/min).
+            {Math.ceil(maxMinutes - minutes)} minutes left before overtime (
+            {formatCents(PRICES.overtimePerMinute[boat.type])}/min).
           </Alert>
         )
       )}
@@ -285,13 +310,16 @@ function TripInProgress({ trip, onEnded }: { trip: Trip; onEnded: (t: Trip) => v
             }}
           />
           <p className="small muted">
-            Numbers on the pins are free berths. {alert !== 'NONE' && 'The green pin is the nearest dock with a free berth.'}
+            Numbers on the pins are free berths.{' '}
+            {alert !== 'NONE' && 'The green pin is the nearest dock with a free berth.'}
           </p>
         </div>
 
         <form className="card stack" onSubmit={submit} aria-labelledby="end-title" noValidate>
           <h2 id="end-title">End Your Trip</h2>
-          <p className="small muted">Moor the boat in a free berth first. The trip ends once telemetry sees it moored.</p>
+          <p className="small muted">
+            Moor the boat in a free berth first. The trip ends once telemetry sees it moored.
+          </p>
           <div className="field">
             <label htmlFor="end-dock">Dock</label>
             <select
@@ -323,11 +351,19 @@ function TripInProgress({ trip, onEnded }: { trip: Trip; onEnded: (t: Trip) => v
             )}
           </div>
           <label className="check">
-            <input type="checkbox" checked={pluggedIn} onChange={(e) => setPluggedIn(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={pluggedIn}
+              onChange={(e) => setPluggedIn(e.target.checked)}
+            />
             I plugged the boat into the berth&rsquo;s charger
           </label>
           <label className="check">
-            <input type="checkbox" checked={reporting} onChange={(e) => setReporting(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={reporting}
+              onChange={(e) => setReporting(e.target.checked)}
+            />
             Report a problem with the boat
           </label>
           {reporting && (
@@ -393,18 +429,21 @@ function TripInProgress({ trip, onEnded }: { trip: Trip; onEnded: (t: Trip) => v
             <CheckCircle2 aria-hidden="true" /> End Trip
           </button>
           <p className="small muted row">
-            <Clock aria-hidden="true" width={16} height={16} /> A trip in progress at closing time continues normally.
+            <Clock aria-hidden="true" width={16} height={16} /> A trip in progress at closing time
+            continues normally.
           </p>
         </form>
       </div>
       {alert === 'NONE' && nearest && (
         <p className="small muted row">
-          <Navigation aria-hidden="true" width={16} height={16} /> Nearest dock with a free berth: {nearest.name}.
+          <Navigation aria-hidden="true" width={16} height={16} /> Nearest dock with a free berth:{' '}
+          {nearest.name}.
         </p>
       )}
       {alert === 'OPERATOR' && (
         <p className="small muted row">
-          <BatteryWarning aria-hidden="true" width={16} height={16} /> The operator was alerted and can help if you get stuck.
+          <BatteryWarning aria-hidden="true" width={16} height={16} /> The operator was alerted and
+          can help if you get stuck.
         </p>
       )}
     </>
