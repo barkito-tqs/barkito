@@ -22,8 +22,8 @@ class ApiDocumentationTests {
 		mockMvc.perform(get("/v3/api-docs"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.info.title").value("Barkito API"))
-				.andExpect(jsonPath("$.paths['/api/boats'].post").exists())
-				.andExpect(jsonPath("$.paths['/api/boats'].get").exists());
+				.andExpect(jsonPath("$.paths['/api/v1/boats'].post").exists())
+				.andExpect(jsonPath("$.paths['/api/v1/boats'].get").exists());
 	}
 
 	@Test

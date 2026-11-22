@@ -21,7 +21,7 @@ import pt.ua.tqs.barkito.fleet.domain.Boat;
 
 /** Operator endpoints for the fleet. Access by role comes with US-02. */
 @RestController
-@RequestMapping("/api/boats")
+@RequestMapping("/api/v1/boats")
 @Tag(name = "Fleet", description = "Boats of the fleet")
 public class BoatController {
 
@@ -39,7 +39,7 @@ public class BoatController {
 	@PostMapping
 	public ResponseEntity<BoatResponse> register(@Valid @RequestBody RegisterBoatRequest request) {
 		Boat boat = boatService.register(request.code(), request.type(), request.homeDockId());
-		return ResponseEntity.created(URI.create("/api/boats/" + boat.id())).body(BoatResponse.from(boat));
+		return ResponseEntity.created(URI.create("/api/v1/boats/" + boat.id())).body(BoatResponse.from(boat));
 	}
 
 	@Operation(summary = "List the fleet", description = "The operator's fleet list, ordered by code.")
