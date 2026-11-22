@@ -13,7 +13,7 @@ BRK-<n>
 ## Definition of Done
 
 - [ ] Branch name and PR title include the Jira story key
-- [ ] AI use in this change follows the team AI policy
+- [ ] AI use in this change follows the team AI policy, and the PR has one `ai:*` label
 - [ ] Acceptance criteria are met
 - [ ] Unit tests cover the new business logic
 - [ ] Coverage on new code ≥ 80%

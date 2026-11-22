@@ -9,7 +9,8 @@ Java 21, Spring Boot (stable), Maven.
 ## Build commands
 
 ```bash
-mvn verify        # build, unit tests, integration tests, coverage
+cd backend && ./mvnw spotless:apply verify        # format, build, tests, coverage
+cd frontend && npm run format && npm run lint && npm test
 ```
 
 ## Code style
