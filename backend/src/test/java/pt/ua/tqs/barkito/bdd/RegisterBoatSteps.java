@@ -59,7 +59,7 @@ public class RegisterBoatSteps {
 
 	@Then("the boat {string} appears in the operator's fleet list")
 	public void theBoatAppearsInTheFleetList(String code) throws Exception {
-		mockMvc.perform(get("/api/boats"))
+		mockMvc.perform(get("/api/v1/boats"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[?(@.code == '%s')]".formatted(code)).exists());
 	}
@@ -73,6 +73,6 @@ public class RegisterBoatSteps {
 		String body = """
 				{"code": "%s", "type": "%s", "homeDockId": "%s"}
 				""".formatted(code, type, dockId);
-		return mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body));
+		return mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body));
 	}
 }

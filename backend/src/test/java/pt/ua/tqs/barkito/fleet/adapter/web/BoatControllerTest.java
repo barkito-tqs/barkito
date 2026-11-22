@@ -49,9 +49,9 @@ class BoatControllerTest {
 		Boat boat = Boat.register("B-16", BoatType.STANDARD, DOCK);
 		when(boatService.register("B-16", BoatType.STANDARD, DOCK)).thenReturn(boat);
 
-		mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "STANDARD", DOCK)))
+		mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "STANDARD", DOCK)))
 				.andExpect(status().isCreated())
-				.andExpect(header().string("Location", "/api/boats/" + boat.id()))
+				.andExpect(header().string("Location", "/api/v1/boats/" + boat.id()))
 				.andExpect(jsonPath("$.code").value("B-16"))
 				.andExpect(jsonPath("$.type").value("STANDARD"))
 				.andExpect(jsonPath("$.state").value("INACTIVE"))
@@ -62,7 +62,7 @@ class BoatControllerTest {
 	void aDuplicateCodeIsRefusedWith409() throws Exception {
 		when(boatService.register("B-16", BoatType.XL, DOCK)).thenThrow(new DuplicateBoatCodeException("B-16"));
 
-		mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "XL", DOCK)))
+		mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "XL", DOCK)))
 				.andExpect(status().isConflict())
 				.andExpect(jsonPath("$.detail").value("A boat with code B-16 is already registered."));
 	}
@@ -71,20 +71,20 @@ class BoatControllerTest {
 	void aHomeDockThatDoesNotExistIsRefusedWith404() throws Exception {
 		when(boatService.register("B-16", BoatType.XL, DOCK)).thenThrow(new DockNotFoundException(DOCK));
 
-		mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "XL", DOCK)))
+		mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "XL", DOCK)))
 				.andExpect(status().isNotFound());
 	}
 
 	@Test
 	void aTypeOtherThanStandardOrXlIsRefusedWith400() throws Exception {
-		mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "KAYAK", DOCK)))
+		mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body("B-16", "KAYAK", DOCK)))
 				.andExpect(status().isBadRequest());
 		verifyNoInteractions(boatService);
 	}
 
 	@Test
 	void aBlankCodeIsRefusedWith400() throws Exception {
-		mockMvc.perform(post("/api/boats").contentType(MediaType.APPLICATION_JSON).content(body(" ", "XL", DOCK)))
+		mockMvc.perform(post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body(" ", "XL", DOCK)))
 				.andExpect(status().isBadRequest());
 		verifyNoInteractions(boatService);
 	}
@@ -93,7 +93,7 @@ class BoatControllerTest {
 	void theFleetListShowsRegisteredBoats() throws Exception {
 		when(boatService.findAll()).thenReturn(List.of(Boat.register("B-16", BoatType.XL, DOCK)));
 
-		mockMvc.perform(get("/api/boats"))
+		mockMvc.perform(get("/api/v1/boats"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(1)))
 				.andExpect(jsonPath("$[0].code").value("B-16"))
@@ -105,7 +105,7 @@ class BoatControllerTest {
 		UUID id = UUID.randomUUID();
 		when(boatService.findById(id)).thenReturn(Optional.empty());
 
-		mockMvc.perform(get("/api/boats/" + id)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/api/v1/boats/" + id)).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ class BoatControllerTest {
 		Boat boat = Boat.register("B-16", BoatType.XL, DOCK);
 		when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
 
-		mockMvc.perform(get("/api/boats/" + boat.id()))
+		mockMvc.perform(get("/api/v1/boats/" + boat.id()))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.code").value("B-16"));
 	}
