@@ -1,0 +1,28 @@
+package pt.ua.tqs.barkito.fleet.adapter.persistence;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.stereotype.Repository;
+
+import pt.ua.tqs.barkito.fleet.domain.DockRepository;
+import pt.ua.tqs.barkito.fleet.domain.Dock;
+
+@Repository
+public class InMemoryDockRepository implements DockRepository {
+
+	private final Map<UUID, Dock> docks = new ConcurrentHashMap<>();
+
+	@Override
+	public Dock save(Dock dock) {
+		docks.put(dock.id(), dock);
+		return dock;
+	}
+
+	@Override
+	public Optional<Dock> findById(UUID id) {
+		return Optional.ofNullable(docks.get(id));
+	}
+}
