@@ -1,4 +1,3 @@
-@wip
 @BRK-46
 Feature: Find available boats by dock and type
   As an end user, I want to see the boats available at each dock, by type,
