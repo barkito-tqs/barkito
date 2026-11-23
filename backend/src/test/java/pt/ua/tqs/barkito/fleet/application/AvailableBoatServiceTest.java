@@ -15,7 +15,7 @@ import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatState;
 import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
-import pt.ua.tqs.barkito.fleet.domain.Dock;
+import pt.ua.tqs.barkito.fleet.domain.TestDocks;
 
 class AvailableBoatServiceTest {
 
@@ -30,8 +30,8 @@ class AvailableBoatServiceTest {
 
   @BeforeEach
   void createDocks() {
-    oldMarket = docks.save(new Dock(UUID.randomUUID(), "Old Market")).id();
-    fishQuay = docks.save(new Dock(UUID.randomUUID(), "Fish Quay")).id();
+    oldMarket = docks.save(TestDocks.dock("Old Market")).id();
+    fishQuay = docks.save(TestDocks.dock("Fish Quay")).id();
   }
 
   @Test
