@@ -56,6 +56,20 @@ public class BoatService {
 		return boats.findByCode(normalisedCode).map(boat -> boats.save(boat.applyStatus(status)));
 	}
 
+	/** US-05: activates a boat (BR19). Synchronized with {@link #recordStatus} so no reading is lost. */
+	public synchronized Boat activate(UUID id) {
+		return boats.save(find(id).activate());
+	}
+
+	/** US-05: deactivates a boat (BR19). Synchronized with {@link #recordStatus} so no reading is lost. */
+	public synchronized Boat deactivate(UUID id) {
+		return boats.save(find(id).deactivate());
+	}
+
+	private Boat find(UUID id) {
+		return boats.findById(id).orElseThrow(() -> new BoatNotFoundException(id));
+	}
+
 	public Optional<Boat> findById(UUID id) {
 		return boats.findById(id);
 	}
