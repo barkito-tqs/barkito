@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Imports the backend test results into Xray as one Test Execution (PM5, QA Manual 2.3).
-#   1. Cucumber JSON: Xray creates or updates one Test per scenario and links it to the
-#      story through the feature tag (for example @BRK-42).
+#   1. Cucumber JSON: each scenario carries the key of its Cucumber Test (for example @BRK-170),
+#      created in Xray beforehand and linked to the story; Xray rejects scenarios without one.
 #   2. JUnit XML of the other tests is added to the same Test Execution as extra evidence.
 # Run from the backend folder after `mvn verify`. Needs XRAY_CLIENT_ID and XRAY_CLIENT_SECRET.
 set -euo pipefail
