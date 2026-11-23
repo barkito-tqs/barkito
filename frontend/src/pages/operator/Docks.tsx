@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ApiError, registerDock, useStore } from '../../api/store';
 import { CanalMap } from '../../components/CanalMap';
 import { Alert, Badge, Dialog, PageHead } from '../../components/ui';
-import { freeBerths } from '../../domain/rules';
+import { RULES, freeBerths } from '../../domain/rules';
 import type { BoatState } from '../../domain/types';
 
 export const NEEDS_ATTENTION: BoatState[] = [
@@ -175,7 +175,7 @@ function RegisterDockDialog({
               type="number"
               inputMode="numeric"
               min={1}
-              max={10}
+              max={RULES.maxBerthsPerDock}
               value={berths}
               onChange={(e) => setBerths(e.target.value)}
             />
