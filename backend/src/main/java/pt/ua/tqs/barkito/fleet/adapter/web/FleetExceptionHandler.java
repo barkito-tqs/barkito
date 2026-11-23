@@ -5,8 +5,10 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import pt.ua.tqs.barkito.fleet.application.BoatNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DuplicateBoatCodeException;
+import pt.ua.tqs.barkito.fleet.domain.BoatTransitionRefusedException;
 
 /** Maps fleet errors to RFC 9457 problem details. */
 @RestControllerAdvice(assignableTypes = BoatController.class)
@@ -20,5 +22,15 @@ public class FleetExceptionHandler {
 	@ExceptionHandler(DockNotFoundException.class)
 	ProblemDetail dockNotFound(DockNotFoundException e) {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+	}
+
+	@ExceptionHandler(BoatNotFoundException.class)
+	ProblemDetail boatNotFound(BoatNotFoundException e) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+	}
+
+	@ExceptionHandler(BoatTransitionRefusedException.class)
+	ProblemDetail transitionRefused(BoatTransitionRefusedException e) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, e.getMessage());
 	}
 }

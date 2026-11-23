@@ -48,6 +48,27 @@ public class BoatController {
 		return boatService.findAll().stream().map(BoatResponse::from).toList();
 	}
 
+	@Operation(summary = "Activate a boat",
+			description = "US-05: an INACTIVE boat moored in a berth and plugged in becomes CHARGING, "
+					+ "or AVAILABLE when its battery is already at 30 % or more (BR19, BR5).")
+	@ApiResponse(responseCode = "200", description = "The boat in its new state")
+	@ApiResponse(responseCode = "404", description = "No boat with this id")
+	@ApiResponse(responseCode = "409", description = "The boat is not INACTIVE, or not moored in a berth and plugged in")
+	@PostMapping("/{id}/activation")
+	public BoatResponse activate(@PathVariable UUID id) {
+		return BoatResponse.from(boatService.activate(id));
+	}
+
+	@Operation(summary = "Deactivate a boat",
+			description = "US-05: an AVAILABLE or CHARGING boat becomes INACTIVE and is hidden from users (BR19).")
+	@ApiResponse(responseCode = "200", description = "The boat, now INACTIVE")
+	@ApiResponse(responseCode = "404", description = "No boat with this id")
+	@ApiResponse(responseCode = "409", description = "The boat is reserved, on a trip or in another state")
+	@PostMapping("/{id}/deactivation")
+	public BoatResponse deactivate(@PathVariable UUID id) {
+		return BoatResponse.from(boatService.deactivate(id));
+	}
+
 	@Operation(summary = "Get a boat")
 	@ApiResponse(responseCode = "200", description = "The boat")
 	@ApiResponse(responseCode = "404", description = "No boat with this id")
