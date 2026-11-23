@@ -49,6 +49,35 @@ public final class Boat {
 		return new Boat(id, code, type, homeDockId, nextState(newStatus), newStatus);
 	}
 
+	/**
+	 * Lifecycle transition 2: the operator puts an INACTIVE boat into service. BR19: the latest reading must
+	 * show it moored in a berth and plugged in. The boat becomes CHARGING and, like every boat that arrives
+	 * plugged in, leaves for AVAILABLE as soon as its battery is at {@link #MIN_BOOKABLE_BATTERY_PERCENT}.
+	 */
+	public Boat activate() {
+		if (state != BoatState.INACTIVE) {
+			throw new BoatTransitionRefusedException(
+					"%s is %s; only an INACTIVE boat can be activated.".formatted(code, state));
+		}
+		if (status == null || status.berthId() == null || !status.pluggedIn()) {
+			throw new BoatTransitionRefusedException(
+					"%s must be moored in a berth and plugged in before it is activated.".formatted(code));
+		}
+		return new Boat(id, code, type, homeDockId, BoatState.CHARGING, status).applyStatus(status);
+	}
+
+	/**
+	 * Lifecycle transitions 3 and 4: the operator takes an AVAILABLE or CHARGING boat out of service. BR19: a
+	 * boat that is RESERVED or IN_USE belongs to a user and is not deactivated.
+	 */
+	public Boat deactivate() {
+		if (state != BoatState.AVAILABLE && state != BoatState.CHARGING) {
+			throw new BoatTransitionRefusedException(
+					"%s is %s; only an AVAILABLE or CHARGING boat can be deactivated.".formatted(code, state));
+		}
+		return new Boat(id, code, type, homeDockId, BoatState.INACTIVE, status);
+	}
+
 	private BoatState nextState(BoatStatus newStatus) {
 		boolean canFail = state == BoatState.AVAILABLE || state == BoatState.CHARGING;
 		if (canFail && newStatus.hasFault()) {
