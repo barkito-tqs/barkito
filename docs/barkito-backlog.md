@@ -1,6 +1,6 @@
-# Barkito: product backlog (proposal)
+# Barkito: product backlog
 
-Epics and user stories derived from the Product Specification report (v2026-11-17): the persona scenarios (2.2), the roadmap (2.3), the business rules (3.2) and the boat lifecycle (3.3). This is a proposal to be reviewed by the Product Owner before it goes into Jira.
+Epics and user stories derived from the Product Specification report (v2026-11-17): the persona scenarios (2.2), the roadmap (2.3), the business rules (3.2) and the boat lifecycle (3.3). The epics and stories are in Jira (project BRK); the Jira column and each story heading give the key to use in branches, commits and pull requests. Who implements each story is in [`plan.md`](plan.md).
 
 Conventions, following the QA Manual (2.2):
 
@@ -11,55 +11,55 @@ Conventions, following the QA Manual (2.2):
 
 ## Summary
 
-| ID | Epic | Story | Rules | Pts | It. |
-|---|---|---|---|---|---|
-| US-01 | Accounts and roles | Register and sign in | BR1 | 3 | I3 |
-| US-02 | Accounts and roles | Role-based areas | — | 2 | I2 |
-| US-03 | Fleet and docks | Register a boat | — | 2 | I2 |
-| US-04 | Fleet and docks | Register docks and berths | — | 2 | I2 |
-| US-05 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
-| US-06 | Fleet and docks | Retire a boat | — | 2 | I3 |
-| US-07 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
-| US-08 | Telemetry | Low-battery alerts during a trip | BR7, BR14 | 2 | I3 |
-| US-09 | Reservations and trips | Find available boats by dock and type | BR5, BR14 | 3 | I2 |
-| US-10 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8, BR9 | 3 | I3 |
-| US-11 | Reservations and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
-| US-12 | Reservations and trips | Unlock a boat with its QR code | BR1–BR6, BR8, BR13 | 3 | I3 |
-| US-13 | Reservations and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
-| US-14 | Reservations and trips | Abandoned boat ends the trip | BR15, BR20 | 3 | I4 |
-| US-15 | Reservations and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
-| US-38 | Reservations and trips | Report a problem with the boat | BR20 | 2 | I3 |
-| US-16 | Payments | Save a payment method | BR2 | 3 | I3 |
-| US-17 | Payments | Deposit held and settled | BR2, BR13 | 3 | I3 |
-| US-18 | Payments | Trip price | BR8, BR11 | 2 | I3 |
-| US-19 | Payments | Hold fee for cancelled or expired reservations | BR8 | 2 | I3 |
-| US-20 | Payments | Overtime | BR12 | 3 | I4 |
-| US-21 | Maintenance | Tickets opened and assigned automatically | BR17, BR18 | 3 | I3 |
-| US-22 | Maintenance | Technician works on own tickets | BR18, BR20 | 3 | I3 |
-| US-23 | Maintenance | Operator reassigns a ticket | BR17 | 1 | I3 |
-| US-24 | Maintenance | Overdue tickets alert the operator | BR18 | 2 | I4 |
-| US-25 | Maintenance | Towing and recovery | BR16, BR17, BR18, BR20 | 3 | I4 |
-| US-39 | Maintenance | Assign Field Technicians to docks | BR17 | 2 | I3 |
-| US-26 | Client backoffice | Set the rules of use | BR1, BR6, BR8, BR12 | 3 | I4 |
-| US-27 | Client backoffice | Set berths in service per dock | BR14 | 2 | I4 |
-| US-28 | Client backoffice | Set SLA deadlines | BR18 | 2 | I4 |
-| US-29 | Dashboards and KPIs | User dashboard | BR11, BR12 | 3 | I4 |
-| US-30 | Dashboards and KPIs | Operator dashboard | — | 3 | I4 |
-| US-31 | Dashboards and KPIs | Client business KPIs | — | 3 | I4 |
-| US-32 | Dashboards and KPIs | Client technical metrics | — | 3 | I4 |
-| US-33 | Extensions | Earn points for plugging the boat in | BR25 | 2 | I5 |
-| US-34 | Extensions | Exchange points for rewards | BR24, BR26 | 2 | I5 |
-| US-35 | Extensions | New-customer promotion | BR21, BR23, BR24 | 3 | I5 |
-| US-36 | Extensions | Seasonal campaign | BR22, BR23, BR24 | 3 | I5 |
-| US-37 | Extensions | Public GBFS feed | — | 3 | I5 |
+| ID | Jira | Epic | Story | Rules | Pts | It. |
+|---|---|---|---|---|---|---|
+| US-01 | BRK-47 | Accounts and roles | Register and sign in | BR1 | 3 | I3 |
+| US-02 | BRK-41 | Accounts and roles | Role-based areas | — | 2 | I2 |
+| US-03 | BRK-42 | Fleet and docks | Register a boat | — | 2 | I2 |
+| US-04 | BRK-43 | Fleet and docks | Register docks and berths | — | 2 | I2 |
+| US-05 | BRK-44 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
+| US-06 | BRK-48 | Fleet and docks | Retire a boat | — | 2 | I3 |
+| US-07 | BRK-45 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
+| US-08 | BRK-49 | Telemetry | Low-battery alerts during a trip | BR7, BR14 | 2 | I3 |
+| US-09 | BRK-46 | Reservations and trips | Find available boats by dock and type | BR5, BR14 | 3 | I2 |
+| US-10 | BRK-50 | Reservations and trips | Reserve a boat | BR1–BR3, BR5, BR6, BR8, BR9 | 3 | I3 |
+| US-11 | BRK-51 | Reservations and trips | Cancel or expire a reservation | BR8, BR9, BR10 | 3 | I3 |
+| US-12 | BRK-52 | Reservations and trips | Unlock a boat with its QR code | BR1–BR6, BR8, BR13 | 3 | I3 |
+| US-13 | BRK-53 | Reservations and trips | End a trip at a dock | BR6, BR14, BR20 | 3 | I3 |
+| US-14 | BRK-63 | Reservations and trips | Abandoned boat ends the trip | BR15, BR20 | 3 | I4 |
+| US-15 | BRK-64 | Reservations and trips | Empty battery or fault ends the trip | BR16 | 2 | I4 |
+| US-38 | BRK-61 | Reservations and trips | Report a problem with the boat | BR20 | 2 | I3 |
+| US-16 | BRK-54 | Payments | Save a payment method | BR2 | 3 | I3 |
+| US-17 | BRK-55 | Payments | Deposit held and settled | BR2, BR13 | 3 | I3 |
+| US-18 | BRK-56 | Payments | Trip price | BR8, BR11 | 2 | I3 |
+| US-19 | BRK-57 | Payments | Hold fee for cancelled or expired reservations | BR8 | 2 | I3 |
+| US-20 | BRK-65 | Payments | Overtime | BR12 | 3 | I4 |
+| US-21 | BRK-58 | Maintenance | Tickets opened and assigned automatically | BR17, BR18 | 3 | I3 |
+| US-22 | BRK-59 | Maintenance | Technician works on own tickets | BR18, BR20 | 3 | I3 |
+| US-23 | BRK-60 | Maintenance | Operator reassigns a ticket | BR17 | 1 | I3 |
+| US-24 | BRK-66 | Maintenance | Overdue tickets alert the operator | BR18 | 2 | I4 |
+| US-25 | BRK-67 | Maintenance | Towing and recovery | BR16, BR17, BR18, BR20 | 3 | I4 |
+| US-39 | BRK-62 | Maintenance | Assign Field Technicians to docks | BR17 | 2 | I3 |
+| US-26 | BRK-68 | Client backoffice | Set the rules of use | BR1, BR6, BR8, BR12 | 3 | I4 |
+| US-27 | BRK-69 | Client backoffice | Set berths in service per dock | BR14 | 2 | I4 |
+| US-28 | BRK-70 | Client backoffice | Set SLA deadlines | BR18 | 2 | I4 |
+| US-29 | BRK-71 | Dashboards and KPIs | User dashboard | BR11, BR12 | 3 | I4 |
+| US-30 | BRK-72 | Dashboards and KPIs | Operator dashboard | — | 3 | I4 |
+| US-31 | BRK-73 | Dashboards and KPIs | Client business KPIs | — | 3 | I4 |
+| US-32 | BRK-74 | Dashboards and KPIs | Client technical metrics | — | 3 | I4 |
+| US-33 | BRK-75 | Extensions | Earn points for plugging the boat in | BR25 | 2 | I5 |
+| US-34 | BRK-76 | Extensions | Exchange points for rewards | BR24, BR26 | 2 | I5 |
+| US-35 | BRK-77 | Extensions | New-customer promotion | BR21, BR23, BR24 | 3 | I5 |
+| US-36 | BRK-78 | Extensions | Seasonal campaign | BR22, BR23, BR24 | 3 | I5 |
+| US-37 | BRK-79 | Extensions | Public GBFS feed | — | 3 | I5 |
 
 Iteration 2 total: 6 stories, 15 points.
 
 ---
 
-## Epic: Accounts and roles
+## Epic: Accounts and roles (BRK-32)
 
-### US-01 Register and sign in
+### US-01 Register and sign in (BRK-47)
 **As an** end user, **I want** to create an account and sign in, **so that** I can reserve and unlock boats.
 
 - Sign-up and sign-in go through the identity provider (OpenID Connect); on first sign-in, Barkito creates a local profile with name, email and date of birth.
@@ -69,7 +69,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-02 Role-based areas
+### US-02 Role-based areas (BRK-41)
 **As a** user with a role, **I want** to see only the area of my role, **so that** each actor can do only what they are allowed to.
 
 - The roles are end user, operator, technician, client manager and admin, as set in the identity provider.
@@ -78,9 +78,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I2
 
-## Epic: Fleet and docks
+## Epic: Fleet and docks (BRK-33)
 
-### US-03 Register a boat (reference story)
+### US-03 Register a boat (reference story) (BRK-42)
 **As an** operator, **I want** to register a boat with its code, type and home dock, **so that** it joins the fleet.
 
 - The type is Standard or XL.
@@ -90,7 +90,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I2
 
-### US-04 Register docks and berths
+### US-04 Register docks and berths (BRK-43)
 **As an** operator, **I want** to register a dock with its location and berths, **so that** boats have places where trips start and end.
 
 - A dock has a name, a location and at least one berth.
@@ -98,7 +98,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I2
 
-### US-05 Activate and deactivate a boat
+### US-05 Activate and deactivate a boat (BRK-44)
 **As an** operator, **I want** to activate and deactivate a boat, **so that** I control which boats are in service.
 
 - An INACTIVE boat can be activated only when telemetry reports it moored in a berth and plugged in; otherwise activation is refused with 409 (BR19).
@@ -109,7 +109,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I2
 
-### US-06 Retire a boat
+### US-06 Retire a boat (BRK-48)
 **As an** operator, **I want** to retire a boat with a reason, **so that** boats that are lost or beyond repair leave the fleet for good.
 
 - A boat can be retired from INACTIVE, REPAIR_REQUIRED (irreparable), TOW_REQUIRED (lost or sunk) or RETURN_REQUIRED (lost or stolen); from any other state the request is refused.
@@ -118,9 +118,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-## Epic: Telemetry and fleet simulator
+## Epic: Telemetry and fleet simulator (BRK-34)
 
-### US-07 Boat state updated from telemetry
+### US-07 Boat state updated from telemetry (BRK-45)
 **As an** operator, **I want** each boat's battery, position, charging state and faults to be updated from telemetry, **so that** the fleet state in Barkito matches the real boats.
 
 - Readings arrive through the TelemetrySource port and are validated against the shared JSON Schema; invalid readings are rejected and logged.
@@ -131,7 +131,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I2
 
-### US-08 Low-battery alerts during a trip
+### US-08 Low-battery alerts during a trip (BRK-49)
 **As an** end user and as an operator, **I want** to be warned when a boat's battery runs low during a trip, **so that** the user can return to the nearest dock in time and the operator can act.
 
 - At 20 % or less the user is warned; at 21 % there is no warning (BR7).
@@ -141,9 +141,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-## Epic: Reservations and trips
+## Epic: Reservations and trips (BRK-35)
 
-### US-09 Find available boats by dock and type (specification-driven, AI4)
+### US-09 Find available boats by dock and type (specification-driven, AI4) (BRK-46)
 **As an** end user, **I want** to see the boats available at each dock, by type, **so that** I know where to go before I walk to a dock.
 
 - The list can be filtered by dock and by type (Standard or XL).
@@ -155,7 +155,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I2
 
-### US-10 Reserve a boat
+### US-10 Reserve a boat (BRK-50)
 **As an** end user, **I want** to reserve a boat for up to 15 minutes, **so that** it is still there when I reach the dock.
 
 - Minimum age: Standard 17 refused / 18 accepted; XL 20 refused / 21 accepted (BR1).
@@ -169,7 +169,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-11 Cancel or expire a reservation
+### US-11 Cancel or expire a reservation (BRK-51)
 **As an** end user, **I want** to cancel a reservation I no longer need, **so that** I pay only for the minutes the boat was held.
 
 - On cancellation, the user pays the started minutes of hold: Standard 0.25 €/min, XL 0.50 €/min (BR8).
@@ -180,7 +180,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-12 Unlock a boat with its QR code
+### US-12 Unlock a boat with its QR code (BRK-52)
 **As an** end user, **I want** to unlock a boat, reserved or not, by scanning its QR code or typing the code printed below it, **so that** I can start my trip at the boat.
 
 - Each boat carries a QR code with its unlock code printed below it. The user unlocks the boat by scanning the QR code in the app; a user without a camera can type the code instead, with the same result.
@@ -195,7 +195,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-13 End a trip at a dock
+### US-13 End a trip at a dock (BRK-53)
 **As an** end user, **I want** to end my trip at any dock with a free berth, **so that** I stop paying and leave the boat where others can use it.
 
 - A trip ends only when telemetry reports the boat moored in a free berth in service; otherwise the request is refused with 409 and the app shows the nearest dock with a free berth (BR14).
@@ -206,7 +206,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-14 Abandoned boat ends the trip
+### US-14 Abandoned boat ends the trip (BRK-63)
 **As an** operator, **I want** a boat left stationary during a trip to be treated as abandoned, **so that** the user stops being charged and the boat can be recovered.
 
 - After 5 minutes stationary, the user is warned (BR15).
@@ -216,7 +216,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-15 Empty battery or fault ends the trip
+### US-15 Empty battery or fault ends the trip (BRK-64)
 **As an** end user, **I want** my trip to end when the boat runs out of battery or breaks down on the canal, **so that** I am not charged for time I cannot use the boat.
 
 - When the battery reaches 0 % or a fault immobilises the boat outside a dock, the trip ends at that moment and is charged until then, with no towing fee (BR16).
@@ -225,7 +225,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I4
 
-### US-38 Report a problem with the boat
+### US-38 Report a problem with the boat (BRK-61)
 **As an** end user, **I want** to report a problem with the boat when I end my trip, **so that** the next user does not get a broken boat.
 
 - When ending a trip, the user can report a problem with a category (engine, hull, battery or other) and an optional note.
@@ -234,9 +234,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-## Epic: Payments
+## Epic: Payments (BRK-36)
 
-### US-16 Save a payment method
+### US-16 Save a payment method (BRK-54)
 **As an** end user, **I want** to save a card in my account, **so that** I can reserve and unlock boats without typing it every time.
 
 - The backend creates a setup intent and the web UI confirms it with Stripe.js; card details never reach the backend.
@@ -245,7 +245,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-17 Deposit held and settled
+### US-17 Deposit held and settled (BRK-55)
 **As an** operator, **I want** a deposit to be held on the user's card during each trip, **so that** the trip is paid even if something goes wrong.
 
 - On unlock, a deposit is authorised with manual capture: Standard 30 €, XL 60 € (BR13).
@@ -255,7 +255,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-18 Trip price
+### US-18 Trip price (BRK-56)
 **As an** end user, **I want** to pay an unlock fee plus a price per started minute, **so that** the price matches how long I used the boat.
 
 - Price = unlock fee + price per started minute: Standard 1 € + 0.50 €/min; XL 2 € + 1.00 €/min (BR11).
@@ -264,7 +264,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-### US-19 Hold fee for cancelled or expired reservations
+### US-19 Hold fee for cancelled or expired reservations (BRK-57)
 **As an** operator, **I want** the hold fee of cancelled and expired reservations to be charged to the saved payment method, **so that** holding a boat is paid even when no trip follows.
 
 - The fee from US-11 is charged off-session to the saved payment method, since no deposit exists yet (BR8).
@@ -272,7 +272,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-### US-20 Overtime
+### US-20 Overtime (BRK-65)
 **As an** end user, **I want** to be warned before my trip reaches the maximum duration, **so that** I can avoid paying overtime.
 
 - The maximum trip duration is 90 minutes by default, set by the municipality (BR12).
@@ -282,9 +282,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-## Epic: Maintenance
+## Epic: Maintenance (BRK-37)
 
-### US-21 Tickets opened and assigned automatically
+### US-21 Tickets opened and assigned automatically (BRK-58)
 **As an** operator, **I want** a ticket to be opened and assigned automatically whenever a boat needs a technician, **so that** every problem has an owner and a deadline.
 
 - A ticket of type CHARGE, REPAIR, TOW or RETURN is opened when a boat enters CHARGE_REQUIRED, REPAIR_REQUIRED, TOW_REQUIRED or RETURN_REQUIRED.
@@ -293,7 +293,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-22 Technician works on own tickets
+### US-22 Technician works on own tickets (BRK-59)
 **As a** Field Technician, **I want** to see my tickets ordered by SLA deadline and record what I did, **so that** I handle the most urgent problems first without going back to an office.
 
 - A technician sees only the tickets assigned to them, ordered by SLA deadline.
@@ -303,7 +303,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I3
 
-### US-23 Operator reassigns a ticket
+### US-23 Operator reassigns a ticket (BRK-60)
 **As an** operator, **I want** to reassign a ticket to another technician, **so that** work continues when the assigned technician is unavailable.
 
 - The operator can reassign any open ticket to another technician (BR17).
@@ -311,7 +311,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 1 · **Iteration:** I3
 
-### US-24 Overdue tickets alert the operator
+### US-24 Overdue tickets alert the operator (BRK-66)
 **As an** operator, **I want** to be alerted when a ticket misses its SLA deadline, **so that** I can act before the SLA with the municipality is broken.
 
 - SLA deadlines: TOW on site in 30 min and closed in 2 h; CHARGE 2 h; RETURN 4 h; REPAIR 24 h (BR18).
@@ -320,7 +320,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I4
 
-### US-25 Towing and recovery
+### US-25 Towing and recovery (BRK-67)
 **As a** Field Technician, **I want** to record that I towed or brought back a boat left on the canal, **so that** it returns to service or goes to repair.
 
 - Once a towed boat (TOW_REQUIRED) or a boat brought back (RETURN_REQUIRED) is moored at a dock, its state follows BR20: a fault gives REPAIR_REQUIRED; otherwise CHARGING, AVAILABLE or CHARGE_REQUIRED depending on the charger and the battery.
@@ -329,7 +329,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-39 Assign Field Technicians to docks
+### US-39 Assign Field Technicians to docks (BRK-62)
 **As an** operator, **I want** to assign each Field Technician to the docks they cover, **so that** tickets can be assigned automatically (US-21).
 
 - A technician covers one or more docks; a dock may have no technician of its own (BR17).
@@ -339,9 +339,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I3
 
-## Epic: Client backoffice
+## Epic: Client backoffice (BRK-38)
 
-### US-26 Set the rules of use
+### US-26 Set the rules of use (BRK-68)
 **As a** client manager, **I want** to set the maximum trip duration, the operating hours and the minimum age per boat type, **so that** the service follows the city's rules.
 
 - The client manager can change the maximum duration (default 90 min), the operating hours (default 08:00–22:00) and the minimum age per type (default Standard 18, XL 21) (BR1, BR6, BR12).
@@ -350,7 +350,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-27 Set berths in service per dock
+### US-27 Set berths in service per dock (BRK-69)
 **As a** client manager, **I want** to set how many berths are in service at each dock, **so that** crowded docks do not fill up.
 
 - The berths in service cannot exceed the dock's physical berths.
@@ -358,7 +358,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I4
 
-### US-28 Set SLA deadlines
+### US-28 Set SLA deadlines (BRK-70)
 **As a** client manager, **I want** to set the SLA deadline for each ticket type, **so that** the operator works to the service levels agreed in the contract.
 
 - The deadline of each ticket type (TOW, CHARGE, RETURN, REPAIR) can be changed (BR18).
@@ -366,9 +366,9 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I4
 
-## Epic: Dashboards and KPIs
+## Epic: Dashboards and KPIs (BRK-39)
 
-### US-29 User dashboard
+### US-29 User dashboard (BRK-71)
 **As an** end user, **I want** to see my active and past trips with their charges, **so that** I know what I paid and why.
 
 - The dashboard shows the active trip, if any, with its running time.
@@ -376,7 +376,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-30 Operator dashboard
+### US-30 Operator dashboard (BRK-72)
 **As an** operator, **I want** to see the state of the fleet and the open tickets at a glance, **so that** I can plan the day's work.
 
 - Boats are shown by state and by dock.
@@ -385,7 +385,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-31 Client business KPIs
+### US-31 Client business KPIs (BRK-73)
 **As a** client manager, **I want** to see the business KPIs of the service, **so that** I can report to the city council with evidence.
 
 - The KPIs are utilisation, availability against the SLA, trips per day and time to repair, for a chosen period.
@@ -393,16 +393,16 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I4
 
-### US-32 Client technical metrics
+### US-32 Client technical metrics (BRK-74)
 **As a** client manager, **I want** to see the platform's technical metrics, **so that** I can check that the service is reliable.
 
 - The metrics are API latency, error rate and telemetry lag, read from the metrics store through the MetricsSource port.
 
 **Points:** 3 · **Iteration:** I4
 
-## Epic: Extensions (only after the MVP core is accepted)
+## Epic: Extensions (only after the MVP core is accepted) (BRK-40)
 
-### US-33 Earn points for plugging the boat in
+### US-33 Earn points for plugging the boat in (BRK-75)
 **As an** end user, **I want** to earn points when I plug the boat in at the end of a trip, **so that** I am rewarded for helping charge the fleet.
 
 - Standard 1 point/min, XL 2 points/min (BR25).
@@ -410,7 +410,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I5
 
-### US-34 Exchange points for rewards
+### US-34 Exchange points for rewards (BRK-76)
 **As an** end user, **I want** to exchange my points for a free unlock or free minutes, **so that** my points have value.
 
 - Free unlock: Standard 20 points, XL 40 points; 10 free minutes: Standard 100 points, XL 200 points (BR26).
@@ -419,7 +419,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 2 · **Iteration:** I5
 
-### US-35 New-customer promotion
+### US-35 New-customer promotion (BRK-77)
 **As an** operator, **I want** new customers to get a discount on their first trips, **so that** they try the service.
 
 - 10 % off the first completed trip within 30 days of sign-up: day 30 accepted / day 31 refused (BR21).
@@ -428,7 +428,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I5
 
-### US-36 Seasonal campaign
+### US-36 Seasonal campaign (BRK-78)
 **As an** operator, **I want** to run a seasonal campaign for long-standing customers, **so that** they keep using the service.
 
 - The operator creates the campaign with a name, a discount percentage and a start and end date; outside that period it is not applied (BR22).
@@ -438,7 +438,7 @@ Iteration 2 total: 6 stories, 15 points.
 
 **Points:** 3 · **Iteration:** I5
 
-### US-37 Public GBFS feed
+### US-37 Public GBFS feed (BRK-79)
 **As an** open-data consumer, **I want** a public GBFS feed of the fleet, **so that** other apps can show Barkito boats.
 
 - The feed follows GBFS v3.0 and is validated against the official JSON schema (contract test, practice T9).
