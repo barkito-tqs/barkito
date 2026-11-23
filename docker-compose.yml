@@ -3,6 +3,9 @@ name: barkito
 services:
   backend:
     build: ./backend
+    # No profile is set, so the backend runs the default "dev" profile, which accepts
+    # tokens signed with the dev secret committed in the repository. Fine on a laptop;
+    # a deployed environment must set SPRING_PROFILES_ACTIVE to a non-dev profile.
     ports:
       - "8080:8080"
     restart: unless-stopped
