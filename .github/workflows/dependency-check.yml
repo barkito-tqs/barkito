@@ -41,8 +41,10 @@ jobs:
           java-version: "21"
           cache: maven
 
-      - name: Cache the vulnerability database
-        uses: actions/cache@v4
+      # Restore and save are separate steps so the database is kept even when the check fails,
+      # which is when it is needed most; otherwise every run downloads it again.
+      - name: Restore the vulnerability database
+        uses: actions/cache/restore@v4
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
           key: dependency-check-${{ runner.os }}-${{ github.run_id }}
@@ -54,6 +56,13 @@ jobs:
 
       - name: Run Dependency-Check
         run: ./mvnw --batch-mode org.owasp:dependency-check-maven:check
+
+      - name: Save the vulnerability database
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.m2/repository/org/owasp/dependency-check-data
+          key: dependency-check-${{ runner.os }}-${{ github.run_id }}
 
       - name: Upload the report
         if: always()
