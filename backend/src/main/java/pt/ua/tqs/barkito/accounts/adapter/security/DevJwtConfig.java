@@ -2,6 +2,8 @@ package pt.ua.tqs.barkito.accounts.adapter.security;
 
 import java.nio.charset.StandardCharsets;
 import javax.crypto.spec.SecretKeySpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Profile("dev")
 class DevJwtConfig {
 
+  private static final Logger LOG = LoggerFactory.getLogger(DevJwtConfig.class);
+
   /** HS256 needs a key of at least 256 bits. */
   static final int MIN_SECRET_BYTES = 32;
 
@@ -30,6 +34,9 @@ class DevJwtConfig {
       throw new IllegalStateException(
           "barkito.dev.jwt-secret must be at least " + MIN_SECRET_BYTES + " bytes");
     }
+    LOG.warn(
+        "Dev JWT decoder active: tokens signed with the committed dev secret are accepted. "
+            + "Never use the dev profile in a deployed environment.");
     return NimbusJwtDecoder.withSecretKey(new SecretKeySpec(key, HMAC_SHA256))
         .macAlgorithm(MacAlgorithm.HS256)
         .build();

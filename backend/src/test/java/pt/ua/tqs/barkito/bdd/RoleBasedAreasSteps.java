@@ -51,7 +51,8 @@ public class RoleBasedAreasSteps {
   @Then("the request is let through")
   public void theRequestIsLetThrough() {
     assertThat(response.getResponse().getStatus())
-        .isNotIn(HttpStatus.UNAUTHORIZED.value(), HttpStatus.FORBIDDEN.value());
+        .isNotIn(HttpStatus.UNAUTHORIZED.value(), HttpStatus.FORBIDDEN.value())
+        .isLessThan(HttpStatus.INTERNAL_SERVER_ERROR.value());
   }
 
   @Then("the request is refused with the status {int}")

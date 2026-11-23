@@ -95,7 +95,9 @@ class EndpointAuthorizationTest {
         mockMvc.perform(endpoint.toRequest().with(as(role))).andReturn().getResponse().getStatus();
 
     if (role == endpoint.allowed()) {
-      assertThat(status).isNotIn(HttpStatus.UNAUTHORIZED.value(), HttpStatus.FORBIDDEN.value());
+      assertThat(status)
+          .isNotIn(HttpStatus.UNAUTHORIZED.value(), HttpStatus.FORBIDDEN.value())
+          .isLessThan(HttpStatus.INTERNAL_SERVER_ERROR.value());
     } else {
       assertThat(status).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
