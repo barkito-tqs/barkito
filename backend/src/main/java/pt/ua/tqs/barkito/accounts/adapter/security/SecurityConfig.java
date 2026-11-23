@@ -38,6 +38,9 @@ class SecurityConfig {
                     .hasRole(Role.OPERATOR.name())
                     .requestMatchers(HttpMethod.GET, "/api/v1/docks/*/boats")
                     .hasRole(Role.END_USER.name())
+                    // US-04: registering and reading docks; after the end-user rule above
+                    .requestMatchers("/api/v1/docks/**")
+                    .hasRole(Role.OPERATOR.name())
                     .anyRequest()
                     .denyAll())
         .oauth2ResourceServer(

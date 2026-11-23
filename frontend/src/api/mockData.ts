@@ -1,3 +1,4 @@
+import { toMapPoint } from '../domain/geo';
 import type { Boat, Dock, Technician, Ticket, Trip, User } from '../domain/types';
 
 /** Seed data for the mock API, based on the personas and scenarios of the Product Specification (2.2). */
@@ -50,58 +51,66 @@ export const USERS: User[] = [
   },
 ];
 
+/** The ids of the seed docks, the same as the backend's dev seed (DevDockSeeder). */
+export const DOCK_IDS = {
+  market: 'd0c0a000-0000-4000-8000-000000000001',
+  waterfront: 'd0c0a000-0000-4000-8000-000000000002',
+  salt: 'd0c0a000-0000-4000-8000-000000000003',
+  station: 'd0c0a000-0000-4000-8000-000000000004',
+  university: 'd0c0a000-0000-4000-8000-000000000005',
+  arts: 'd0c0a000-0000-4000-8000-000000000006',
+} as const;
+
+function onMap(latitude: number, longitude: number) {
+  return { latitude, longitude, ...toMapPoint(latitude, longitude) };
+}
+
 export const DOCKS: Dock[] = [
   {
-    id: 'd-market',
+    id: DOCK_IDS.market,
     name: 'Old Market',
     district: 'Mercado',
-    x: 190,
-    y: 250,
+    ...onMap(40.641817, -8.66465),
     berths: 6,
     berthsInService: 6,
   },
   {
-    id: 'd-waterfront',
+    id: DOCK_IDS.waterfront,
     name: 'Waterfront',
     district: 'Marginal',
-    x: 820,
-    y: 470,
+    ...onMap(40.636023, -8.6426),
     berths: 8,
     berthsInService: 8,
   },
   {
-    id: 'd-salt',
+    id: DOCK_IDS.salt,
     name: 'Salt Quay',
     district: 'Salinas',
-    x: 470,
-    y: 120,
+    ...onMap(40.64524, -8.65485),
     berths: 4,
     berthsInService: 4,
   },
   {
-    id: 'd-station',
+    id: DOCK_IDS.station,
     name: 'Station',
     district: 'Estação',
-    x: 520,
-    y: 360,
+    ...onMap(40.63892, -8.6531),
     berths: 6,
     berthsInService: 5,
   },
   {
-    id: 'd-university',
+    id: DOCK_IDS.university,
     name: 'University',
     district: 'Campus',
-    x: 860,
-    y: 170,
+    ...onMap(40.643923, -8.6412),
     berths: 4,
     berthsInService: 4,
   },
   {
-    id: 'd-arts',
+    id: DOCK_IDS.arts,
     name: 'Arts District',
     district: 'Ribeira',
-    x: 300,
-    y: 500,
+    ...onMap(40.635233, -8.6608),
     berths: 4,
     berthsInService: 3,
   },
@@ -132,26 +141,34 @@ function boat(
 }
 
 export const BOATS: Boat[] = [
-  boat('B-01', 'STANDARD', 'AVAILABLE', 86, 'd-market', 1, '482915'),
-  boat('B-02', 'STANDARD', 'CHARGING', 24, 'd-market', 2, '730264'),
-  boat('B-03', 'STANDARD', 'REPAIR_REQUIRED', 64, 'd-market', 3, '115873'),
-  boat('B-04', 'XL', 'AVAILABLE', 72, 'd-waterfront', 1, '904417'),
-  boat('B-05', 'STANDARD', 'AVAILABLE', 55, 'd-waterfront', 2, '263508'),
-  boat('B-06', 'STANDARD', 'AVAILABLE', 31, 'd-waterfront', 3, '598146'),
-  boat('B-07', 'STANDARD', 'REPAIR_REQUIRED', 70, 'd-station', 1, '371925'),
-  boat('B-08', 'XL', 'AVAILABLE', 93, 'd-station', 2, '846203', true),
-  boat('B-09', 'STANDARD', 'AVAILABLE', 29, 'd-salt', 1, '627491', false),
-  boat('B-10', 'STANDARD', 'AVAILABLE', 64, 'd-university', 1, '159372'),
-  boat('B-11', 'XL', 'AVAILABLE', 48, 'd-university', 2, '408836'),
-  boat('B-12', 'STANDARD', 'CHARGE_REQUIRED', 18, 'd-waterfront', 4, '782640', false),
-  boat('B-14', 'STANDARD', 'INACTIVE', 100, 'd-arts', 1, '336019'),
-  boat('B-15', 'XL', 'AVAILABLE', 77, 'd-arts', 2, '917552'),
+  boat('B-01', 'STANDARD', 'AVAILABLE', 86, DOCK_IDS.market, 1, '482915'),
+  boat('B-02', 'STANDARD', 'CHARGING', 24, DOCK_IDS.market, 2, '730264'),
+  boat('B-03', 'STANDARD', 'REPAIR_REQUIRED', 64, DOCK_IDS.market, 3, '115873'),
+  boat('B-04', 'XL', 'AVAILABLE', 72, DOCK_IDS.waterfront, 1, '904417'),
+  boat('B-05', 'STANDARD', 'AVAILABLE', 55, DOCK_IDS.waterfront, 2, '263508'),
+  boat('B-06', 'STANDARD', 'AVAILABLE', 31, DOCK_IDS.waterfront, 3, '598146'),
+  boat('B-07', 'STANDARD', 'REPAIR_REQUIRED', 70, DOCK_IDS.station, 1, '371925'),
+  boat('B-08', 'XL', 'AVAILABLE', 93, DOCK_IDS.station, 2, '846203', true),
+  boat('B-09', 'STANDARD', 'AVAILABLE', 29, DOCK_IDS.salt, 1, '627491', false),
+  boat('B-10', 'STANDARD', 'AVAILABLE', 64, DOCK_IDS.university, 1, '159372'),
+  boat('B-11', 'XL', 'AVAILABLE', 48, DOCK_IDS.university, 2, '408836'),
+  boat('B-12', 'STANDARD', 'CHARGE_REQUIRED', 18, DOCK_IDS.waterfront, 4, '782640', false),
+  boat('B-14', 'STANDARD', 'INACTIVE', 100, DOCK_IDS.arts, 1, '336019'),
+  boat('B-15', 'XL', 'AVAILABLE', 77, DOCK_IDS.arts, 2, '917552'),
   boat('B-21', 'STANDARD', 'TOW_REQUIRED', 0, null, null, '245781', false),
 ];
 
 export const TECHNICIANS: Technician[] = [
-  { id: 't-tiago', name: 'Tiago Ferreira', dockIds: ['d-market', 'd-waterfront', 'd-arts'] },
-  { id: 't-rui', name: 'Rui Matos', dockIds: ['d-station', 'd-salt', 'd-university'] },
+  {
+    id: 't-tiago',
+    name: 'Tiago Ferreira',
+    dockIds: [DOCK_IDS.market, DOCK_IDS.waterfront, DOCK_IDS.arts],
+  },
+  {
+    id: 't-rui',
+    name: 'Rui Matos',
+    dockIds: [DOCK_IDS.station, DOCK_IDS.salt, DOCK_IDS.university],
+  },
 ];
 
 const HOUR = 60 * 60 * 1000;
@@ -212,8 +229,8 @@ export function seedTrips(now: number): Trip[] {
       endedAt: now - 2 * day + 31 * 60_000,
       passengers: 1,
       holdSeconds: 6 * 60,
-      fromDockId: 'd-market',
-      toDockId: 'd-station',
+      fromDockId: DOCK_IDS.market,
+      toDockId: DOCK_IDS.station,
       totalCents: 100 + 31 * 50 + 150,
     },
     {
@@ -224,8 +241,8 @@ export function seedTrips(now: number): Trip[] {
       endedAt: now - 6 * day + 100 * 60_000,
       passengers: 4,
       holdSeconds: 0,
-      fromDockId: 'd-waterfront',
-      toDockId: 'd-arts',
+      fromDockId: DOCK_IDS.waterfront,
+      toDockId: DOCK_IDS.arts,
       totalCents: 200 + 90 * 100 + 10 * 150,
     },
   ];

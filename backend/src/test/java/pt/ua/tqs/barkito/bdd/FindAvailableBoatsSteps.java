@@ -26,6 +26,7 @@ import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 import pt.ua.tqs.barkito.fleet.domain.Dock;
 import pt.ua.tqs.barkito.fleet.domain.DockRepository;
+import pt.ua.tqs.barkito.fleet.domain.TestDocks;
 
 /**
  * Steps of find_available_boats.feature (US-09). Boats are placed straight in the repositories,
@@ -51,7 +52,7 @@ public class FindAvailableBoatsSteps {
   @Given("the docks {string} and {string} exist")
   public void theDocksExist(String first, String second) {
     for (String name : new String[] {first, second}) {
-      Dock dock = docks.save(new Dock(UUID.randomUUID(), name));
+      Dock dock = docks.save(TestDocks.dock(name));
       dockIds.put(name, dock.id());
     }
   }

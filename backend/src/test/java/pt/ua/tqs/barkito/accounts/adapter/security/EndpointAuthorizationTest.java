@@ -31,8 +31,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.adapter.web.AvailableBoatController;
 import pt.ua.tqs.barkito.fleet.adapter.web.BoatController;
+import pt.ua.tqs.barkito.fleet.adapter.web.DockController;
 import pt.ua.tqs.barkito.fleet.application.AvailableBoatService;
 import pt.ua.tqs.barkito.fleet.application.BoatService;
+import pt.ua.tqs.barkito.fleet.application.DockService;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 
@@ -40,7 +42,7 @@ import pt.ua.tqs.barkito.fleet.domain.BoatType;
  * The authorization matrix (US-02): every endpoint lets in only its role. Add a row to {@link
  * #ENDPOINTS} for every new endpoint.
  */
-@WebMvcTest({BoatController.class, AvailableBoatController.class})
+@WebMvcTest({BoatController.class, AvailableBoatController.class, DockController.class})
 @Import(SecuredWebMvcTestConfig.class)
 class EndpointAuthorizationTest {
 
@@ -53,6 +55,9 @@ class EndpointAuthorizationTest {
     new Endpoint(HttpMethod.POST, "/api/v1/boats/" + ID + "/activation", Role.OPERATOR),
     new Endpoint(HttpMethod.POST, "/api/v1/boats/" + ID + "/deactivation", Role.OPERATOR),
     new Endpoint(HttpMethod.GET, "/api/v1/docks/" + ID + "/boats", Role.END_USER),
+    new Endpoint(HttpMethod.GET, "/api/v1/docks", Role.OPERATOR),
+    new Endpoint(HttpMethod.POST, "/api/v1/docks", Role.OPERATOR),
+    new Endpoint(HttpMethod.GET, "/api/v1/docks/" + ID, Role.OPERATOR),
   };
 
   @Autowired private MockMvc mockMvc;
@@ -60,6 +65,8 @@ class EndpointAuthorizationTest {
   @MockitoBean private BoatService boatService;
 
   @MockitoBean private AvailableBoatService availableBoatService;
+
+  @MockitoBean private DockService dockService;
 
   private record Endpoint(HttpMethod method, String path, Role allowed) {
 

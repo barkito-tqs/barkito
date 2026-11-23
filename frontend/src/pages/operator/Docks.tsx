@@ -18,6 +18,7 @@ export const NEEDS_ATTENTION: BoatState[] = [
 export function Docks() {
   const docks = useStore((s) => s.docks);
   const boats = useStore((s) => s.boats);
+  const docksError = useStore((s) => s.docksError);
   const [open, setOpen] = useState(false);
   const [done, setDone] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export function Docks() {
           </button>
         }
       />
+      {docksError && <Alert tone="warn">Showing the saved docks: {docksError}</Alert>}
       {done && <Alert tone="ok">{done} registered with all berths in service.</Alert>}
       <div className="grid-2 grid-split">
         <div className="stack">
@@ -100,20 +102,38 @@ function RegisterDockDialog({
 }) {
   const [name, setName] = useState('');
   const [district, setDistrict] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
   const [berths, setBerths] = useState('4');
   const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault();
+    if (!latitude.trim() || !longitude.trim()) {
+      setError('Give the dock its latitude and longitude.');
+      return;
+    }
+    setBusy(true);
     try {
-      const dock = registerDock(name, district, Number(berths));
+      const dock = await registerDock({
+        name,
+        district,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        berths: Number(berths),
+      });
       onDone(dock.name);
       setName('');
       setDistrict('');
+      setLatitude('');
+      setLongitude('');
       setError(null);
       onClose();
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Something went wrong.');
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -155,8 +175,43 @@ function RegisterDockDialog({
               type="number"
               inputMode="numeric"
               min={1}
+              max={10}
               value={berths}
               onChange={(e) => setBerths(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="form-grid cols-2">
+          <div className="field">
+            <label htmlFor="dock-latitude">Latitude</label>
+            <input
+              id="dock-latitude"
+              name="latitude"
+              className="input"
+              type="number"
+              inputMode="decimal"
+              step="any"
+              min={-90}
+              max={90}
+              placeholder="e.g. 40.6405…"
+              value={latitude}
+              onChange={(e) => setLatitude(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="dock-longitude">Longitude</label>
+            <input
+              id="dock-longitude"
+              name="longitude"
+              className="input"
+              type="number"
+              inputMode="decimal"
+              step="any"
+              min={-180}
+              max={180}
+              placeholder="e.g. -8.6538…"
+              value={longitude}
+              onChange={(e) => setLongitude(e.target.value)}
             />
           </div>
         </div>
@@ -165,7 +220,7 @@ function RegisterDockDialog({
           <button type="button" className="btn btn-secondary" onClick={onClose}>
             Cancel
           </button>
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" disabled={busy}>
             Register Dock
           </button>
         </div>

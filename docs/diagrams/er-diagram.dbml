@@ -23,10 +23,11 @@ Table boat_type {
 
 Table dock {
   id uuid [pk]
-  name varchar [unique, not null]
-  district varchar
-  latitude decimal(9,6)
-  longitude decimal(9,6)
+  name varchar(64) [unique, not null, note: 'unique ignoring case (US-04)']
+  district varchar(64)
+  latitude decimal(9,6) [not null]
+  longitude decimal(9,6) [not null]
+  Note: 'US-04: 1 to 10 berths per dock'
 }
 
 Table berth {

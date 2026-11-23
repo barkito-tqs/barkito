@@ -22,7 +22,9 @@ export interface Dock {
   id: string;
   name: string;
   district: string;
-  /** Position on the canal map, in map units (0–1000 × 0–600). */
+  latitude: number;
+  longitude: number;
+  /** Position on the canal map, in map units (0–1000 × 0–600), from the latitude and longitude. */
   x: number;
   y: number;
   berths: number;

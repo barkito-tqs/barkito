@@ -31,6 +31,8 @@ function dock(overrides: Partial<Dock> = {}): Dock {
     id: 'd1',
     name: 'Dock',
     district: 'Centre',
+    latitude: 40.64,
+    longitude: -8.65,
     x: 0,
     y: 0,
     berths: 4,

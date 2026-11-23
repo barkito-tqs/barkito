@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.domain.Dock;
 import pt.ua.tqs.barkito.fleet.domain.DockRepository;
+import pt.ua.tqs.barkito.fleet.domain.TestDocks;
 
 public class RegisterBoatSteps {
 
@@ -33,7 +34,7 @@ public class RegisterBoatSteps {
 
   @Given("the dock {string} exists")
   public void theDockExists(String name) {
-    Dock dock = docks.save(new Dock(UUID.randomUUID(), name));
+    Dock dock = docks.save(TestDocks.dock(name));
     dockIds.put(name, dock.id());
   }
 

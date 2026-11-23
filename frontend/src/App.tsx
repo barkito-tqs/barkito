@@ -1,6 +1,7 @@
 import { Compass } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
+import { loadDocks } from './api/store';
 import { HOME_BY_ROLE, useSession } from './auth/session';
 import { AppShell } from './components/AppShell';
 import { RequireRole } from './components/RequireRole';
@@ -62,6 +63,14 @@ const AREAS: { path: string; role: Role; element: ReactNode }[] = [
 ];
 
 export function App() {
+  const { user } = useSession();
+  const isOperator = user?.role === 'OPERATOR';
+
+  // US-04: the dock endpoints belong to the operator; other roles keep the seed docks.
+  useEffect(() => {
+    if (isOperator) void loadDocks();
+  }, [isOperator]);
+
   return (
     <Routes>
       <Route path="/sign-in" element={<SignIn />} />

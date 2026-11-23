@@ -32,6 +32,7 @@ The source is [`er-diagram.dbml`](er-diagram.dbml). To update the image, paste i
 - `boat.code` and `boat.unlock_code` are unique (US-03, US-12).
 - `boat.berth_id` is unique: one boat per berth (BR14).
 - `berth (dock_id, number)` is unique.
+- `dock.name` is unique ignoring case, and a dock has from 1 to 10 berths (US-04).
 - A trip ends only in a free berth with `in_service = true` (BR14); the berths in service of a dock are counted, not stored.
 - `trip.reservation_id` is unique: a reservation becomes at most one trip.
 - `trip_discount.trip_id` is the primary key: at most one discount per trip (BR24).
