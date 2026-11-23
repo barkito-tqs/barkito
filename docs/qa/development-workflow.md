@@ -61,6 +61,22 @@ Depending on the story:
 
 Reviewers use the checklist in [`CONTRIBUTING.md`](../../CONTRIBUTING.md). AI-assisted review findings are recorded in the PR as accepted or rejected (AI3).
 
+### Calling the API locally
+
+The `dev` profile is the default, so a backend started with `cd backend && ./mvnw spring-boot:run` accepts the dev tokens. `./mvnw` needs JDK 21.
+
+The endpoints require a JWT. The repository root has `dev-tokens.env`, with one ready-made token per role (`TOKEN_END_USER`, `TOKEN_OPERATOR`, `TOKEN_TECHNICIAN`, `TOKEN_CLIENT_MANAGER`, `TOKEN_ADMIN`) and `TOKEN_ALL`, which has every role:
+
+```bash
+source dev-tokens.env
+curl -H "Authorization: Bearer $TOKEN_OPERATOR" http://localhost:8080/api/v1/boats
+```
+
+- In Swagger UI (`/swagger-ui.html`), click *Authorize* and paste the token value, without `Bearer`.
+- Use a one-role token to check that a request is refused with 403 for the other roles. Use `TOKEN_ALL` only to explore, because it passes every role check.
+- The tokens are signed with the dev secret in `application-dev.properties`, so they are not secrets and are committed on purpose. They expire one year after generation.
+- Deployed environments must never use the `dev` profile: the deploy must set `SPRING_PROFILES_ACTIVE` explicitly (in `backend/Dockerfile` / `docker-compose.yml`), because nothing else enforces it. With any other profile these tokens are worthless.
+
 ---
 
 ## 3.3 Static analysis and quality gates

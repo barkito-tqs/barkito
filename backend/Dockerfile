@@ -14,4 +14,6 @@ WORKDIR /app
 COPY --from=build --chown=barkito:barkito /workspace/target/barkito-backend-*.jar app.jar
 USER barkito
 EXPOSE 8080
+# Without SPRING_PROFILES_ACTIVE the image runs the default "dev" profile, which accepts
+# tokens signed with the committed dev secret. Deployed environments must set a non-dev profile.
 ENTRYPOINT ["java", "-jar", "app.jar"]

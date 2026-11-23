@@ -30,6 +30,8 @@ out/
 application-local.*
 .env
 *.env
+# dev-tokens.env holds dev-only tokens (signed with the committed dev secret) and is committed on purpose
+!dev-tokens.env
 
 # OWASP Dependency-Check
 dependency-check-report.*
