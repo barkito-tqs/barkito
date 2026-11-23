@@ -117,7 +117,7 @@ function AddBerthsDialog({
   onClose: () => void;
   onDone: (message: string) => void;
 }) {
-  const [count, setCount] = useState('1');
+  const [count, setCount] = useState(1);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const left = berthsLeftToAdd(dock);
@@ -126,7 +126,7 @@ function AddBerthsDialog({
     event.preventDefault();
     setBusy(true);
     try {
-      const updated = await addBerths(dock.id, Number(count));
+      const updated = await addBerths(dock.id, count);
       const first = dock.berths + 1;
       const last = updated.berths;
       const added =
@@ -134,7 +134,7 @@ function AddBerthsDialog({
           ? `Berth ${first}`
           : `Berths ${first} ${last === first + 1 ? 'and' : 'to'} ${last}`;
       onDone(`${added} added to ${updated.name}, in service.`);
-      setCount('1');
+      setCount(1);
       setError(null);
       onClose();
     } catch (e) {
@@ -153,19 +153,29 @@ function AddBerthsDialog({
           <span className="num">{left}</span> more. New berths continue the numbering and start in
           service.
         </p>
-        <div className="field">
-          <label htmlFor="berths-count">Berths to add</label>
-          <input
-            id="berths-count"
-            name="count"
-            className="input"
-            type="number"
-            inputMode="numeric"
-            min={1}
-            max={left}
-            value={count}
-            onChange={(e) => setCount(e.target.value)}
-          />
+        <div className="row between">
+          <span className="label small" id="berths-count" style={{ fontWeight: 700 }}>
+            Berths to add
+          </span>
+          <div className="stepper" role="group" aria-labelledby="berths-count">
+            <button
+              type="button"
+              aria-label="One berth fewer"
+              disabled={count <= 1}
+              onClick={() => setCount(count - 1)}
+            >
+              −
+            </button>
+            <output aria-live="polite">{count}</output>
+            <button
+              type="button"
+              aria-label="One berth more"
+              disabled={count >= left}
+              onClick={() => setCount(count + 1)}
+            >
+              +
+            </button>
+          </div>
         </div>
         {error && <Alert tone="danger">{error}</Alert>}
         <div className="dialog-actions">
