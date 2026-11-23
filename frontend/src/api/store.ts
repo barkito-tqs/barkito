@@ -427,7 +427,7 @@ export function registerBoat(code: string, type: BoatType, dockId: string): Boat
   return boat;
 }
 
-/** A dock as the REST API returns it (GET/POST /api/v1/docks). */
+/** A dock as the REST API returns it (GET/POST /api/v1/docks, POST /api/v1/docks/{id}/berths). */
 export interface DockResponse {
   id: string;
   name: string;
@@ -480,6 +480,17 @@ export async function registerDock(input: NewDock): Promise<Dock> {
   });
   const dock = toDock(response);
   set({ docks: [...state.docks, dock] });
+  return dock;
+}
+
+/**
+ * BRK-321: adds berths to a dock through the API; they continue its numbering and are in
+ * service. 404 or 422 come back as ApiError and leave the dock as it was.
+ */
+export async function addBerths(dockId: string, count: number): Promise<Dock> {
+  const response = await http.post<DockResponse>(`/docks/${dockId}/berths`, { count });
+  const dock = toDock(response);
+  set({ docks: state.docks.map((d) => (d.id === dock.id ? dock : d)) });
   return dock;
 }
 

@@ -1,4 +1,4 @@
-import { ApiError, getState, loadDocks, registerDock, type DockResponse } from './store';
+import { ApiError, addBerths, getState, loadDocks, registerDock, type DockResponse } from './store';
 
 const FISH_MARKET: DockResponse = {
   id: 'd0c0a000-0000-4000-8000-0000000000aa',
@@ -92,5 +92,41 @@ describe('docks from the REST API (US-04)', () => {
     expect(error).toBeInstanceOf(ApiError);
     expect(error).toMatchObject({ status: 422, message: detail });
     expect(getState().docks).toHaveLength(count);
+  });
+});
+
+describe('adding berths through the REST API (BRK-321)', () => {
+  beforeEach(async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(reply(200, [FISH_MARKET])));
+    await loadDocks();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('posts the count and replaces the dock with its new berths', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(reply(201, { ...FISH_MARKET, berthCount: 6, berthsInService: 5 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const dock = await addBerths(FISH_MARKET.id, 2);
+
+    expect(fetchMock.mock.calls[0][0]).toBe(`/api/v1/docks/${FISH_MARKET.id}/berths`);
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body as string)).toEqual({ count: 2 });
+    expect(dock).toMatchObject({ berths: 6, berthsInService: 5 });
+    expect(getState().docks).toEqual([dock]);
+  });
+
+  it('passes on a refusal and keeps the dock as it was', async () => {
+    const detail = 'A dock has at most 10 berths.';
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(reply(422, { detail })));
+    const before = getState().docks;
+
+    const error = await addBerths(FISH_MARKET.id, 7).catch((e: unknown) => e);
+
+    expect(error).toMatchObject({ status: 422, message: detail });
+    expect(getState().docks).toBe(before);
   });
 });
