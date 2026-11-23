@@ -87,6 +87,26 @@ class BoatTest {
   void aCleanReadingDoesNotLeaveRepair() {
     Boat updated = boatIn(BoatState.REPAIR_REQUIRED).applyStatus(reading(FULL_BATTERY, List.of()));
 
-    assertThat(updated.state()).isEqualTo(BoatState.REPAIR_REQUIRED);
-  }
+		assertThat(updated.state()).isEqualTo(BoatState.REPAIR_REQUIRED);
+	}
+
+	@ParameterizedTest(name = "{0} with {1} % battery is bookable: {2}")
+	@CsvSource({
+		"AVAILABLE, 30, true",
+		"AVAILABLE, 29, false",
+		"AVAILABLE, 100, true",
+		"CHARGING, 80, false",
+		"RESERVED, 80, false",
+		"IN_USE, 80, false"
+	})
+	void aBoatIsBookableOnlyWhenAvailableWithAtLeast30PercentBattery(BoatState state, int battery, boolean bookable) {
+		Boat boat = Boat.restore(UUID.randomUUID(), "B-16", BoatType.XL, UUID.randomUUID(), state, reading(battery, List.of()));
+
+		assertThat(boat.isBookable()).isEqualTo(bookable);
+	}
+
+	@Test
+	void anAvailableBoatWithNoReadingYetIsNotBookable() {
+		assertThat(boatIn(BoatState.AVAILABLE).isBookable()).isFalse();
+	}
 }

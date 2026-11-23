@@ -69,9 +69,19 @@ public final class Boat {
     return state;
   }
 
-  public UUID id() {
-    return id;
-  }
+	/**
+	 * BR5: a boat is shown to end users and can be booked only when it is AVAILABLE with at least
+	 * {@link #MIN_BOOKABLE_BATTERY_PERCENT} battery. A boat with no reading yet is not bookable.
+	 */
+	public boolean isBookable() {
+		return state == BoatState.AVAILABLE
+				&& status != null
+				&& status.batteryPercent() >= MIN_BOOKABLE_BATTERY_PERCENT;
+	}
+
+	public UUID id() {
+		return id;
+	}
 
   public String code() {
     return code;
