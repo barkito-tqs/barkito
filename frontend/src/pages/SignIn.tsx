@@ -11,6 +11,7 @@ const ROLE_BLURB: Record<Role, string> = {
   OPERATOR: 'Run the fleet, docks, tickets and technicians.',
   TECHNICIAN: 'Work through your tickets by SLA deadline.',
   CLIENT_MANAGER: 'Set the rules of use and follow the KPIs.',
+  ADMIN: 'Manage user accounts and roles; follow platform health.',
 };
 
 /**
