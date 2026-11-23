@@ -20,7 +20,11 @@ export function Trips() {
 
   return (
     <>
-      <PageHead eyebrow="History" title="Your Trips" lead="Every trip with its unlock fee, minutes, overtime and hold fee, so you know what you paid and why." />
+      <PageHead
+        eyebrow="History"
+        title="Your Trips"
+        lead="Every trip with its unlock fee, minutes, overtime and hold fee, so you know what you paid and why."
+      />
 
       <dl className="stats">
         <Stat label="Trips" value={past.length} />

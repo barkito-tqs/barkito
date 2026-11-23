@@ -5,7 +5,15 @@ import type { Boat } from '../domain/types';
 import { Battery, StateBadge, TypeChip } from './ui';
 
 /** Compact list of boats; each row opens the boat's page. `fromDockId` makes its back link return to that dock. */
-export function BoatRows({ boats, fromDockId, label }: { boats: Boat[]; fromDockId?: string; label: string }) {
+export function BoatRows({
+  boats,
+  fromDockId,
+  label,
+}: {
+  boats: Boat[];
+  fromDockId?: string;
+  label: string;
+}) {
   const docks = useStore((s) => s.docks);
   const dockName = (id: string | null) => docks.find((d) => d.id === id)?.name ?? 'On the canal';
 
@@ -13,7 +21,10 @@ export function BoatRows({ boats, fromDockId, label }: { boats: Boat[]; fromDock
     <ul className="card card-tight link-rows" aria-label={label}>
       {boats.map((b) => (
         <li key={b.id}>
-          <Link to={fromDockId ? `/fleet/${b.id}?from=${fromDockId}` : `/fleet/${b.id}`} className="link-row fleet-row">
+          <Link
+            to={fromDockId ? `/fleet/${b.id}?from=${fromDockId}` : `/fleet/${b.id}`}
+            className="link-row fleet-row"
+          >
             <span className="link-row-main">
               <span className="row" style={{ gap: 8 }}>
                 <span className="code" translate="no">

@@ -11,7 +11,17 @@ export function usePage<T>(items: T[], pageSize = PAGE_SIZE) {
   return { page, pages, rows: items.slice((page - 1) * pageSize, page * pageSize) };
 }
 
-export function Pagination({ page, pages, total, noun }: { page: number; pages: number; total: number; noun: string }) {
+export function Pagination({
+  page,
+  pages,
+  total,
+  noun,
+}: {
+  page: number;
+  pages: number;
+  total: number;
+  noun: string;
+}) {
   const [params] = useSearchParams();
   if (pages <= 1) return null;
 

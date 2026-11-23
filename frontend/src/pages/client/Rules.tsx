@@ -22,13 +22,20 @@ export function Rules() {
     event.preventDefault();
     try {
       updateSettings(draft);
-      setResult({ tone: 'ok', text: 'Saved. The new rules apply to the next trips; trips in progress keep their rules.' });
+      setResult({
+        tone: 'ok',
+        text: 'Saved. The new rules apply to the next trips; trips in progress keep their rules.',
+      });
     } catch (e) {
-      setResult({ tone: 'danger', text: e instanceof ApiError ? e.message : 'Something went wrong.' });
+      setResult({
+        tone: 'danger',
+        text: e instanceof ApiError ? e.message : 'Something went wrong.',
+      });
     }
   }
 
-  const sla = (type: TicketType, hours: number) => setDraft({ ...draft, slaHours: { ...draft.slaHours, [type]: hours } });
+  const sla = (type: TicketType, hours: number) =>
+    setDraft({ ...draft, slaHours: { ...draft.slaHours, [type]: hours } });
 
   return (
     <form className="stack" onSubmit={submit} noValidate>
@@ -59,22 +66,39 @@ export function Rules() {
               value={draft.maxTripMinutes}
               onChange={(e) => setDraft({ ...draft, maxTripMinutes: Number(e.target.value) })}
             />
-            <p className="help">Users are warned 10 minutes before and at the limit; later minutes are overtime. Default {RULES.maxTripMinutes}.</p>
+            <p className="help">
+              Users are warned 10 minutes before and at the limit; later minutes are overtime.
+              Default {RULES.maxTripMinutes}.
+            </p>
           </div>
           <div className="form-grid cols-2">
             <div className="field">
               <label htmlFor="opens">Opens at</label>
-              <input id="opens" name="opensAt" className="input" type="time" value={draft.opensAt} onChange={(e) => setDraft({ ...draft, opensAt: e.target.value })} />
+              <input
+                id="opens"
+                name="opensAt"
+                className="input"
+                type="time"
+                value={draft.opensAt}
+                onChange={(e) => setDraft({ ...draft, opensAt: e.target.value })}
+              />
             </div>
             <div className="field">
               <label htmlFor="closes">Closes at</label>
-              <input id="closes" name="closesAt" className="input" type="time" value={draft.closesAt} onChange={(e) => setDraft({ ...draft, closesAt: e.target.value })} />
+              <input
+                id="closes"
+                name="closesAt"
+                className="input"
+                type="time"
+                value={draft.closesAt}
+                onChange={(e) => setDraft({ ...draft, closesAt: e.target.value })}
+              />
             </div>
           </div>
           <p className="help">
-            Reservations close one hold ({RULES.holdMinutes} min) before closing: last reservation at{' '}
-            <strong className="num">{minusMinutes(draft.closesAt, RULES.holdMinutes)}</strong>, last unlock at{' '}
-            <strong className="num">{minusMinutes(draft.closesAt, 1)}</strong>.
+            Reservations close one hold ({RULES.holdMinutes} min) before closing: last reservation
+            at <strong className="num">{minusMinutes(draft.closesAt, RULES.holdMinutes)}</strong>,
+            last unlock at <strong className="num">{minusMinutes(draft.closesAt, 1)}</strong>.
           </p>
           <div className="form-grid cols-2">
             <div className="field">
@@ -87,7 +111,12 @@ export function Rules() {
                 inputMode="numeric"
                 min={16}
                 value={draft.minAge.STANDARD}
-                onChange={(e) => setDraft({ ...draft, minAge: { ...draft.minAge, STANDARD: Number(e.target.value) } })}
+                onChange={(e) =>
+                  setDraft({
+                    ...draft,
+                    minAge: { ...draft.minAge, STANDARD: Number(e.target.value) },
+                  })
+                }
               />
             </div>
             <div className="field">
@@ -100,7 +129,9 @@ export function Rules() {
                 inputMode="numeric"
                 min={16}
                 value={draft.minAge.XL}
-                onChange={(e) => setDraft({ ...draft, minAge: { ...draft.minAge, XL: Number(e.target.value) } })}
+                onChange={(e) =>
+                  setDraft({ ...draft, minAge: { ...draft.minAge, XL: Number(e.target.value) } })
+                }
               />
             </div>
           </div>
@@ -108,7 +139,10 @@ export function Rules() {
 
         <section className="card stack" aria-labelledby="sla-rules">
           <h2 id="sla-rules">SLA Deadlines</h2>
-          <p className="small muted">Time to close each ticket type. The clock runs within operating hours, except for towing.</p>
+          <p className="small muted">
+            Time to close each ticket type. The clock runs within operating hours, except for
+            towing.
+          </p>
           <div className="form-grid cols-2">
             {(Object.keys(draft.slaHours) as TicketType[]).map((type) => (
               <div className="field" key={type}>
@@ -127,7 +161,10 @@ export function Rules() {
               </div>
             ))}
           </div>
-          <p className="help">Towing also needs a technician on site within 30 minutes. New deadlines apply to tickets opened afterwards.</p>
+          <p className="help">
+            Towing also needs a technician on site within 30 minutes. New deadlines apply to tickets
+            opened afterwards.
+          </p>
         </section>
       </div>
     </form>

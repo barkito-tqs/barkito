@@ -1,7 +1,13 @@
 import type { BoatState, BoatType, TicketType } from '../domain/types';
 
 const time = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit' });
-const dateTime = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+const dateTime = new Intl.DateTimeFormat('en-GB', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  hour: '2-digit',
+  minute: '2-digit',
+});
 
 export function formatTime(ms: number): string {
   return time.format(ms);
@@ -12,7 +18,10 @@ export function formatDateTime(ms: number): string {
 }
 
 export function formatPercent(ratio: number, fractionDigits = 0): string {
-  return new Intl.NumberFormat('en-GB', { style: 'percent', maximumFractionDigits: fractionDigits }).format(ratio);
+  return new Intl.NumberFormat('en-GB', {
+    style: 'percent',
+    maximumFractionDigits: fractionDigits,
+  }).format(ratio);
 }
 
 /** mm:ss, or h:mm:ss past one hour. */

@@ -1,7 +1,14 @@
 import { Camera, Keyboard, QrCode, ScanLine } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ApiError, activeReservationOf, activeTripOf, getState, unlock, useStore } from '../../api/store';
+import {
+  ApiError,
+  activeReservationOf,
+  activeTripOf,
+  getState,
+  unlock,
+  useStore,
+} from '../../api/store';
 import { useUser } from '../../auth/session';
 import { Alert, PageHead } from '../../components/ui';
 import { PRICES, formatCents } from '../../domain/pricing';
@@ -29,7 +36,13 @@ declare global {
 }
 
 /** Camera view that reads a QR code with the browser's BarcodeDetector, where it exists. */
-function QrScanner({ onCode, onUnavailable }: { onCode: (code: string) => void; onUnavailable: (reason: string) => void }) {
+function QrScanner({
+  onCode,
+  onUnavailable,
+}: {
+  onCode: (code: string) => void;
+  onUnavailable: (reason: string) => void;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [status, setStatus] = useState('Starting the camera…');
   // Kept in refs so a parent re-render does not restart the camera.
@@ -45,13 +58,19 @@ function QrScanner({ onCode, onUnavailable }: { onCode: (code: string) => void; 
 
     async function start() {
       if (!window.BarcodeDetector || !navigator.mediaDevices?.getUserMedia) {
-        onUnavailableRef.current('This browser cannot read QR codes. Type the code printed below the QR code instead.');
+        onUnavailableRef.current(
+          'This browser cannot read QR codes. Type the code printed below the QR code instead.',
+        );
         return;
       }
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment' },
+        });
       } catch {
-        onUnavailableRef.current('The camera is not available. Type the code printed below the QR code instead.');
+        onUnavailableRef.current(
+          'The camera is not available. Type the code printed below the QR code instead.',
+        );
         return;
       }
       if (cancelled || !videoRef.current) return;
@@ -129,7 +148,9 @@ export function Unlock() {
   function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (code.trim().length !== CODE_LENGTH) {
-      setError(`The code has ${CODE_LENGTH} digits. You find it printed below the QR code on the boat.`);
+      setError(
+        `The code has ${CODE_LENGTH} digits. You find it printed below the QR code on the boat.`,
+      );
       codeRef.current?.focus();
       return;
     }
@@ -157,8 +178,8 @@ export function Unlock() {
 
       {reservedBoat && (
         <Alert tone="info">
-          You reserved <strong translate="no">{reservedBoat.code}</strong> at {reservedDock?.name}. Scan its QR code at the dock to
-          start your trip; the hold fee is added to the trip.
+          You reserved <strong translate="no">{reservedBoat.code}</strong> at {reservedDock?.name}.
+          Scan its QR code at the dock to start your trip; the hold fee is added to the trip.
         </Alert>
       )}
 
@@ -189,7 +210,11 @@ export function Unlock() {
             cameraNote ? (
               <Alert tone="warn">
                 {cameraNote}{' '}
-                <button type="button" className="btn btn-sm btn-secondary" onClick={() => setMode('code')}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-secondary"
+                  onClick={() => setMode('code')}
+                >
                   Type the Code
                 </button>
               </Alert>
@@ -246,7 +271,8 @@ export function Unlock() {
             <div>
               <dt>Standard · up to {RULES.capacity.STANDARD} people</dt>
               <dd>
-                {formatCents(PRICES.unlockFee.STANDARD)} + {formatCents(PRICES.perMinute.STANDARD)}/min
+                {formatCents(PRICES.unlockFee.STANDARD)} + {formatCents(PRICES.perMinute.STANDARD)}
+                /min
               </dd>
             </div>
             <div>
@@ -263,8 +289,9 @@ export function Unlock() {
             </div>
           </dl>
           <p className="small muted">
-            Every started minute counts. After {getState().settings.maxTripMinutes} minutes, minutes are charged as overtime. The
-            deposit is released when you end the trip, minus what you owe.
+            Every started minute counts. After {getState().settings.maxTripMinutes} minutes, minutes
+            are charged as overtime. The deposit is released when you end the trip, minus what you
+            owe.
           </p>
           {import.meta.env.DEV && <DemoCodes />}
         </aside>
@@ -281,11 +308,21 @@ function PassengerField({ value, onChange }: { value: number; onChange: (n: numb
       </span>
       <div className="row">
         <div className="stepper" role="group" aria-labelledby="passengers-label">
-          <button type="button" aria-label="One person fewer" disabled={value <= 1} onClick={() => onChange(value - 1)}>
+          <button
+            type="button"
+            aria-label="One person fewer"
+            disabled={value <= 1}
+            onClick={() => onChange(value - 1)}
+          >
             −
           </button>
           <output aria-live="polite">{value}</output>
-          <button type="button" aria-label="One person more" disabled={value >= MAX_PASSENGERS} onClick={() => onChange(value + 1)}>
+          <button
+            type="button"
+            aria-label="One person more"
+            disabled={value >= MAX_PASSENGERS}
+            onClick={() => onChange(value + 1)}
+          >
             +
           </button>
         </div>
@@ -312,7 +349,9 @@ function DemoCodes() {
             <li key={b.id}>
               <span translate="no">{b.code}</span>
               <code>{b.unlockCode}</code>
-              <span className="muted">{b.state === 'RESERVED' ? 'reserved' : `${b.battery} %`}</span>
+              <span className="muted">
+                {b.state === 'RESERVED' ? 'reserved' : `${b.battery} %`}
+              </span>
             </li>
           ))}
       </ul>

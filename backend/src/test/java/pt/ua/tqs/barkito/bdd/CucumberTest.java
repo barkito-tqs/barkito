@@ -10,15 +10,17 @@ import org.junit.platform.suite.api.SelectClasspathResource;
 import org.junit.platform.suite.api.Suite;
 
 /**
- * Runs every scenario under src/test/resources/features with the default Maven build.
- * Scenarios tagged @wip are merged before their step definitions (specification-driven
- * stories, QA Manual 6.1) and are skipped until the implementation removes the tag.
+ * Runs every scenario under src/test/resources/features with the default Maven build. Scenarios
+ * tagged @wip are merged before their step definitions (specification-driven stories, QA Manual
+ * 6.1) and are skipped until the implementation removes the tag.
+ *
+ * <p>The JSON report is imported into Xray on every merge into develop. The story tag of each
+ * feature (for example {@code @BRK-42}) links the scenarios to the story (PM5).
  */
 @Suite
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "pt.ua.tqs.barkito.bdd")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty")
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty, json:target/cucumber.json")
 @ConfigurationParameter(key = FILTER_TAGS_PROPERTY_NAME, value = "not @wip")
-class CucumberTest {
-}
+class CucumberTest {}

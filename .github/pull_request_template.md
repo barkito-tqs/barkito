@@ -4,25 +4,21 @@ BRK-<n>
 
 ## What changes and why
 
-<!-- Short description of the change and its motivation. -->
+<!-- One to three lines. -->
 
 ## How to test
 
-<!-- Steps or commands to verify the change. -->
+<!-- Command or steps. -->
 
 ## Definition of Done
 
-- [ ] Branch name and PR title include the Jira story key
-- [ ] AI use in this change follows the team AI policy
-- [ ] Acceptance criteria are met
-- [ ] Unit tests cover the new business logic
-- [ ] Coverage on new code ≥ 80%
-- [ ] CI and quality gate are green
-- [ ] Integration tests added, if API or persistence is touched
-- [ ] Gherkin/Cucumber scenarios added, if this is a core story
+- [ ] Acceptance criteria met
+- [ ] Tests for the new logic (unit; integration if API or persistence; Gherkin if core story)
+- [ ] CI and quality gate green (coverage on new code ≥ 80%)
 - [ ] Story linked to its tests in Xray
-- [ ] Documentation / API docs updated, if applicable
+- [ ] Docs updated, if applicable
+- [ ] One `ai:*` label; AI review findings below
 
 ## AI-assisted review findings
 
-<!-- List each finding and whether it was accepted or rejected, with a reason. Write "None" if no AI review was used. -->
+<!-- Each finding: accepted or rejected, with a reason. "None" if there was no AI review. -->
