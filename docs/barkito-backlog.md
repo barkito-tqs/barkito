@@ -17,7 +17,7 @@ Conventions, following the QA Manual (2.2):
 | US-02 | BRK-41 | Accounts and roles | Role-based areas | — | 2 | I2 |
 | US-03 | BRK-42 | Fleet and docks | Register a boat | — | 2 | I2 |
 | US-04 | BRK-43 | Fleet and docks | Register docks and berths | — | 2 | I2 |
-| US-40 | BRK-321 | Fleet and docks | Add berths to a dock | — | — | I2 |
+| US-40 | BRK-321 | Fleet and docks | Add berths to a dock | — | 2 | I2 |
 | US-05 | BRK-44 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
 | US-06 | BRK-48 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | BRK-45 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
@@ -54,7 +54,7 @@ Conventions, following the QA Manual (2.2):
 | US-36 | BRK-78 | Extensions | Seasonal campaign | BR22, BR23, BR24 | 3 | I5 |
 | US-37 | BRK-79 | Extensions | Public GBFS feed | — | 3 | I5 |
 
-Iteration 2 total: 6 stories, 15 points.
+Iteration 2 total: 7 stories, 17 points.
 
 ---
 
@@ -109,7 +109,7 @@ Iteration 2 total: 6 stories, 15 points.
 - At least 1 berth must be added: 0 refused with 422.
 - Adding berths to a dock that does not exist is refused with 404.
 
-**Points:** — · **Iteration:** I2
+**Points:** 2 · **Iteration:** I2
 
 ### US-05 Activate and deactivate a boat (BRK-44)
 **As an** operator, **I want** to activate and deactivate a boat, **so that** I control which boats are in service.
