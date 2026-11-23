@@ -97,7 +97,6 @@ Iteration 2 total: 6 stories, 15 points.
 - The name is unique, ignoring case and surrounding spaces: a duplicate is refused with 409. Name and district have at most 64 characters.
 - A dock has from 1 to 10 berths: 0 refused / 1 accepted, 10 accepted / 11 refused, with 422.
 - Berths are numbered from 1 and are in service by default; the municipality changes the berths in service later (US-27).
-- Berths can be added to an existing dock: they continue its numbering and are in service; more than 10 in total, or fewer than 1 added, is refused with 422; an unknown dock gives 404.
 
 **Points:** 2 · **Iteration:** I2
 
