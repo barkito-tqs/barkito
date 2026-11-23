@@ -5,6 +5,9 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
+    environment:
+      # Seeds the six docks the web UI uses (DevDockSeeder) until persistence arrives.
+      SPRING_PROFILES_ACTIVE: dev
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/actuator/health"]
