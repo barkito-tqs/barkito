@@ -2,6 +2,7 @@ package pt.ua.tqs.barkito.accounts.adapter.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,15 @@ class RealmRolesConverterTest {
     Jwt jwt = Jwt.withTokenValue("t").header("alg", "none").subject("someone").build();
 
     assertThat(converter.convert(jwt)).isEmpty();
+  }
+
+  @Test
+  void ignoresRoleEntriesThatAreNullOrNotText() {
+    Jwt jwt = withRealmAccess(Map.of("roles", Arrays.asList("OPERATOR", null, 42)));
+
+    assertThat(converter.convert(jwt))
+        .extracting(GrantedAuthority::getAuthority)
+        .containsExactly("ROLE_OPERATOR");
   }
 
   @Test

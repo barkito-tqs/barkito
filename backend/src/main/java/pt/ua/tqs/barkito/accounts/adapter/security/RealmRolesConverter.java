@@ -33,7 +33,7 @@ public final class RealmRolesConverter implements Converter<Jwt, Collection<Gran
       return List.of();
     }
     return roles.stream()
-        .filter(ROLE_NAMES::contains)
+        .filter(role -> role instanceof String name && ROLE_NAMES.contains(name))
         .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(AUTHORITY_PREFIX + role))
         .toList();
   }
