@@ -1,0 +1,50 @@
+name: PR checks
+
+# Checks on the pull request itself, not on the code. They re-run when the title or the
+# labels change, without rebuilding the project.
+on:
+  pull_request:
+    branches: [develop, main]
+    types: [opened, edited, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  jira-key:
+    name: Jira key in branch and PR title
+    # Release PRs (develop -> main) and Dependabot updates have no story key.
+    if: github.head_ref != 'develop' && github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name and PR title
+        env:
+          BRANCH: ${{ github.head_ref }}
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          status=0
+          if ! [[ "$BRANCH" =~ ^(feature|fix)/BRK-[0-9]+- ]]; then
+            echo "::error::Branch name '$BRANCH' must be feature/BRK-<n>-<slug> or fix/BRK-<n>-<slug>, e.g. feature/BRK-12-dock-availability"
+            status=1
+          fi
+          if ! [[ "$TITLE" =~ ^BRK-[0-9]+[[:space:]] ]]; then
+            echo "::error::PR title '$TITLE' must start with the Jira key, e.g. 'BRK-12 Add dock availability'"
+            status=1
+          fi
+          exit $status
+
+  ai-label:
+    name: AI use label
+    # Records the AI use of every change (QA Manual 6.1 and 6.6). Dependabot PRs have no AI use.
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for exactly one ai:* label
+        env:
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          count=$(echo "$LABELS" | python3 -c 'import json,sys; print(sum(1 for l in json.load(sys.stdin) if l in ("ai:none", "ai:assisted", "ai:generated")))')
+          if [ "$count" != "1" ]; then
+            echo "::error::Add exactly one label: ai:none, ai:assisted or ai:generated (found $count)"
+            exit 1
+          fi

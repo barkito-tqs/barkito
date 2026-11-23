@@ -23,9 +23,15 @@ export function Berths() {
     if (!pending) return;
     try {
       setBerthsInService(pending.dock.id, pending.to);
-      setResult({ tone: 'ok', text: `${pending.dock.name} now has ${pending.to} berths in service.` });
+      setResult({
+        tone: 'ok',
+        text: `${pending.dock.name} now has ${pending.to} berths in service.`,
+      });
     } catch (e) {
-      setResult({ tone: 'danger', text: e instanceof ApiError ? e.message : 'Something went wrong.' });
+      setResult({
+        tone: 'danger',
+        text: e instanceof ApiError ? e.message : 'Something went wrong.',
+      });
     }
     setPending(null);
   }
@@ -40,7 +46,11 @@ export function Berths() {
       {result && <Alert tone={result.tone}>{result.text}</Alert>}
       <div className="dock-cards">
         {docks.map((d) => (
-          <DockBerthsCard key={`${d.id}-${d.berthsInService}`} dock={d} onSave={(to) => setPending({ dock: d, to })} />
+          <DockBerthsCard
+            key={`${d.id}-${d.berthsInService}`}
+            dock={d}
+            onSave={(to) => setPending({ dock: d, to })}
+          />
         ))}
       </div>
 
@@ -83,20 +93,40 @@ function DockBerthsCard({ dock, onSave }: { dock: Dock; onSave: (to: number) => 
           Berths in service
         </span>
         <div className="stepper" role="group" aria-labelledby={`berths-${dock.id}`}>
-          <button type="button" aria-label="One berth fewer" disabled={draft <= 0} onClick={() => setDraft(draft - 1)}>
+          <button
+            type="button"
+            aria-label="One berth fewer"
+            disabled={draft <= 0}
+            onClick={() => setDraft(draft - 1)}
+          >
             −
           </button>
           <output aria-live="polite">{draft}</output>
-          <button type="button" aria-label="One berth more" disabled={draft >= dock.berths} onClick={() => setDraft(draft + 1)}>
+          <button
+            type="button"
+            aria-label="One berth more"
+            disabled={draft >= dock.berths}
+            onClick={() => setDraft(draft + 1)}
+          >
             +
           </button>
         </div>
       </div>
       <div className="row dock-card-actions">
-        <button type="button" className="btn btn-secondary btn-sm" disabled={!changed} onClick={() => setDraft(dock.berthsInService)}>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          disabled={!changed}
+          onClick={() => setDraft(dock.berthsInService)}
+        >
           Undo
         </button>
-        <button type="button" className="btn btn-primary btn-sm" disabled={!changed} onClick={() => onSave(draft)}>
+        <button
+          type="button"
+          className="btn btn-primary btn-sm"
+          disabled={!changed}
+          onClick={() => onSave(draft)}
+        >
           Save Change
         </button>
       </div>
@@ -104,9 +134,22 @@ function DockBerthsCard({ dock, onSave }: { dock: Dock; onSave: (to: number) => 
   );
 }
 
-function ConfirmBerths({ pending, onCancel, onConfirm }: { pending: PendingChange | null; onCancel: () => void; onConfirm: () => void }) {
+function ConfirmBerths({
+  pending,
+  onCancel,
+  onConfirm,
+}: {
+  pending: PendingChange | null;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
   const boats = useStore((s) => s.boats);
-  if (!pending) return <Dialog open={false} onClose={onCancel} labelledBy="berths-confirm-title">{null}</Dialog>;
+  if (!pending)
+    return (
+      <Dialog open={false} onClose={onCancel} labelledBy="berths-confirm-title">
+        {null}
+      </Dialog>
+    );
   const { dock, to } = pending;
   const moored = boats.filter((b) => b.dockId === dock.id && b.state !== 'RETIRED').length;
   const fullAfter = to <= moored;
@@ -126,10 +169,13 @@ function ConfirmBerths({ pending, onCancel, onConfirm }: { pending: PendingChang
       </dl>
       {fullAfter ? (
         <Alert tone="warn">
-          {dock.name} will be full: users can no longer end a trip there until a boat leaves. Trips in progress end at another dock.
+          {dock.name} will be full: users can no longer end a trip there until a boat leaves. Trips
+          in progress end at another dock.
         </Alert>
       ) : (
-        <p className="muted small">The new value applies at once to users looking for a dock to end their trip.</p>
+        <p className="muted small">
+          The new value applies at once to users looking for a dock to end their trip.
+        </p>
       )}
       <div className="dialog-actions">
         <button type="button" className="btn btn-secondary" onClick={onCancel}>

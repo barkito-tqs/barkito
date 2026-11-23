@@ -34,7 +34,9 @@ function exportCsv() {
 }
 
 export function Kpis() {
-  const boats = useStore((s) => s.boats).filter((b) => b.state !== 'RETIRED' && b.state !== 'INACTIVE');
+  const boats = useStore((s) => s.boats).filter(
+    (b) => b.state !== 'RETIRED' && b.state !== 'INACTIVE',
+  );
   const inUse = boats.filter((b) => b.state === 'IN_USE' || b.state === 'RESERVED').length;
   const available = boats.filter(isBookable).length;
   const max = Math.max(...SAMPLE_TRIPS_PER_DAY.map((d) => d.trips));
@@ -54,9 +56,21 @@ export function Kpis() {
       />
 
       <dl className="stats">
-        <Stat label="Utilisation now" value={formatPercent(boats.length ? inUse / boats.length : 0)} hint={`${inUse} of ${boats.length} boats out`} />
-        <Stat label="Availability" value={formatPercent(boats.length ? (available + inUse) / boats.length : 0)} hint="bookable or in use" />
-        <Stat label="Trips per day" value={Math.round(total / SAMPLE_TRIPS_PER_DAY.length)} hint="last 7 days" />
+        <Stat
+          label="Utilisation now"
+          value={formatPercent(boats.length ? inUse / boats.length : 0)}
+          hint={`${inUse} of ${boats.length} boats out`}
+        />
+        <Stat
+          label="Availability"
+          value={formatPercent(boats.length ? (available + inUse) / boats.length : 0)}
+          hint="bookable or in use"
+        />
+        <Stat
+          label="Trips per day"
+          value={Math.round(total / SAMPLE_TRIPS_PER_DAY.length)}
+          hint="last 7 days"
+        />
         <Stat label="Time to repair" value={`${SAMPLE_TIME_TO_REPAIR_H} h`} hint="SLA 24 h" />
       </dl>
 
@@ -70,7 +84,11 @@ export function Kpis() {
             {SAMPLE_TRIPS_PER_DAY.map((d) => (
               <li key={d.day}>
                 <span className="bar-value num">{d.trips}</span>
-                <span className="bar" style={{ height: `${(d.trips / max) * 100}%` }} aria-hidden="true" />
+                <span
+                  className="bar"
+                  style={{ height: `${(d.trips / max) * 100}%` }}
+                  aria-hidden="true"
+                />
                 <span className="bar-label">{d.day}</span>
               </li>
             ))}
@@ -82,17 +100,45 @@ export function Kpis() {
             <h2 id="tech-title">Technical Metrics</h2>
             <p>Against the service level objectives</p>
           </div>
-          <Metric label="API latency (p95)" value={`${SAMPLE_TECH.p95LatencyMs} ms`} ratio={SAMPLE_TECH.p95LatencyMs / SLO.p95LatencyMs} target={`< ${SLO.p95LatencyMs} ms`} />
-          <Metric label="Error rate" value={formatPercent(SAMPLE_TECH.errorRate, 1)} ratio={SAMPLE_TECH.errorRate / SLO.errorRate} target={`< ${formatPercent(SLO.errorRate)}`} />
-          <Metric label="Telemetry lag" value={`${SAMPLE_TECH.telemetryLagS} s`} ratio={SAMPLE_TECH.telemetryLagS / SLO.telemetryLagS} target={`< ${SLO.telemetryLagS} s`} />
+          <Metric
+            label="API latency (p95)"
+            value={`${SAMPLE_TECH.p95LatencyMs} ms`}
+            ratio={SAMPLE_TECH.p95LatencyMs / SLO.p95LatencyMs}
+            target={`< ${SLO.p95LatencyMs} ms`}
+          />
+          <Metric
+            label="Error rate"
+            value={formatPercent(SAMPLE_TECH.errorRate, 1)}
+            ratio={SAMPLE_TECH.errorRate / SLO.errorRate}
+            target={`< ${formatPercent(SLO.errorRate)}`}
+          />
+          <Metric
+            label="Telemetry lag"
+            value={`${SAMPLE_TECH.telemetryLagS} s`}
+            ratio={SAMPLE_TECH.telemetryLagS / SLO.telemetryLagS}
+            target={`< ${SLO.telemetryLagS} s`}
+          />
         </section>
       </div>
-      <Alert tone="info">Trips per day, time to repair and the technical metrics show sample values until the backend provides them.</Alert>
+      <Alert tone="info">
+        Trips per day, time to repair and the technical metrics show sample values until the backend
+        provides them.
+      </Alert>
     </>
   );
 }
 
-function Metric({ label, value, ratio, target }: { label: string; value: string; ratio: number; target: string }) {
+function Metric({
+  label,
+  value,
+  ratio,
+  target,
+}: {
+  label: string;
+  value: string;
+  ratio: number;
+  target: string;
+}) {
   const tone = ratio < 0.7 ? 'ok' : ratio < 1 ? 'warn' : 'danger';
   return (
     <div className="metric">

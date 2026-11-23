@@ -77,7 +77,12 @@ export function FindBoats() {
         actions={
           <nav className="segmented" aria-label="Boat type">
             {TYPE_FILTERS.map((f) => (
-              <Link key={f.value} to={link({ type: f.value })} aria-current={type === f.value ? 'true' : undefined} replace>
+              <Link
+                key={f.value}
+                to={link({ type: f.value })}
+                aria-current={type === f.value ? 'true' : undefined}
+                replace
+              >
                 {f.label}
               </Link>
             ))}
@@ -106,7 +111,9 @@ export function FindBoats() {
             })}
             selectedId={dockId}
             hrefFor={(id) => link({ dock: id })}
-            onSelect={(id) => setParams(new URLSearchParams(link({ dock: id }).slice(1)), { replace: true })}
+            onSelect={(id) =>
+              setParams(new URLSearchParams(link({ dock: id }).slice(1)), { replace: true })
+            }
           />
           <p className="small muted">
             Numbers on the pins are boats you can book now
@@ -134,7 +141,9 @@ export function FindBoats() {
               </div>
               {bookableAt(selectedDock.id).length === 0 ? (
                 <Empty icon={<Ship aria-hidden="true" />} title="No Boats to Book Here">
-                  <p>Pick another dock on the map, or try again in a few minutes while boats charge.</p>
+                  <p>
+                    Pick another dock on the map, or try again in a few minutes while boats charge.
+                  </p>
                 </Empty>
               ) : (
                 <ul className="boat-list">
@@ -148,7 +157,8 @@ export function FindBoats() {
                           <TypeChip type={b.type} />
                         </div>
                         <span className="small muted num">
-                          {formatCents(PRICES.unlockFee[b.type])} + {formatCents(PRICES.perMinute[b.type])}/min · up to{' '}
+                          {formatCents(PRICES.unlockFee[b.type])} +{' '}
+                          {formatCents(PRICES.perMinute[b.type])}/min · up to{' '}
                           {RULES.capacity[b.type]} people
                         </span>
                       </div>
@@ -186,7 +196,8 @@ export function FindBoats() {
                         <span className="dock-name">
                           <strong>{d.name}</strong>
                           <span className="small muted">
-                            {d.district} · <span className="num">{free}</span> {free === 1 ? 'berth' : 'berths'} free
+                            {d.district} · <span className="num">{free}</span>{' '}
+                            {free === 1 ? 'berth' : 'berths'} free
                           </span>
                         </span>
                         <span className={`dock-count num${count === 0 ? ' none' : ''}`}>
@@ -217,9 +228,10 @@ export function FindBoats() {
           <>
             <h2 id="reserve-title">Reserve {pending.code}?</h2>
             <p className="muted">
-              We hold the boat for {RULES.holdMinutes} minutes. You pay {formatCents(PRICES.holdPerMinute[pending.type])} per
-              started minute until you unlock it, up to {formatCents(PRICES.holdPerMinute[pending.type] * RULES.holdMinutes)}.
-              The hold fee is added to your trip.
+              We hold the boat for {RULES.holdMinutes} minutes. You pay{' '}
+              {formatCents(PRICES.holdPerMinute[pending.type])} per started minute until you unlock
+              it, up to {formatCents(PRICES.holdPerMinute[pending.type] * RULES.holdMinutes)}. The
+              hold fee is added to your trip.
             </p>
             <dl className="facts">
               <div>
@@ -244,7 +256,12 @@ export function FindBoats() {
               <button type="button" className="btn btn-secondary" onClick={() => setPending(null)}>
                 Not Now
               </button>
-              <button type="button" className="btn btn-primary" onClick={confirmReserve} disabled={busy}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={confirmReserve}
+                disabled={busy}
+              >
                 {busy ? 'Reserving…' : `Reserve ${pending.code}`}
               </button>
             </div>

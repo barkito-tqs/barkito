@@ -8,24 +8,25 @@ import java.util.UUID;
  * example when the boat is not docked or has no GPS fix.
  */
 public record BoatStatus(
-		int batteryPercent,
-		UUID berthId,
-		Position position,
-		boolean locked,
-		boolean pluggedIn,
-		List<String> faults) {
+    int batteryPercent,
+    UUID berthId,
+    Position position,
+    boolean locked,
+    boolean pluggedIn,
+    List<String> faults) {
 
-	private static final int MIN_BATTERY_PERCENT = 0;
-	private static final int MAX_BATTERY_PERCENT = 100;
+  private static final int MIN_BATTERY_PERCENT = 0;
+  private static final int MAX_BATTERY_PERCENT = 100;
 
-	public BoatStatus {
-		if (batteryPercent < MIN_BATTERY_PERCENT || batteryPercent > MAX_BATTERY_PERCENT) {
-			throw new IllegalArgumentException("batteryPercent must be between 0 and 100: " + batteryPercent);
-		}
-		faults = List.copyOf(faults);
-	}
+  public BoatStatus {
+    if (batteryPercent < MIN_BATTERY_PERCENT || batteryPercent > MAX_BATTERY_PERCENT) {
+      throw new IllegalArgumentException(
+          "batteryPercent must be between 0 and 100: " + batteryPercent);
+    }
+    faults = List.copyOf(faults);
+  }
 
-	public boolean hasFault() {
-		return !faults.isEmpty();
-	}
+  public boolean hasFault() {
+    return !faults.isEmpty();
+  }
 }

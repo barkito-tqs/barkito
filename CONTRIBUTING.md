@@ -14,8 +14,13 @@ Short contributor guidelines (Q5). The full workflow, Definition of Done and qua
 Build and test locally before pushing:
 
 ```bash
-mvn verify
+cd backend && ./mvnw spotless:apply verify   # format (Google Java Style), build and test
+cd frontend && npm run format && npm run lint && npm test
 ```
+
+CI fails on unformatted code (Spotless, Prettier) and on ESLint errors.
+
+Label the PR with exactly one of `ai:none`, `ai:assisted` or `ai:generated` (QA Manual 6.1). CI checks it.
 
 ## Code style
 

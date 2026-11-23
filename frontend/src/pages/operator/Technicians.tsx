@@ -23,7 +23,9 @@ export function Technicians() {
   function confirm() {
     if (!pending) return;
     setTechnicianDocks(pending.technician.id, pending.dockIds);
-    setDone(`${pending.technician.name} now covers ${pending.dockIds.length} ${pending.dockIds.length === 1 ? 'dock' : 'docks'}.`);
+    setDone(
+      `${pending.technician.name} now covers ${pending.dockIds.length} ${pending.dockIds.length === 1 ? 'dock' : 'docks'}.`,
+    );
     setPending(null);
   }
 
@@ -37,27 +39,50 @@ export function Technicians() {
       {done && <Alert tone="ok">{done}</Alert>}
       {uncovered.length > 0 && (
         <Alert tone="warn">
-          No technician covers {uncovered.map((d) => d.name).join(', ')}. Their tickets go to the nearest covered dock.
+          No technician covers {uncovered.map((d) => d.name).join(', ')}. Their tickets go to the
+          nearest covered dock.
         </Alert>
       )}
       <div className="grid-2">
         {technicians.map((t) => (
-          <TechnicianCard key={`${t.id}-${t.dockIds.join()}`} technician={t} docks={docks} onSave={(dockIds) => setPending({ technician: t, dockIds })} />
+          <TechnicianCard
+            key={`${t.id}-${t.dockIds.join()}`}
+            technician={t}
+            docks={docks}
+            onSave={(dockIds) => setPending({ technician: t, dockIds })}
+          />
         ))}
       </div>
 
       <Dialog open={pending !== null} onClose={() => setPending(null)} labelledBy="coverage-title">
-        {pending && <ConfirmCoverage pending={pending} docks={docks} onCancel={() => setPending(null)} onConfirm={confirm} />}
+        {pending && (
+          <ConfirmCoverage
+            pending={pending}
+            docks={docks}
+            onCancel={() => setPending(null)}
+            onConfirm={confirm}
+          />
+        )}
       </Dialog>
     </>
   );
 }
 
-function TechnicianCard({ technician, docks, onSave }: { technician: Technician; docks: Dock[]; onSave: (dockIds: string[]) => void }) {
+function TechnicianCard({
+  technician,
+  docks,
+  onSave,
+}: {
+  technician: Technician;
+  docks: Dock[];
+  onSave: (dockIds: string[]) => void;
+}) {
   const tickets = useStore((s) => s.tickets);
   const [draft, setDraft] = useState<string[]>(technician.dockIds);
   const open = tickets.filter((x) => x.technicianId === technician.id && !x.closedAt).length;
-  const changed = draft.length !== technician.dockIds.length || draft.some((d) => !technician.dockIds.includes(d));
+  const changed =
+    draft.length !== technician.dockIds.length ||
+    draft.some((d) => !technician.dockIds.includes(d));
 
   return (
     <section className="card stack" aria-labelledby={`tech-${technician.id}`}>
@@ -68,7 +93,8 @@ function TechnicianCard({ technician, docks, onSave }: { technician: Technician;
         <div>
           <h2 id={`tech-${technician.id}`}>{technician.name}</h2>
           <p className="small muted">
-            {open} open {open === 1 ? 'ticket' : 'tickets'} · {technician.dockIds.length} {technician.dockIds.length === 1 ? 'dock' : 'docks'}
+            {open} open {open === 1 ? 'ticket' : 'tickets'} · {technician.dockIds.length}{' '}
+            {technician.dockIds.length === 1 ? 'dock' : 'docks'}
           </p>
         </div>
       </div>
@@ -79,17 +105,29 @@ function TechnicianCard({ technician, docks, onSave }: { technician: Technician;
             <input
               type="checkbox"
               checked={draft.includes(d.id)}
-              onChange={(e) => setDraft(e.target.checked ? [...draft, d.id] : draft.filter((x) => x !== d.id))}
+              onChange={(e) =>
+                setDraft(e.target.checked ? [...draft, d.id] : draft.filter((x) => x !== d.id))
+              }
             />
             {d.name}
           </label>
         ))}
       </fieldset>
       <div className="row dock-card-actions">
-        <button type="button" className="btn btn-secondary btn-sm" disabled={!changed} onClick={() => setDraft(technician.dockIds)}>
+        <button
+          type="button"
+          className="btn btn-secondary btn-sm"
+          disabled={!changed}
+          onClick={() => setDraft(technician.dockIds)}
+        >
           Undo
         </button>
-        <button type="button" className="btn btn-primary btn-sm" disabled={!changed} onClick={() => onSave(draft)}>
+        <button
+          type="button"
+          className="btn btn-primary btn-sm"
+          disabled={!changed}
+          onClick={() => onSave(draft)}
+        >
           Save Changes
         </button>
       </div>
@@ -130,7 +168,10 @@ function ConfirmCoverage({
           </div>
         )}
       </dl>
-      <p className="muted small">New tickets follow the new coverage. Open tickets keep their technician unless you reassign them.</p>
+      <p className="muted small">
+        New tickets follow the new coverage. Open tickets keep their technician unless you reassign
+        them.
+      </p>
       <div className="dialog-actions">
         <button type="button" className="btn btn-secondary" onClick={onCancel}>
           Keep Current Docks

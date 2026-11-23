@@ -13,7 +13,8 @@ export function RequireRole({ role, children }: { role: Role; children: ReactNod
     <div className="card">
       <Empty icon={<Ban aria-hidden="true" />} title="This Area Belongs to Another Role">
         <p>
-          The {ROLE_LABEL[role].toLowerCase()} area is not available to your account ({ROLE_LABEL[user.role].toLowerCase()}).
+          The {ROLE_LABEL[role].toLowerCase()} area is not available to your account (
+          {ROLE_LABEL[user.role].toLowerCase()}).
         </p>
         <Link className="btn btn-primary" to={HOME_BY_ROLE[user.role]}>
           Go to Your Area

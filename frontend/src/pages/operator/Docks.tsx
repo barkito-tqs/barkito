@@ -7,7 +7,12 @@ import { Alert, Badge, Dialog, PageHead } from '../../components/ui';
 import { freeBerths } from '../../domain/rules';
 import type { BoatState } from '../../domain/types';
 
-export const NEEDS_ATTENTION: BoatState[] = ['CHARGE_REQUIRED', 'REPAIR_REQUIRED', 'TOW_REQUIRED', 'RETURN_REQUIRED'];
+export const NEEDS_ATTENTION: BoatState[] = [
+  'CHARGE_REQUIRED',
+  'REPAIR_REQUIRED',
+  'TOW_REQUIRED',
+  'RETURN_REQUIRED',
+];
 
 /** US-04: docks and their berths; each dock opens with its boats. Berths in service are set by the municipality (US-27). */
 export function Docks() {
@@ -41,24 +46,37 @@ export function Docks() {
             hrefFor={(id) => `/docks/${id}`}
             onSelect={(id) => navigate(`/docks/${id}`)}
           />
-          <p className="small muted">Numbers on the pins are boats moored now. Open a dock to manage its boats.</p>
+          <p className="small muted">
+            Numbers on the pins are boats moored now. Open a dock to manage its boats.
+          </p>
         </div>
         <ul className="card card-tight link-rows" aria-label="Docks">
           {docks.map((d) => {
             const free = freeBerths(d, boats);
             const moored = boats.filter((b) => b.dockId === d.id).length;
-            const attention = boats.filter((b) => b.dockId === d.id && NEEDS_ATTENTION.includes(b.state)).length;
+            const attention = boats.filter(
+              (b) => b.dockId === d.id && NEEDS_ATTENTION.includes(b.state),
+            ).length;
             return (
               <li key={d.id}>
                 <Link to={`/docks/${d.id}`} className="link-row dock-row">
                   <span className="link-row-main">
                     <strong>{d.name}</strong>
                     <span className="small muted">
-                      {d.district} · <span className="num">{moored}</span> {moored === 1 ? 'boat' : 'boats'} ·{' '}
-                      <span className="num">{free}</span> of <span className="num">{d.berthsInService}</span> berths free
+                      {d.district} · <span className="num">{moored}</span>{' '}
+                      {moored === 1 ? 'boat' : 'boats'} · <span className="num">{free}</span> of{' '}
+                      <span className="num">{d.berthsInService}</span> berths free
                     </span>
                   </span>
-                  {attention > 0 ? <Badge tone="warn">{attention} {attention === 1 ? 'needs' : 'need'} attention</Badge> : free === 0 ? <Badge tone="danger">Full</Badge> : <span />}
+                  {attention > 0 ? (
+                    <Badge tone="warn">
+                      {attention} {attention === 1 ? 'needs' : 'need'} attention
+                    </Badge>
+                  ) : free === 0 ? (
+                    <Badge tone="danger">Full</Badge>
+                  ) : (
+                    <span />
+                  )}
                   <ChevronRight aria-hidden="true" className="chev" />
                 </Link>
               </li>
@@ -71,7 +89,15 @@ export function Docks() {
   );
 }
 
-function RegisterDockDialog({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: (name: string) => void }) {
+function RegisterDockDialog({
+  open,
+  onClose,
+  onDone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onDone: (name: string) => void;
+}) {
   const [name, setName] = useState('');
   const [district, setDistrict] = useState('');
   const [berths, setBerths] = useState('4');
@@ -97,16 +123,41 @@ function RegisterDockDialog({ open, onClose, onDone }: { open: boolean; onClose:
         <h2 id="dock-title">Register a Dock</h2>
         <div className="field">
           <label htmlFor="dock-name">Name</label>
-          <input id="dock-name" name="dockName" className="input" autoComplete="off" placeholder="e.g. Fish Market…" value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            id="dock-name"
+            name="dockName"
+            className="input"
+            autoComplete="off"
+            placeholder="e.g. Fish Market…"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
         <div className="form-grid cols-2">
           <div className="field">
             <label htmlFor="dock-district">District</label>
-            <input id="dock-district" name="district" className="input" autoComplete="off" placeholder="e.g. Ribeira…" value={district} onChange={(e) => setDistrict(e.target.value)} />
+            <input
+              id="dock-district"
+              name="district"
+              className="input"
+              autoComplete="off"
+              placeholder="e.g. Ribeira…"
+              value={district}
+              onChange={(e) => setDistrict(e.target.value)}
+            />
           </div>
           <div className="field">
             <label htmlFor="dock-berths">Berths</label>
-            <input id="dock-berths" name="berths" className="input" type="number" inputMode="numeric" min={1} value={berths} onChange={(e) => setBerths(e.target.value)} />
+            <input
+              id="dock-berths"
+              name="berths"
+              className="input"
+              type="number"
+              inputMode="numeric"
+              min={1}
+              value={berths}
+              onChange={(e) => setBerths(e.target.value)}
+            />
           </div>
         </div>
         {error && <Alert tone="danger">{error}</Alert>}

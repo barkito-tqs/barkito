@@ -31,9 +31,15 @@ export function Wallet() {
             <Alert tone="warn">Add a card before you reserve or unlock a boat.</Alert>
           )}
           <p className="small muted">
-            Card details are typed into Stripe&rsquo;s secure form and go straight to Stripe. Barkito keeps only a reference to the card.
+            Card details are typed into Stripe&rsquo;s secure form and go straight to Stripe.
+            Barkito keeps only a reference to the card.
           </p>
-          <button type="button" className="btn btn-secondary" disabled title="Available when payments go live in iteration 3">
+          <button
+            type="button"
+            className="btn btn-secondary"
+            disabled
+            title="Available when payments go live in iteration 3"
+          >
             Replace Card
           </button>
         </section>
@@ -58,8 +64,8 @@ export function Wallet() {
             </div>
           </dl>
           <p className="small muted">
-            The deposit is held when you unlock a boat and released when you end the trip, minus what you owe. Anything above the deposit
-            becomes debt.
+            The deposit is held when you unlock a boat and released when you end the trip, minus
+            what you owe. Anything above the deposit becomes debt.
           </p>
         </section>
       </div>

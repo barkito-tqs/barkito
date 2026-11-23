@@ -28,13 +28,17 @@ export function SignIn() {
       <section className="signin-hero">
         <img src={logo} alt="Barkito" width={240} height={240} />
         <h1>Shared Electric Boats on the Canals of Ria Nova</h1>
-        <p>Reserve a boat while you walk to the dock, unlock it with its QR code and leave it at any dock with a free berth.</p>
+        <p>
+          Reserve a boat while you walk to the dock, unlock it with its QR code and leave it at any
+          dock with a free berth.
+        </p>
       </section>
       <section className="signin-panel" aria-labelledby="signin-title">
         <div className="signin-inner">
           <h2 id="signin-title">Sign In</h2>
           <p className="muted small">
-            Sign-in with your Barkito account arrives in iteration 3. For now, choose an account to open its area.
+            Sign-in with your Barkito account arrives in iteration 3. For now, choose an account to
+            open its area.
           </p>
           <ul className="persona-list">
             {users.map((u) => (

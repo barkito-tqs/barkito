@@ -11,7 +11,8 @@ import { useNow } from '../../lib/useNow';
 const TOW_ON_SITE_MS = 30 * 60_000;
 
 function DueBadge({ ticket, now }: { ticket: Ticket; now: number }) {
-  if (ticket.dueAt < now) return <Badge tone="danger">Overdue {formatDuration(now - ticket.dueAt)}</Badge>;
+  if (ticket.dueAt < now)
+    return <Badge tone="danger">Overdue {formatDuration(now - ticket.dueAt)}</Badge>;
   return (
     <Badge tone={ticket.dueAt - now < 30 * 60_000 ? 'warn' : 'info'}>
       Due {formatTime(ticket.dueAt)} · in {formatDuration(ticket.dueAt - now)}
@@ -28,7 +29,9 @@ export function MyTickets() {
   const tickets = useStore((s) => s.tickets)
     .filter((t) => t.technicianId === user.id && !t.closedAt)
     .sort((a, b) => a.dueAt - b.dueAt);
-  const closedToday = useStore((s) => s.tickets).filter((t) => t.technicianId === user.id && t.closedAt).length;
+  const closedToday = useStore((s) => s.tickets).filter(
+    (t) => t.technicianId === user.id && t.closedAt,
+  ).length;
 
   return (
     <>
@@ -50,10 +53,16 @@ export function MyTickets() {
             const dock = docks.find((d) => d.id === boat?.dockId);
             return (
               <li key={t.id}>
-                <Link to={`/my-tickets/${t.id}`} className={`ticket-row${t.dueAt < now ? ' late' : ''}`}>
+                <Link
+                  to={`/my-tickets/${t.id}`}
+                  className={`ticket-row${t.dueAt < now ? ' late' : ''}`}
+                >
                   <span className="ticket-row-main">
                     <span className="row" style={{ gap: 8 }}>
-                      <Badge tone={t.type === 'TOW' || t.type === 'REPAIR' ? 'danger' : 'warn'} plain>
+                      <Badge
+                        tone={t.type === 'TOW' || t.type === 'REPAIR' ? 'danger' : 'warn'}
+                        plain
+                      >
                         {TICKET_LABEL[t.type]}
                       </Badge>
                       <span className="code" translate="no">
@@ -80,7 +89,9 @@ export function TicketDetail() {
   const { ticketId } = useParams();
   const user = useUser();
   const now = useNow(30_000);
-  const ticket = useStore((s) => s.tickets).find((t) => t.id === ticketId && t.technicianId === user.id);
+  const ticket = useStore((s) => s.tickets).find(
+    (t) => t.id === ticketId && t.technicianId === user.id,
+  );
   if (!ticket) {
     return (
       <div className="card">
@@ -155,8 +166,16 @@ function TicketCard({ ticket, now }: { ticket: Ticket; now: number }) {
             <Badge tone="ok">On site</Badge>
           ) : (
             <>
-              <Badge tone={now > onSiteDue ? 'danger' : 'warn'}>Be on site by {formatTime(onSiteDue)}</Badge>
-              <button type="button" className="btn btn-sm btn-secondary" onClick={() => addTicketNote(ticket.id, `Arrived on site at ${formatTime(Date.now())}.`)}>
+              <Badge tone={now > onSiteDue ? 'danger' : 'warn'}>
+                Be on site by {formatTime(onSiteDue)}
+              </Badge>
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary"
+                onClick={() =>
+                  addTicketNote(ticket.id, `Arrived on site at ${formatTime(Date.now())}.`)
+                }
+              >
                 I Am on Site
               </button>
             </>

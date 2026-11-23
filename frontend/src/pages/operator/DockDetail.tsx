@@ -27,7 +27,11 @@ export function DockDetail() {
   // Boats needing attention first, then by berth.
   const moored = boats
     .filter((b) => b.dockId === dock.id && b.state !== 'RETIRED')
-    .sort((a, b) => Number(NEEDS_ATTENTION.includes(b.state)) - Number(NEEDS_ATTENTION.includes(a.state)) || (a.berth ?? 99) - (b.berth ?? 99));
+    .sort(
+      (a, b) =>
+        Number(NEEDS_ATTENTION.includes(b.state)) - Number(NEEDS_ATTENTION.includes(a.state)) ||
+        (a.berth ?? 99) - (b.berth ?? 99),
+    );
 
   return (
     <>
@@ -37,10 +41,26 @@ export function DockDetail() {
       <PageHead eyebrow={dock.district} title={dock.name} />
 
       <dl className="stats">
-        <Stat label="Boats moored" value={moored.length} hint={`${moored.filter(isBookable).length} bookable now`} />
-        <Stat label="Free berths" value={freeBerths(dock, boats)} hint={`of ${dock.berthsInService} in service`} />
-        <Stat label="Berths in service" value={dock.berthsInService} hint={`of ${dock.berths} physical`} />
-        <Stat label="Need attention" value={moored.filter((b) => NEEDS_ATTENTION.includes(b.state)).length} hint="charge, repair, tow, return" />
+        <Stat
+          label="Boats moored"
+          value={moored.length}
+          hint={`${moored.filter(isBookable).length} bookable now`}
+        />
+        <Stat
+          label="Free berths"
+          value={freeBerths(dock, boats)}
+          hint={`of ${dock.berthsInService} in service`}
+        />
+        <Stat
+          label="Berths in service"
+          value={dock.berthsInService}
+          hint={`of ${dock.berths} physical`}
+        />
+        <Stat
+          label="Need attention"
+          value={moored.filter((b) => NEEDS_ATTENTION.includes(b.state)).length}
+          hint="charge, repair, tow, return"
+        />
       </dl>
 
       {moored.length === 0 ? (

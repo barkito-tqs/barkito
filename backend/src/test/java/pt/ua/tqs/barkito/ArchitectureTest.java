@@ -9,31 +9,40 @@ import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 
 /**
- * Boundaries of the modular monolith (Product Specification 4.3). Each module is a package
- * {@code pt.ua.tqs.barkito.<module>} with {@code domain}, {@code application} and {@code adapter} subpackages.
+ * Boundaries of the modular monolith (Product Specification 4.3). Each module is a package {@code
+ * pt.ua.tqs.barkito.<module>} with {@code domain}, {@code application} and {@code adapter}
+ * subpackages.
  */
-@AnalyzeClasses(packages = "pt.ua.tqs.barkito", importOptions = ImportOption.DoNotIncludeTests.class)
+@AnalyzeClasses(
+    packages = "pt.ua.tqs.barkito",
+    importOptions = ImportOption.DoNotIncludeTests.class)
 class ArchitectureTest {
 
-	/** Business logic depends on none of the adapters, and the domain stays free of frameworks. */
-	@ArchTest
-	static final ArchRule domainDependsOnNothingOutsideItself = noClasses()
-			.that().resideInAPackage("..domain..")
-			.should().dependOnClassesThat().resideInAnyPackage("..application..", "..adapter..", "org.springframework..");
+  /** Business logic depends on none of the adapters, and the domain stays free of frameworks. */
+  @ArchTest
+  static final ArchRule domainDependsOnNothingOutsideItself =
+      noClasses()
+          .that()
+          .resideInAPackage("..domain..")
+          .should()
+          .dependOnClassesThat()
+          .resideInAnyPackage("..application..", "..adapter..", "org.springframework..");
 
-	@ArchTest
-	static final ArchRule applicationDoesNotDependOnAdapters = noClasses()
-			.that().resideInAPackage("..application..")
-			.should().dependOnClassesThat().resideInAPackage("..adapter..");
+  @ArchTest
+  static final ArchRule applicationDoesNotDependOnAdapters =
+      noClasses()
+          .that()
+          .resideInAPackage("..application..")
+          .should()
+          .dependOnClassesThat()
+          .resideInAPackage("..adapter..");
 
-	/** No module reaches into another module's adapters (REST controllers, persistence). */
-	@ArchTest
-	static final ArchRule adaptersOfDifferentModulesAreIndependent = slices()
-			.matching("pt.ua.tqs.barkito.(*).adapter..")
-			.should().notDependOnEachOther();
+  /** No module reaches into another module's adapters (REST controllers, persistence). */
+  @ArchTest
+  static final ArchRule adaptersOfDifferentModulesAreIndependent =
+      slices().matching("pt.ua.tqs.barkito.(*).adapter..").should().notDependOnEachOther();
 
-	@ArchTest
-	static final ArchRule modulesAreFreeOfCycles = slices()
-			.matching("pt.ua.tqs.barkito.(*)..")
-			.should().beFreeOfCycles();
+  @ArchTest
+  static final ArchRule modulesAreFreeOfCycles =
+      slices().matching("pt.ua.tqs.barkito.(*)..").should().beFreeOfCycles();
 }

@@ -1,0 +1,24 @@
+# Code owners (QA Manual 3.2). A PR that touches these paths needs the approval of one of
+# their owners. Every path has two owners so the author can never be the only one.
+# Later lines take precedence over earlier ones.
+#
+# Claudino Martins (Team Coordinator) @dino3111
+# Gonçalo Vila (Product Owner)        @goncalovila
+# Rodrigo Simões (QA Engineer)        @xutaa
+# Simão Pinto (DevOps Master)         @SimaoPinto999
+
+*                                   @dino3111 @goncalovila @xutaa @SimaoPinto999
+
+# Pipeline, repository settings and deployment
+/.github/                           @SimaoPinto999 @dino3111
+/docker-compose.yml                 @SimaoPinto999 @dino3111
+**/Dockerfile                       @SimaoPinto999 @dino3111
+/frontend/nginx.conf                @SimaoPinto999 @dino3111
+
+# Acceptance criteria (Gherkin) agreed by the PO and the QA Engineer
+/backend/src/test/resources/features/  @goncalovila @xutaa
+
+# Quality documents and agent instructions
+/docs/qa/                           @xutaa @dino3111
+/AGENTS.md                          @dino3111 @goncalovila
+/CONTRIBUTING.md                    @dino3111 @xutaa

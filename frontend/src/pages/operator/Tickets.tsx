@@ -32,9 +32,21 @@ export function Tickets() {
       />
       <dl className="stats">
         <Stat label="Open" value={open.length} />
-        <Stat label="Overdue" value={overdue.length} hint={overdue.length ? 'SLA breached' : 'All within SLA'} />
-        <Stat label="Tow" value={open.filter((t) => t.type === 'TOW').length} hint="on site in 30 min" />
-        <Stat label="Repair" value={open.filter((t) => t.type === 'REPAIR').length} hint="24 h SLA" />
+        <Stat
+          label="Overdue"
+          value={overdue.length}
+          hint={overdue.length ? 'SLA breached' : 'All within SLA'}
+        />
+        <Stat
+          label="Tow"
+          value={open.filter((t) => t.type === 'TOW').length}
+          hint="on site in 30 min"
+        />
+        <Stat
+          label="Repair"
+          value={open.filter((t) => t.type === 'REPAIR').length}
+          hint="24 h SLA"
+        />
       </dl>
 
       <nav className="segmented" aria-label="Ticket view">
@@ -48,7 +60,10 @@ export function Tickets() {
 
       {list.length === 0 ? (
         <div className="card">
-          <Empty icon={<TicketIcon aria-hidden="true" />} title={showClosed ? 'No Closed Tickets Yet' : 'No Open Tickets'} />
+          <Empty
+            icon={<TicketIcon aria-hidden="true" />}
+            title={showClosed ? 'No Closed Tickets Yet' : 'No Open Tickets'}
+          />
         </div>
       ) : (
         <div className="table-wrap">
@@ -86,7 +101,8 @@ export function Tickets() {
                     <td data-label="Deadline">
                       {t.closedAt ? (
                         <Badge tone={t.closedAt <= t.dueAt ? 'ok' : 'danger'}>
-                          Closed {formatTime(t.closedAt)} · {t.closedAt <= t.dueAt ? 'within SLA' : 'late'}
+                          Closed {formatTime(t.closedAt)} ·{' '}
+                          {t.closedAt <= t.dueAt ? 'within SLA' : 'late'}
                         </Badge>
                       ) : late ? (
                         <Badge tone="danger">Overdue by {formatDuration(now - t.dueAt)}</Badge>
@@ -119,7 +135,9 @@ export function Tickets() {
                         </>
                       )}
                     </td>
-                    <td className="small muted note-cell" data-label="Last note">{t.notes.at(-1) ?? '—'}</td>
+                    <td className="small muted note-cell" data-label="Last note">
+                      {t.notes.at(-1) ?? '—'}
+                    </td>
                   </tr>
                 );
               })}

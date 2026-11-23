@@ -80,7 +80,10 @@ export function CanalMap({
             >
               <g transform={`translate(${dock.x} ${dock.y})`}>
                 {(selected || highlighted) && <circle r="34" className="pin-halo" />}
-                <path className="pin-body" d="M0 0 C -6 -10, -22 -20, -22 -36 A 22 22 0 1 1 22 -36 C 22 -20, 6 -10, 0 0 Z" />
+                <path
+                  className="pin-body"
+                  d="M0 0 C -6 -10, -22 -20, -22 -36 A 22 22 0 1 1 22 -36 C 22 -20, 6 -10, 0 0 Z"
+                />
                 <text className="pin-count" y="-30" textAnchor="middle">
                   {count}
                 </text>

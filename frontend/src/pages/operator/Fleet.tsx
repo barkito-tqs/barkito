@@ -9,8 +9,16 @@ import type { BoatState, BoatType } from '../../domain/types';
 
 const FILTERS: { value: string; label: string; states: BoatState[] }[] = [
   { value: 'all', label: 'All', states: [] },
-  { value: 'service', label: 'In service', states: ['AVAILABLE', 'RESERVED', 'IN_USE', 'CHARGING'] },
-  { value: 'attention', label: 'Needs attention', states: ['CHARGE_REQUIRED', 'REPAIR_REQUIRED', 'TOW_REQUIRED', 'RETURN_REQUIRED'] },
+  {
+    value: 'service',
+    label: 'In service',
+    states: ['AVAILABLE', 'RESERVED', 'IN_USE', 'CHARGING'],
+  },
+  {
+    value: 'attention',
+    label: 'Needs attention',
+    states: ['CHARGE_REQUIRED', 'REPAIR_REQUIRED', 'TOW_REQUIRED', 'RETURN_REQUIRED'],
+  },
   { value: 'inactive', label: 'Inactive', states: ['INACTIVE', 'RETIRED'] },
 ];
 
@@ -42,10 +50,26 @@ export function Fleet() {
       />
 
       <dl className="stats">
-        <Stat label="Available" value={count(['AVAILABLE'])} hint={`of ${boats.filter((b) => b.state !== 'RETIRED').length} boats`} />
-        <Stat label="On the water" value={count(['IN_USE', 'RESERVED'])} hint="trips and reservations" />
-        <Stat label="Need attention" value={FILTERS[2].states.reduce((n, s) => n + count([s]), 0)} hint="charge, repair, tow, return" />
-        <Stat label="Overdue tickets" value={overdue} hint={<Link to="/tickets">Open tickets</Link>} />
+        <Stat
+          label="Available"
+          value={count(['AVAILABLE'])}
+          hint={`of ${boats.filter((b) => b.state !== 'RETIRED').length} boats`}
+        />
+        <Stat
+          label="On the water"
+          value={count(['IN_USE', 'RESERVED'])}
+          hint="trips and reservations"
+        />
+        <Stat
+          label="Need attention"
+          value={FILTERS[2].states.reduce((n, s) => n + count([s]), 0)}
+          hint="charge, repair, tow, return"
+        />
+        <Stat
+          label="Overdue tickets"
+          value={overdue}
+          hint={<Link to="/tickets">Open tickets</Link>}
+        />
       </dl>
 
       {message && <Alert tone="ok">{message}</Alert>}
@@ -53,7 +77,12 @@ export function Fleet() {
       <div className="row between">
         <nav className="segmented" aria-label="Filter boats">
           {FILTERS.map((f) => (
-            <Link key={f.value} to={f.value === 'all' ? '?' : `?state=${f.value}`} aria-current={filter === f ? 'true' : undefined} replace>
+            <Link
+              key={f.value}
+              to={f.value === 'all' ? '?' : `?state=${f.value}`}
+              aria-current={filter === f ? 'true' : undefined}
+              replace
+            >
               {f.label}
             </Link>
           ))}
@@ -70,12 +99,26 @@ export function Fleet() {
       )}
       <Pagination page={page} pages={pages} total={shown.length} noun="boats" />
 
-      <RegisterBoatDialog open={registering} onClose={() => setRegistering(false)} onDone={(code) => setMessage(`${code} registered. It stays inactive until you activate it.`)} />
+      <RegisterBoatDialog
+        open={registering}
+        onClose={() => setRegistering(false)}
+        onDone={(code) =>
+          setMessage(`${code} registered. It stays inactive until you activate it.`)
+        }
+      />
     </>
   );
 }
 
-function RegisterBoatDialog({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: (code: string) => void }) {
+function RegisterBoatDialog({
+  open,
+  onClose,
+  onDone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onDone: (code: string) => void;
+}) {
   const docks = useStore((s) => s.docks);
   const [code, setCode] = useState('');
   const [type, setType] = useState<BoatType>('STANDARD');
@@ -120,7 +163,13 @@ function RegisterBoatDialog({ open, onClose, onDone }: { open: boolean; onClose:
           </span>
           <div className="segmented" role="radiogroup" aria-labelledby="type-label">
             {(['STANDARD', 'XL'] as BoatType[]).map((t) => (
-              <button key={t} type="button" role="radio" aria-checked={type === t} onClick={() => setType(t)}>
+              <button
+                key={t}
+                type="button"
+                role="radio"
+                aria-checked={type === t}
+                onClick={() => setType(t)}
+              >
                 {t === 'XL' ? 'XL · 10 people' : 'Standard · 5 people'}
               </button>
             ))}
@@ -128,7 +177,13 @@ function RegisterBoatDialog({ open, onClose, onDone }: { open: boolean; onClose:
         </div>
         <div className="field">
           <label htmlFor="boat-dock">Home dock</label>
-          <select id="boat-dock" name="homeDock" className="select" value={dockId} onChange={(e) => setDockId(e.target.value)}>
+          <select
+            id="boat-dock"
+            name="homeDock"
+            className="select"
+            value={dockId}
+            onChange={(e) => setDockId(e.target.value)}
+          >
             <option value="">Choose a dock…</option>
             {docks.map((d) => (
               <option key={d.id} value={d.id}>
@@ -138,11 +193,18 @@ function RegisterBoatDialog({ open, onClose, onDone }: { open: boolean; onClose:
           </select>
         </div>
         {error && (
-          <p id="register-error" className="error" role="alert" style={{ color: 'var(--danger)', fontWeight: 600 }}>
+          <p
+            id="register-error"
+            className="error"
+            role="alert"
+            style={{ color: 'var(--danger)', fontWeight: 600 }}
+          >
             {error}
           </p>
         )}
-        <p className="small muted">A new boat starts inactive. Activate it once telemetry shows it moored and plugged in.</p>
+        <p className="small muted">
+          A new boat starts inactive. Activate it once telemetry shows it moored and plugged in.
+        </p>
         <div className="dialog-actions">
           <button type="button" className="btn btn-secondary" onClick={onClose}>
             Cancel

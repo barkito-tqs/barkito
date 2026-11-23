@@ -14,20 +14,20 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class ApiDocumentationTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-	@Test
-	void openApiDocumentDescribesTheFleetEndpoints() throws Exception {
-		mockMvc.perform(get("/v3/api-docs"))
-				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.info.title").value("Barkito API"))
-				.andExpect(jsonPath("$.paths['/api/v1/boats'].post").exists())
-				.andExpect(jsonPath("$.paths['/api/v1/boats'].get").exists());
-	}
+  @Test
+  void openApiDocumentDescribesTheFleetEndpoints() throws Exception {
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.info.title").value("Barkito API"))
+        .andExpect(jsonPath("$.paths['/api/v1/boats'].post").exists())
+        .andExpect(jsonPath("$.paths['/api/v1/boats'].get").exists());
+  }
 
-	@Test
-	void swaggerUiIsServed() throws Exception {
-		mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
-	}
+  @Test
+  void swaggerUiIsServed() throws Exception {
+    mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
+  }
 }
