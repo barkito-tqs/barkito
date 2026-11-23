@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pt.ua.tqs.barkito.accounts.adapter.security.TestRoles.as;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +21,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pt.ua.tqs.barkito.accounts.adapter.security.SecuredWebMvcTestConfig;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.application.DockDetails;
 import pt.ua.tqs.barkito.fleet.application.DockService;
 import pt.ua.tqs.barkito.fleet.application.DuplicateDockNameException;
@@ -33,6 +37,7 @@ import pt.ua.tqs.barkito.fleet.domain.Dock;
 import pt.ua.tqs.barkito.fleet.domain.Position;
 
 @WebMvcTest(DockController.class)
+@Import(SecuredWebMvcTestConfig.class)
 class DockControllerTest {
 
   private static final Position LOCATION = new Position(40.641817, -8.66465);
@@ -50,7 +55,10 @@ class DockControllerTest {
 
   private ResultActions register(String json) throws Exception {
     return mockMvc.perform(
-        post("/api/v1/docks").contentType(MediaType.APPLICATION_JSON).content(json));
+        post("/api/v1/docks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .with(as(Role.OPERATOR)));
   }
 
   private static String body(String name, Object latitude, Object longitude, Object berthCount) {
@@ -153,7 +161,7 @@ class DockControllerTest {
         .thenReturn(List.of(dockWith("Arts District", 1), dockWith("Old Market", 3)));
 
     mockMvc
-        .perform(get("/api/v1/docks"))
+        .perform(get("/api/v1/docks").with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(2)))
         .andExpect(jsonPath("$[0].name").value("Arts District"))
@@ -166,7 +174,7 @@ class DockControllerTest {
     when(dockService.findById(details.dock().id())).thenReturn(Optional.of(details));
 
     mockMvc
-        .perform(get("/api/v1/docks/" + details.dock().id()))
+        .perform(get("/api/v1/docks/" + details.dock().id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value("Old Market"))
         .andExpect(jsonPath("$.berths", hasSize(3)));
@@ -177,6 +185,8 @@ class DockControllerTest {
     UUID unknown = UUID.randomUUID();
     when(dockService.findById(unknown)).thenReturn(Optional.empty());
 
-    mockMvc.perform(get("/api/v1/docks/" + unknown)).andExpect(status().isNotFound());
+    mockMvc
+        .perform(get("/api/v1/docks/" + unknown).with(as(Role.OPERATOR)))
+        .andExpect(status().isNotFound());
   }
 }

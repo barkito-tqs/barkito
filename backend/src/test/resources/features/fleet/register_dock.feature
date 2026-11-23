@@ -12,7 +12,7 @@ Feature: Register docks and berths
 
   Scenario Outline: A dock has from 1 to 10 berths
     When the operator registers the dock "Fish Market" with <berths> berths
-    Then the request <outcome>
+    Then the dock request <outcome>
 
     Examples:
       | berths | outcome                        |
@@ -24,11 +24,11 @@ Feature: Register docks and berths
   Scenario: A dock name already taken is refused, ignoring case and surrounding spaces
     Given the dock "Fish Market" is registered with 2 berths
     When the operator registers the dock "  fish MARKET " with 3 berths
-    Then the request is refused with the status 409
+    Then the dock request is refused with the status 409
 
   Scenario Outline: A dock needs a valid location
     When the operator registers the dock "Fish Market" at <latitude>, <longitude> with 4 berths
-    Then the request is refused with the status 400
+    Then the dock request is refused with the status 400
 
     Examples:
       | latitude | longitude |
@@ -37,4 +37,4 @@ Feature: Register docks and berths
 
   Scenario: A dock without a location is refused
     When the operator registers the dock "Fish Market" without a location
-    Then the request is refused with the status 400
+    Then the dock request is refused with the status 400

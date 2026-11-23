@@ -18,9 +18,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 
 /**
  * Steps for register_dock.feature and register_berth.feature (US-04, BRK-43).
@@ -36,6 +38,8 @@ public class RegisterDockSteps {
   private static final double LONGITUDE = -8.6538;
 
   @Autowired private MockMvc mockMvc;
+
+  @Autowired private DevTokens devTokens;
 
   private final String suffix = " #" + UUID.randomUUID().toString().substring(0, 8);
   private final Map<String, UUID> dockIds = new HashMap<>();
@@ -56,7 +60,10 @@ public class RegisterDockSteps {
             .formatted(scoped(name), latitude, longitude, berths);
     ResultActions result =
         mockMvc.perform(
-            post("/api/v1/docks").contentType(MediaType.APPLICATION_JSON).content(body));
+            post("/api/v1/docks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(body)
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
     int status = result.andReturn().getResponse().getStatus();
     if (status == 201) {
       String id = JsonPath.read(result.andReturn().getResponse().getContentAsString(), "$.id");
@@ -112,24 +119,27 @@ public class RegisterDockSteps {
   @Then("the dock {string} appears in the list of docks")
   public void theDockAppearsInTheList(String name) throws Exception {
     mockMvc
-        .perform(get("/api/v1/docks"))
+        .perform(
+            get("/api/v1/docks").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[?(@.name == '%s')]".formatted(scoped(name))).exists());
   }
 
-  @Then("the request is accepted with {int} berths")
+  @Then("the dock request is accepted with {int} berths")
   public void theRequestIsAccepted(int berths) throws Exception {
     response.andExpect(status().isCreated()).andExpect(jsonPath("$.berthCount").value(berths));
   }
 
-  @Then("the request is refused with the status {int}")
+  @Then("the dock request is refused with the status {int}")
   public void theRequestIsRefused(int status) throws Exception {
     response.andExpect(status().is(status));
   }
 
   private String dock(String name) throws Exception {
     return mockMvc
-        .perform(get("/api/v1/docks/" + dockIds.get(name)))
+        .perform(
+            get("/api/v1/docks/" + dockIds.get(name))
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andReturn()
         .getResponse()
