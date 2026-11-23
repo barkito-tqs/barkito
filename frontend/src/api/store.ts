@@ -21,6 +21,8 @@ import type {
   Trip,
   User,
 } from '../domain/types';
+import { toMapPoint } from '../domain/geo';
+import { ApiError, http } from './http';
 import { BOATS, DOCKS, TECHNICIANS, USERS, seedTickets, seedTrips } from './mockData';
 
 /**
@@ -29,14 +31,7 @@ import { BOATS, DOCKS, TECHNICIANS, USERS, seedTickets, seedTrips } from './mock
  * so the screens can be wired to the real backend without changing their error handling.
  */
 
-export class ApiError extends Error {
-  constructor(
-    readonly status: 400 | 403 | 404 | 409,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+export { ApiError };
 
 export type ProblemCategory = 'ENGINE' | 'HULL' | 'BATTERY' | 'OTHER';
 
@@ -59,6 +54,8 @@ export interface Settings {
 export interface State {
   users: User[];
   docks: Dock[];
+  /** Why the docks could not be loaded from the API, if they could not (US-04). */
+  docksError: string | null;
   boats: Boat[];
   reservations: Reservation[];
   trips: Trip[];
@@ -77,6 +74,7 @@ const now = Date.now();
 let state: State = {
   users: USERS,
   docks: DOCKS,
+  docksError: null,
   boats: BOATS,
   reservations: [],
   trips: seedTrips(now),
@@ -429,18 +427,58 @@ export function registerBoat(code: string, type: BoatType, dockId: string): Boat
   return boat;
 }
 
-export function registerDock(name: string, district: string, berths: number): Dock {
-  if (!name.trim()) throw new ApiError(400, 'Give the dock a name.');
-  if (berths < 1) throw new ApiError(400, 'A dock needs at least 1 berth.');
-  const dock: Dock = {
-    id: `d-${Date.now()}`,
-    name: name.trim(),
-    district: district.trim() || '—',
-    x: 120 + Math.random() * 760,
-    y: 80 + Math.random() * 440,
-    berths,
-    berthsInService: berths,
+/** A dock as the REST API returns it (GET/POST /api/v1/docks). */
+export interface DockResponse {
+  id: string;
+  name: string;
+  district: string | null;
+  latitude: number;
+  longitude: number;
+  berthCount: number;
+  berthsInService: number;
+}
+
+export function toDock(response: DockResponse): Dock {
+  return {
+    id: response.id,
+    name: response.name,
+    district: response.district ?? '—',
+    latitude: response.latitude,
+    longitude: response.longitude,
+    ...toMapPoint(response.latitude, response.longitude),
+    berths: response.berthCount,
+    berthsInService: response.berthsInService,
   };
+}
+
+/** US-04: loads the docks from the API; on failure the docks already shown are kept. */
+export async function loadDocks(): Promise<void> {
+  try {
+    const docks = await http.get<DockResponse[]>('/docks');
+    set({ docks: docks.map(toDock), docksError: null });
+  } catch (e) {
+    set({ docksError: e instanceof ApiError ? e.message : 'The docks could not be loaded.' });
+  }
+}
+
+export interface NewDock {
+  name: string;
+  district: string;
+  latitude: number;
+  longitude: number;
+  berths: number;
+}
+
+/** US-04: registers a dock through the API (400, 409 or 422 come back as ApiError). */
+export async function registerDock(input: NewDock): Promise<Dock> {
+  const response = await http.post<DockResponse>('/docks', {
+    name: input.name,
+    district: input.district.trim() || null,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    berthCount: input.berths,
+  });
+  const dock = toDock(response);
   set({ docks: [...state.docks, dock] });
   return dock;
 }

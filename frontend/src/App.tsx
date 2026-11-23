@@ -1,6 +1,7 @@
 import { Compass } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Link, Navigate, Route, Routes } from 'react-router-dom';
+import { loadDocks } from './api/store';
 import { HOME_BY_ROLE, useSession } from './auth/session';
 import { AppShell } from './components/AppShell';
 import { RequireRole } from './components/RequireRole';
@@ -60,6 +61,10 @@ const AREAS: { path: string; role: Role; element: ReactNode }[] = [
 ];
 
 export function App() {
+  useEffect(() => {
+    void loadDocks();
+  }, []);
+
   return (
     <Routes>
       <Route path="/sign-in" element={<SignIn />} />

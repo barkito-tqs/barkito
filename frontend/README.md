@@ -11,7 +11,7 @@ npm run build   # type-check and production build
 
 ## Mock API
 
-The backend exposes only the health endpoint so far, so `src/api/store.ts` stands in for the REST API and the WebSocket push. Each action matches a future endpoint and throws `ApiError` with the status code the API will return (400, 403, 404, 409). A telemetry simulator drains the battery of boats on a trip and charges plugged-in boats, so the low-battery alerts (BR7) and live fleet updates can be seen. State lives in memory and resets on reload.
+Docks come from the REST API (`src/api/http.ts`, US-04): the list is loaded on start and new docks are registered with `POST /api/v1/docks`. For everything else, `src/api/store.ts` still stands in for the REST API and the WebSocket push. Each action matches a future endpoint and throws `ApiError` with the status code the API will return (400, 403, 404, 409, 422). If the backend cannot be reached, the docks page warns and keeps the seed docks, which have the same ids as the backend's `dev` seed. A telemetry simulator drains the battery of boats on a trip and charges plugged-in boats, so the low-battery alerts (BR7) and live fleet updates can be seen. State lives in memory and resets on reload.
 
 Until sign-in arrives (US-01, I3), the sign-in page lets you pick one of the persona accounts from the Product Specification. In development, the Unlock page lists the codes printed below each boat's QR code.
 
