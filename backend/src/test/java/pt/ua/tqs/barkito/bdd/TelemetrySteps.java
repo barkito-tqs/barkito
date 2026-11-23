@@ -9,7 +9,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.BoatState;
@@ -19,6 +21,8 @@ import pt.ua.tqs.barkito.telemetry.adapter.simulator.SimulatedTelemetrySource;
 public class TelemetrySteps {
 
   @Autowired private MockMvc mockMvc;
+
+  @Autowired private DevTokens devTokens;
 
   @Autowired private BoatRepository boats;
 
@@ -54,7 +58,8 @@ public class TelemetrySteps {
   @Then("the boat {string} is now in the state {string}")
   public void theBoatIsNowInTheState(String code, String state) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath(boatPath(code, "state")).value(state));
   }
@@ -62,7 +67,8 @@ public class TelemetrySteps {
   @Then("the operator sees the boat {string} with {int} % battery, locked and plugged in")
   public void theOperatorSeesTheBoatWithBattery(String code, int battery) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath(boatPath(code, "status.batteryPercent")).value(battery))
         .andExpect(jsonPath(boatPath(code, "status.locked")).value(true))
@@ -73,7 +79,8 @@ public class TelemetrySteps {
   @Then("the operator sees the boat {string} moored in the berth {string}")
   public void theOperatorSeesTheBoatMoored(String code, String berth) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath(boatPath(code, "status.berthId")).value(berth));
   }
@@ -81,7 +88,8 @@ public class TelemetrySteps {
   @Then("the operator sees the boat {string} without a status")
   public void theOperatorSeesTheBoatWithoutAStatus(String code) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[?(@.code == '%s')]".formatted(code)).exists())
         .andExpect(jsonPath("$[?(@.code == '%s' && @.status == null)]".formatted(code)).exists());
@@ -90,7 +98,8 @@ public class TelemetrySteps {
   @Then("no boat {string} appears in the fleet list")
   public void noBoatAppearsInTheFleetList(String code) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[?(@.code == '%s')]".formatted(code)).isEmpty());
   }

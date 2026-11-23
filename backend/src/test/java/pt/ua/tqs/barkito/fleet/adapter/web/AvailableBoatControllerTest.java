@@ -6,14 +6,18 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pt.ua.tqs.barkito.accounts.adapter.security.TestRoles.as;
 
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import pt.ua.tqs.barkito.accounts.adapter.security.SecuredWebMvcTestConfig;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.application.AvailableBoatService;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
@@ -22,6 +26,7 @@ import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 
 @WebMvcTest(AvailableBoatController.class)
+@Import(SecuredWebMvcTestConfig.class)
 class AvailableBoatControllerTest {
 
   private static final UUID DOCK = UUID.fromString("7c9e6679-7425-40de-944b-e07fc1f90ae7");
@@ -42,7 +47,7 @@ class AvailableBoatControllerTest {
         .thenReturn(List.of(available("B-01", BoatType.XL, 64)));
 
     mockMvc
-        .perform(get(URL, DOCK))
+        .perform(get(URL, DOCK).with(as(Role.END_USER)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].code").value("B-01"))
@@ -56,7 +61,7 @@ class AvailableBoatControllerTest {
         .thenReturn(List.of(available("B-02", BoatType.STANDARD, 80)));
 
     mockMvc
-        .perform(get(URL, DOCK).param("type", "STANDARD"))
+        .perform(get(URL, DOCK).param("type", "STANDARD").with(as(Role.END_USER)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].code").value("B-02"));
   }
@@ -65,12 +70,14 @@ class AvailableBoatControllerTest {
   void anUnknownDockReturns404() throws Exception {
     when(availableBoats.findAvailableAt(DOCK)).thenThrow(new DockNotFoundException(DOCK));
 
-    mockMvc.perform(get(URL, DOCK)).andExpect(status().isNotFound());
+    mockMvc.perform(get(URL, DOCK).with(as(Role.END_USER))).andExpect(status().isNotFound());
   }
 
   @Test
   void aTypeOtherThanStandardOrXlReturns400() throws Exception {
-    mockMvc.perform(get(URL, DOCK).param("type", "KAYAK")).andExpect(status().isBadRequest());
+    mockMvc
+        .perform(get(URL, DOCK).param("type", "KAYAK").with(as(Role.END_USER)))
+        .andExpect(status().isBadRequest());
     verifyNoInteractions(availableBoats);
   }
 }

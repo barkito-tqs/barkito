@@ -12,15 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.domain.Dock;
 import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 
 public class RegisterBoatSteps {
 
   @Autowired private MockMvc mockMvc;
+
+  @Autowired private DevTokens devTokens;
 
   @Autowired private DockRepository docks;
 
@@ -57,7 +61,8 @@ public class RegisterBoatSteps {
   @Then("the boat {string} appears in the operator's fleet list")
   public void theBoatAppearsInTheFleetList(String code) throws Exception {
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(
+            get("/api/v1/boats").header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[?(@.code == '%s')]".formatted(code)).exists());
   }
@@ -74,6 +79,9 @@ public class RegisterBoatSteps {
 				"""
             .formatted(code, type, dockId);
     return mockMvc.perform(
-        post("/api/v1/boats").contentType(MediaType.APPLICATION_JSON).content(body));
+        post("/api/v1/boats")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body)
+            .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
   }
 }
