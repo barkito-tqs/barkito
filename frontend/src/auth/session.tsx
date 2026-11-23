@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { setSessionRole } from '../api/auth';
 import { getState } from '../api/store';
 import type { Role, User } from '../domain/types';
 
@@ -50,6 +51,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<Session>(() => {
     const user = getState().users.find((u) => u.id === userId) ?? null;
+    // Set while rendering, so the effects of the pages below already call the API as this user.
+    setSessionRole(user?.role ?? null);
     return { user, signIn, signOut };
   }, [userId, signIn, signOut]);
 

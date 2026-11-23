@@ -63,9 +63,13 @@ const AREAS: { path: string; role: Role; element: ReactNode }[] = [
 ];
 
 export function App() {
+  const { user } = useSession();
+  const isOperator = user?.role === 'OPERATOR';
+
+  // US-04: the dock endpoints belong to the operator; other roles keep the seed docks.
   useEffect(() => {
-    void loadDocks();
-  }, []);
+    if (isOperator) void loadDocks();
+  }, [isOperator]);
 
   return (
     <Routes>
