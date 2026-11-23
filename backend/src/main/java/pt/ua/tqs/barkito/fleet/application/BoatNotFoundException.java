@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class BoatNotFoundException extends RuntimeException {
 
-	public BoatNotFoundException(UUID boatId) {
-		super("Boat " + boatId + " does not exist.");
-	}
+  public BoatNotFoundException(UUID boatId) {
+    super("Boat " + boatId + " does not exist.");
+  }
 }
