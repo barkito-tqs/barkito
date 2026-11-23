@@ -3,7 +3,9 @@
  * back as RFC 9457 Problem Details and are thrown as ApiError with their status and detail.
  */
 
-export type ApiStatus = 400 | 403 | 404 | 409 | 422 | 500 | 503;
+import { authorizationHeader } from './auth';
+
+export type ApiStatus = 400 | 401 | 403 | 404 | 409 | 422 | 500 | 503;
 
 export class ApiError extends Error {
   constructor(
@@ -18,6 +20,8 @@ const BASE = '/api/v1';
 const UNREACHABLE = 503;
 const MESSAGES: Partial<Record<number, string>> = {
   400: 'Check the fields and try again.',
+  401: 'Sign in to continue.',
+  403: 'Your role cannot do this.',
   404: 'Not found.',
   422: 'The request breaks a business rule.',
 };
@@ -39,7 +43,10 @@ async function request<T>(method: 'GET' | 'POST', path: string, body?: unknown):
   try {
     response = await fetch(`${BASE}${path}`, {
       method,
-      headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+      headers: {
+        ...authorizationHeader(),
+        ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch {

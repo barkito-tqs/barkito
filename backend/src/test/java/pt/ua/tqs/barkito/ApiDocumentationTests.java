@@ -27,6 +27,17 @@ class ApiDocumentationTests {
   }
 
   @Test
+  void openApiDocumentDeclaresTheBearerScheme() throws Exception {
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.type").value("http"))
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.scheme").value("bearer"))
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.bearerFormat").value("JWT"))
+        .andExpect(jsonPath("$.security[0].bearer").exists());
+  }
+
+  @Test
   void swaggerUiIsServed() throws Exception {
     mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
   }

@@ -13,7 +13,10 @@ export type BoatState =
   | 'RETURN_REQUIRED'
   | 'RETIRED';
 
-export type Role = 'END_USER' | 'OPERATOR' | 'TECHNICIAN' | 'CLIENT_MANAGER';
+/** The five roles of the specification (US-02). */
+export const ROLES = ['END_USER', 'OPERATOR', 'TECHNICIAN', 'CLIENT_MANAGER', 'ADMIN'] as const;
+
+export type Role = (typeof ROLES)[number];
 
 export interface Dock {
   id: string;

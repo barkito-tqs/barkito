@@ -8,6 +8,7 @@ import { RequireRole } from './components/RequireRole';
 import { Empty } from './components/ui';
 import type { Role } from './domain/types';
 import { SignIn } from './pages/SignIn';
+import { AdminHome } from './pages/admin/AdminHome';
 import { Berths } from './pages/client/Berths';
 import { Kpis } from './pages/client/Kpis';
 import { Rules } from './pages/client/Rules';
@@ -58,12 +59,17 @@ const AREAS: { path: string; role: Role; element: ReactNode }[] = [
   { path: 'kpis', role: 'CLIENT_MANAGER', element: <Kpis /> },
   { path: 'rules', role: 'CLIENT_MANAGER', element: <Rules /> },
   { path: 'berths', role: 'CLIENT_MANAGER', element: <Berths /> },
+  { path: 'admin', role: 'ADMIN', element: <AdminHome /> },
 ];
 
 export function App() {
+  const { user } = useSession();
+  const isOperator = user?.role === 'OPERATOR';
+
+  // US-04: the dock endpoints belong to the operator; other roles keep the seed docks.
   useEffect(() => {
-    void loadDocks();
-  }, []);
+    if (isOperator) void loadDocks();
+  }, [isOperator]);
 
   return (
     <Routes>

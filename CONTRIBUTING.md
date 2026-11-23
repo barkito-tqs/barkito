@@ -29,6 +29,7 @@ Label the PR with exactly one of `ai:none`, `ai:assisted` or `ai:generated` (QA 
 - No secrets in the repository. Use environment variables or GitHub secrets.
 - Names describe intent; prefer small methods with a single responsibility.
 - Business logic has unit tests; API and persistence have integration tests (Testcontainers), kept separate from unit tests.
+- Every new endpoint needs a rule in `SecurityConfig` and a row in `EndpointAuthorizationTest`; unmapped endpoints are refused.
 
 ## Review checklist
 
@@ -36,6 +37,7 @@ The reviewer confirms that:
 
 - [ ] The acceptance criteria of the story are met.
 - [ ] Tests cover the new behavior.
+- [ ] New endpoints have a role rule and a row in the authorization matrix.
 - [ ] There are no secrets and no unexplained magic numbers.
 - [ ] Names are clear and the code is readable.
 - [ ] CI and the quality gate passed.

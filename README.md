@@ -25,7 +25,7 @@ docker compose down            # stop and remove the containers
 
 The repositories are still in memory, so data resets when the backend container restarts. A database service joins the Compose file when persistence arrives.
 
-Compose starts the backend with the `dev` profile, which seeds the six docks the web UI uses. To run the backend on its own with the same data: `cd backend && ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev`, then `cd frontend && npm run dev` (Vite proxies `/api` to port 8080).
+The backend runs the `dev` profile by default, which also seeds the six docks the web UI uses. To run it on its own with the same data: `cd backend && ./mvnw spring-boot:run`, then `cd frontend && npm run dev` (Vite proxies `/api` to port 8080).
 
 ## Project team
 

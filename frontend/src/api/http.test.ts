@@ -1,3 +1,4 @@
+import { setSessionRole } from './auth';
 import { ApiError, http } from './http';
 
 function reply(status: number, body: unknown) {
@@ -22,6 +23,19 @@ describe('REST client', () => {
       headers: { 'Content-Type': 'application/json' },
       body: '{"name":"Fish Market"}',
     });
+  });
+
+  it('sends the dev token of the signed-in persona', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(reply(200, []));
+    vi.stubGlobal('fetch', fetchMock);
+    setSessionRole('OPERATOR');
+
+    await http.get('/docks');
+
+    expect(fetchMock.mock.calls[0][1].headers).toEqual({
+      Authorization: `Bearer ${__DEV_TOKENS__.OPERATOR}`,
+    });
+    setSessionRole(null);
   });
 
   it.each([409, 422])('throws the Problem Details detail of a %i', async (status) => {
