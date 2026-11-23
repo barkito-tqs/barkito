@@ -10,7 +10,7 @@ import pt.ua.tqs.barkito.fleet.application.DuplicateBoatCodeException;
 import pt.ua.tqs.barkito.fleet.domain.BoatTransitionRefusedException;
 
 /** Maps fleet errors to RFC 9457 problem details. */
-@RestControllerAdvice(assignableTypes = BoatController.class)
+@RestControllerAdvice(assignableTypes = {BoatController.class, AvailableBoatController.class})
 public class FleetExceptionHandler {
 
   @ExceptionHandler(DuplicateBoatCodeException.class)
