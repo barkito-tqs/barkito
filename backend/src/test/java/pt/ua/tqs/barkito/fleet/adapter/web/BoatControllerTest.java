@@ -19,12 +19,14 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import pt.ua.tqs.barkito.fleet.application.BoatNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DuplicateBoatCodeException;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatState;
 import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
+import pt.ua.tqs.barkito.fleet.domain.BoatTransitionRefusedException;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 import pt.ua.tqs.barkito.fleet.domain.Position;
 
@@ -177,5 +179,62 @@ class BoatControllerTest {
         .perform(get("/api/v1/boats/" + boat.id()))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").doesNotExist());
+  }
+
+  @Test
+  void activatingABoatReturnsItInItsNewState() throws Exception {
+    Boat boat =
+        Boat.restore(UUID.randomUUID(), "B-16", BoatType.XL, DOCK, BoatState.CHARGING, null);
+    when(boatService.activate(boat.id())).thenReturn(boat);
+
+    mockMvc
+        .perform(post("/api/v1/boats/{id}/activation", boat.id()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.code").value("B-16"))
+        .andExpect(jsonPath("$.state").value("CHARGING"));
+  }
+
+  @Test
+  void aRefusedActivationReturns409() throws Exception {
+    UUID id = UUID.randomUUID();
+    when(boatService.activate(id))
+        .thenThrow(
+            new BoatTransitionRefusedException(
+                "B-16 must be moored in a berth and plugged in before it is activated."));
+
+    mockMvc
+        .perform(post("/api/v1/boats/{id}/activation", id))
+        .andExpect(status().isConflict())
+        .andExpect(
+            jsonPath("$.detail")
+                .value("B-16 must be moored in a berth and plugged in before it is activated."));
+  }
+
+  @Test
+  void activatingAnUnknownBoatReturns404() throws Exception {
+    UUID id = UUID.randomUUID();
+    when(boatService.activate(id)).thenThrow(new BoatNotFoundException(id));
+
+    mockMvc.perform(post("/api/v1/boats/{id}/activation", id)).andExpect(status().isNotFound());
+  }
+
+  @Test
+  void deactivatingABoatReturnsItInactive() throws Exception {
+    Boat boat = Boat.register("B-16", BoatType.XL, DOCK);
+    when(boatService.deactivate(boat.id())).thenReturn(boat);
+
+    mockMvc
+        .perform(post("/api/v1/boats/{id}/deactivation", boat.id()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.state").value("INACTIVE"));
+  }
+
+  @Test
+  void aRefusedDeactivationReturns409() throws Exception {
+    UUID id = UUID.randomUUID();
+    when(boatService.deactivate(id))
+        .thenThrow(new BoatTransitionRefusedException("B-16 is IN_USE."));
+
+    mockMvc.perform(post("/api/v1/boats/{id}/deactivation", id)).andExpect(status().isConflict());
   }
 }
