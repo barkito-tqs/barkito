@@ -12,8 +12,8 @@ import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 import pt.ua.tqs.barkito.fleet.domain.Position;
 
 /**
- * US-04: the operator registers docks and their berths. Registering is {@code synchronized} so that
- * two requests cannot take the same name.
+ * US-04: the operator registers docks and their berths. Registering and adding berths are {@code
+ * synchronized} so that two requests cannot take the same name or the same berth numbers.
  */
 @Service
 public class DockService {
@@ -41,6 +41,24 @@ public class DockService {
     }
     docks.save(dock);
     return new DockDetails(dock, createBerths(dock, 1, berthCount));
+  }
+
+  /**
+   * BRK-321: adds berths to a dock, numbered after its last one and in service, up to 10 in total.
+   */
+  public synchronized DockDetails addBerths(UUID dockId, int count) {
+    Dock dock = docks.findById(dockId).orElseThrow(() -> new DockNotFoundException(dockId));
+    if (count < Dock.MIN_BERTHS) {
+      throw InvalidBerthCountException.nothingToAdd(count);
+    }
+    List<Berth> existing = berths.findByDockId(dockId);
+    if (!Dock.allowsBerthCount(existing.size() + count)) {
+      throw InvalidBerthCountException.aboveMaximum(dock, existing.size(), count);
+    }
+    int next = existing.stream().mapToInt(Berth::number).max().orElse(0) + 1;
+    List<Berth> all = new ArrayList<>(existing);
+    all.addAll(createBerths(dock, next, count));
+    return new DockDetails(dock, all);
   }
 
   private List<Berth> createBerths(Dock dock, int firstNumber, int count) {

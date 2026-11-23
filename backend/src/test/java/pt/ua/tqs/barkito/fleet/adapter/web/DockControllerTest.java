@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import pt.ua.tqs.barkito.accounts.adapter.security.SecuredWebMvcTestConfig;
 import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.application.DockDetails;
+import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.DockService;
 import pt.ua.tqs.barkito.fleet.application.DuplicateDockNameException;
 import pt.ua.tqs.barkito.fleet.application.InvalidBerthCountException;
@@ -188,5 +189,53 @@ class DockControllerTest {
     mockMvc
         .perform(get("/api/v1/docks/" + unknown).with(as(Role.OPERATOR)))
         .andExpect(status().isNotFound());
+  }
+
+  private ResultActions addBerths(UUID dock, String json) throws Exception {
+    return mockMvc.perform(
+        post("/api/v1/docks/" + dock + "/berths")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(json)
+            .with(as(Role.OPERATOR)));
+  }
+
+  @Test
+  void addingBerthsReturns201WithTheDock() throws Exception {
+    DockDetails details = dockWith("Old Market", 6);
+    UUID dock = details.dock().id();
+    when(dockService.addBerths(dock, 2)).thenReturn(details);
+
+    addBerths(dock, "{\"count\": 2}")
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.berthCount").value(6))
+        .andExpect(jsonPath("$.berths[5].number").value(6));
+  }
+
+  @Test
+  void addingBerthsToAnUnknownDockIs404() throws Exception {
+    UUID unknown = UUID.randomUUID();
+    when(dockService.addBerths(unknown, 1)).thenThrow(new DockNotFoundException(unknown));
+
+    addBerths(unknown, "{\"count\": 1}").andExpect(status().isNotFound());
+  }
+
+  @Test
+  void addingBerthsBeyondTheMaximumIs422() throws Exception {
+    Dock oldMarket = dockWith("Old Market", 9).dock();
+    UUID dock = oldMarket.id();
+    when(dockService.addBerths(dock, 2))
+        .thenThrow(InvalidBerthCountException.aboveMaximum(oldMarket, 9, 2));
+
+    addBerths(dock, "{\"count\": 2}")
+        .andExpect(status().isUnprocessableContent())
+        .andExpect(
+            jsonPath("$.detail")
+                .value("Old Market has 9 berths; adding 2 would exceed the maximum of 10."));
+  }
+
+  @Test
+  void addingBerthsWithoutACountIs400() throws Exception {
+    addBerths(UUID.randomUUID(), "{}").andExpect(status().isBadRequest());
+    verifyNoInteractions(dockService);
   }
 }

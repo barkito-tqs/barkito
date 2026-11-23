@@ -7,12 +7,14 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pt.ua.tqs.barkito.fleet.application.DockDetails;
 import pt.ua.tqs.barkito.fleet.application.DockService;
@@ -65,5 +67,23 @@ public class DockController {
   @GetMapping("/{id}")
   public ResponseEntity<DockResponse> get(@PathVariable UUID id) {
     return ResponseEntity.of(dockService.findById(id).map(DockResponse::from));
+  }
+
+  @Operation(
+      summary = "Add berths to a dock",
+      description =
+          "BRK-321: the new berths continue the dock's numbering and are in service; a dock has at"
+              + " most 10 berths.")
+  @ApiResponse(responseCode = "201", description = "The dock with all its berths")
+  @ApiResponse(responseCode = "400", description = "Missing count")
+  @ApiResponse(responseCode = "404", description = "No dock with this id")
+  @ApiResponse(
+      responseCode = "422",
+      description = "Fewer than 1 berth, or more than 10 berths in total")
+  @PostMapping("/{id}/berths")
+  @ResponseStatus(HttpStatus.CREATED)
+  public DockResponse addBerths(
+      @PathVariable UUID id, @Valid @RequestBody AddBerthsRequest request) {
+    return DockResponse.from(dockService.addBerths(id, request.count()));
   }
 }

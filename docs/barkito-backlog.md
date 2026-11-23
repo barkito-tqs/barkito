@@ -17,6 +17,7 @@ Conventions, following the QA Manual (2.2):
 | US-02 | BRK-41 | Accounts and roles | Role-based areas | — | 2 | I2 |
 | US-03 | BRK-42 | Fleet and docks | Register a boat | — | 2 | I2 |
 | US-04 | BRK-43 | Fleet and docks | Register docks and berths | — | 2 | I2 |
+| US-40 | BRK-321 | Fleet and docks | Add berths to a dock | — | 2 | I2 |
 | US-05 | BRK-44 | Fleet and docks | Activate and deactivate a boat | BR5, BR19 | 3 | I2 |
 | US-06 | BRK-48 | Fleet and docks | Retire a boat | — | 2 | I3 |
 | US-07 | BRK-45 | Telemetry | Boat state updated from telemetry | BR5 | 3 | I2 |
@@ -53,7 +54,7 @@ Conventions, following the QA Manual (2.2):
 | US-36 | BRK-78 | Extensions | Seasonal campaign | BR22, BR23, BR24 | 3 | I5 |
 | US-37 | BRK-79 | Extensions | Public GBFS feed | — | 3 | I5 |
 
-Iteration 2 total: 6 stories, 15 points.
+Iteration 2 total: 7 stories, 17 points.
 
 ---
 
@@ -97,6 +98,16 @@ Iteration 2 total: 6 stories, 15 points.
 - The name is unique, ignoring case and surrounding spaces: a duplicate is refused with 409. Name and district have at most 64 characters.
 - A dock has from 1 to 10 berths: 0 refused / 1 accepted, 10 accepted / 11 refused, with 422.
 - Berths are numbered from 1 and are in service by default; the municipality changes the berths in service later (US-27).
+
+**Points:** 2 · **Iteration:** I2
+
+### US-40 Add berths to a dock (BRK-321)
+**As an** operator, **I want** to add berths to a dock that already exists, **so that** the dock can hold more boats.
+
+- The new berths continue the dock's numbering (berths 1–4 plus 2 → 5 and 6) and are in service by default.
+- A dock has at most 10 berths: 9 + 1 accepted / 9 + 2 refused with 422.
+- At least 1 berth must be added: 0 refused with 422.
+- Adding berths to a dock that does not exist is refused with 404.
 
 **Points:** 2 · **Iteration:** I2
 

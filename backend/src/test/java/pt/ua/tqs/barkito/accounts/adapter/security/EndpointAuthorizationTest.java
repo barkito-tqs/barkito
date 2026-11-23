@@ -58,6 +58,7 @@ class EndpointAuthorizationTest {
     new Endpoint(HttpMethod.GET, "/api/v1/docks", Role.OPERATOR),
     new Endpoint(HttpMethod.POST, "/api/v1/docks", Role.OPERATOR),
     new Endpoint(HttpMethod.GET, "/api/v1/docks/" + ID, Role.OPERATOR),
+    new Endpoint(HttpMethod.POST, "/api/v1/docks/" + ID + "/berths", Role.OPERATOR),
   };
 
   @Autowired private MockMvc mockMvc;
