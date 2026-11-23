@@ -12,7 +12,7 @@ Feature: Register berths at an existing dock
   Scenario Outline: A dock cannot have more than 10 berths
     Given the dock "Old Market" is registered with <existing> berths
     When the operator adds <added> berths to the dock "Old Market"
-    Then the request <outcome>
+    Then the dock request <outcome>
 
     Examples:
       | existing | added | outcome                        |
@@ -22,8 +22,8 @@ Feature: Register berths at an existing dock
   Scenario: At least one berth must be added
     Given the dock "Old Market" is registered with 4 berths
     When the operator adds 0 berths to the dock "Old Market"
-    Then the request is refused with the status 422
+    Then the dock request is refused with the status 422
 
   Scenario: Berths can only be added to a dock that exists
     When the operator adds 1 berth to a dock that does not exist
-    Then the request is refused with the status 404
+    Then the dock request is refused with the status 404

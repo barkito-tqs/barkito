@@ -195,7 +195,8 @@ class DockControllerTest {
     return mockMvc.perform(
         post("/api/v1/docks/" + dock + "/berths")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(json));
+            .content(json)
+            .with(as(Role.OPERATOR)));
   }
 
   @Test

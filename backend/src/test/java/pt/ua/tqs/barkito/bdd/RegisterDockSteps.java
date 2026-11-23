@@ -107,7 +107,8 @@ public class RegisterDockSteps {
     return mockMvc.perform(
         post("/api/v1/docks/" + dock + "/berths")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"count\": %d}".formatted(count)));
+            .content("{\"count\": %d}".formatted(count))
+            .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
   }
 
   @Then("^the dock \"([^\"]*)\" has the berths ([\\d, and]+)$")
