@@ -86,6 +86,23 @@ public class RegisterDockSteps {
     response = register(name, null, null, 1);
   }
 
+  @When("the operator adds {int} berth(s) to the dock {string}")
+  public void theOperatorAddsBerths(int count, String name) throws Exception {
+    response = addBerths(dockIds.get(name), count);
+  }
+
+  @When("the operator adds {int} berth(s) to a dock that does not exist")
+  public void theOperatorAddsBerthsToAnUnknownDock(int count) throws Exception {
+    response = addBerths(UUID.randomUUID(), count);
+  }
+
+  private ResultActions addBerths(UUID dock, int count) throws Exception {
+    return mockMvc.perform(
+        post("/api/v1/docks/" + dock + "/berths")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"count\": %d}".formatted(count)));
+  }
+
   @Then("^the dock \"([^\"]*)\" has the berths ([\\d, and]+)$")
   public void theDockHasTheBerths(String name, String numbers) throws Exception {
     List<Integer> berths = JsonPath.read(dock(name), "$.berths[*].number");

@@ -63,6 +63,50 @@ class DockServiceTest {
   }
 
   @Test
+  void addsBerthsThatContinueTheNumberingInService() {
+    UUID dock = register("Old Market", 4).dock().id();
+
+    DockDetails details = service.addBerths(dock, 2);
+
+    assertThat(details.berths()).extracting(Berth::number).containsExactly(1, 2, 3, 4, 5, 6);
+    assertThat(details.berths()).allMatch(Berth::inService);
+  }
+
+  @Test
+  void acceptsBerthsUpTo10InTotal() {
+    UUID dock = register("Old Market", 9).dock().id();
+
+    assertThat(service.addBerths(dock, 1).berths()).hasSize(10);
+  }
+
+  @Test
+  void refusesBerthsBeyond10InTotal() {
+    UUID dock = register("Old Market", 9).dock().id();
+
+    assertThatThrownBy(() -> service.addBerths(dock, 2))
+        .isInstanceOf(InvalidBerthCountException.class)
+        .hasMessage("Old Market has 9 berths; adding 2 would exceed the maximum of 10.");
+    assertThat(berths.findByDockId(dock)).hasSize(9);
+  }
+
+  @ParameterizedTest
+  @ValueSource(ints = {0, -1})
+  void refusesAddingFewerThan1Berth(int count) {
+    UUID dock = register("Old Market", 4).dock().id();
+
+    assertThatThrownBy(() -> service.addBerths(dock, count))
+        .isInstanceOf(InvalidBerthCountException.class);
+  }
+
+  @Test
+  void refusesAddingBerthsToADockThatDoesNotExist() {
+    UUID unknown = UUID.randomUUID();
+
+    assertThatThrownBy(() -> service.addBerths(unknown, 1))
+        .isInstanceOf(DockNotFoundException.class);
+  }
+
+  @Test
   void findsADockWithItsBerths() {
     UUID dock = register("Old Market", 3).dock().id();
 
