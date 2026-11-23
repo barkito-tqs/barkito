@@ -7,10 +7,10 @@ import java.util.UUID;
 /** Port to read and store the berths of the docks (registered with the dock in US-04, BRK-43). */
 public interface BerthRepository {
 
-	Berth save(Berth berth);
+  Berth save(Berth berth);
 
-	Optional<Berth> findById(UUID id);
+  Optional<Berth> findById(UUID id);
 
-	/** The berths of a dock, ordered by number. */
-	List<Berth> findByDockId(UUID dockId);
+  /** The berths of a dock, ordered by number. */
+  List<Berth> findByDockId(UUID dockId);
 }
