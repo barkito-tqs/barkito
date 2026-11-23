@@ -6,6 +6,7 @@ import {
   MapPin,
   QrCode,
   Ship,
+  ShieldCheck,
   SlidersHorizontal,
   Ticket,
   UserCog,
@@ -42,4 +43,5 @@ export const NAV_BY_ROLE: Record<Role, NavItem[]> = {
     { to: '/rules', label: 'Rules of use', icon: SlidersHorizontal },
     { to: '/berths', label: 'Berths', icon: ListChecks },
   ],
+  ADMIN: [{ to: '/admin', label: 'Accounts', icon: ShieldCheck }],
 };

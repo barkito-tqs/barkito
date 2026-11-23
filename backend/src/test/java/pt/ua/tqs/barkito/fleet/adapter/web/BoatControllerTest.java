@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pt.ua.tqs.barkito.accounts.adapter.security.TestRoles.as;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +17,12 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import pt.ua.tqs.barkito.accounts.adapter.security.SecuredWebMvcTestConfig;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.application.BoatNotFoundException;
 import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockNotFoundException;
@@ -31,6 +35,7 @@ import pt.ua.tqs.barkito.fleet.domain.BoatType;
 import pt.ua.tqs.barkito.fleet.domain.Position;
 
 @WebMvcTest(BoatController.class)
+@Import(SecuredWebMvcTestConfig.class)
 class BoatControllerTest {
 
   private static final UUID DOCK = UUID.fromString("7c9e6679-7425-40de-944b-e07fc1f90ae7");
@@ -55,7 +60,8 @@ class BoatControllerTest {
         .perform(
             post("/api/v1/boats")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body("B-16", "STANDARD", DOCK)))
+                .content(body("B-16", "STANDARD", DOCK))
+                .with(as(Role.OPERATOR)))
         .andExpect(status().isCreated())
         .andExpect(header().string("Location", "/api/v1/boats/" + boat.id()))
         .andExpect(jsonPath("$.code").value("B-16"))
@@ -73,7 +79,8 @@ class BoatControllerTest {
         .perform(
             post("/api/v1/boats")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body("B-16", "XL", DOCK)))
+                .content(body("B-16", "XL", DOCK))
+                .with(as(Role.OPERATOR)))
         .andExpect(status().isConflict())
         .andExpect(jsonPath("$.detail").value("A boat with code B-16 is already registered."));
   }
@@ -87,7 +94,8 @@ class BoatControllerTest {
         .perform(
             post("/api/v1/boats")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body("B-16", "XL", DOCK)))
+                .content(body("B-16", "XL", DOCK))
+                .with(as(Role.OPERATOR)))
         .andExpect(status().isNotFound());
   }
 
@@ -97,7 +105,8 @@ class BoatControllerTest {
         .perform(
             post("/api/v1/boats")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body("B-16", "KAYAK", DOCK)))
+                .content(body("B-16", "KAYAK", DOCK))
+                .with(as(Role.OPERATOR)))
         .andExpect(status().isBadRequest());
     verifyNoInteractions(boatService);
   }
@@ -108,7 +117,8 @@ class BoatControllerTest {
         .perform(
             post("/api/v1/boats")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(body(" ", "XL", DOCK)))
+                .content(body(" ", "XL", DOCK))
+                .with(as(Role.OPERATOR)))
         .andExpect(status().isBadRequest());
     verifyNoInteractions(boatService);
   }
@@ -118,7 +128,7 @@ class BoatControllerTest {
     when(boatService.findAll()).thenReturn(List.of(Boat.register("B-16", BoatType.XL, DOCK)));
 
     mockMvc
-        .perform(get("/api/v1/boats"))
+        .perform(get("/api/v1/boats").with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$[0].code").value("B-16"))
@@ -130,7 +140,9 @@ class BoatControllerTest {
     UUID id = UUID.randomUUID();
     when(boatService.findById(id)).thenReturn(Optional.empty());
 
-    mockMvc.perform(get("/api/v1/boats/" + id)).andExpect(status().isNotFound());
+    mockMvc
+        .perform(get("/api/v1/boats/" + id).with(as(Role.OPERATOR)))
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -139,7 +151,7 @@ class BoatControllerTest {
     when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
 
     mockMvc
-        .perform(get("/api/v1/boats/" + boat.id()))
+        .perform(get("/api/v1/boats/" + boat.id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value("B-16"));
   }
@@ -159,7 +171,7 @@ class BoatControllerTest {
     when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
 
     mockMvc
-        .perform(get("/api/v1/boats/" + boat.id()))
+        .perform(get("/api/v1/boats/" + boat.id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status.batteryPercent").value(64))
         .andExpect(jsonPath("$.status.berthId").value(berth.toString()))
@@ -176,7 +188,7 @@ class BoatControllerTest {
     when(boatService.findById(any(UUID.class))).thenReturn(Optional.of(boat));
 
     mockMvc
-        .perform(get("/api/v1/boats/" + boat.id()))
+        .perform(get("/api/v1/boats/" + boat.id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").doesNotExist());
   }
@@ -188,7 +200,7 @@ class BoatControllerTest {
     when(boatService.activate(boat.id())).thenReturn(boat);
 
     mockMvc
-        .perform(post("/api/v1/boats/{id}/activation", boat.id()))
+        .perform(post("/api/v1/boats/{id}/activation", boat.id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value("B-16"))
         .andExpect(jsonPath("$.state").value("CHARGING"));
@@ -203,7 +215,7 @@ class BoatControllerTest {
                 "B-16 must be moored in a berth and plugged in before it is activated."));
 
     mockMvc
-        .perform(post("/api/v1/boats/{id}/activation", id))
+        .perform(post("/api/v1/boats/{id}/activation", id).with(as(Role.OPERATOR)))
         .andExpect(status().isConflict())
         .andExpect(
             jsonPath("$.detail")
@@ -215,7 +227,9 @@ class BoatControllerTest {
     UUID id = UUID.randomUUID();
     when(boatService.activate(id)).thenThrow(new BoatNotFoundException(id));
 
-    mockMvc.perform(post("/api/v1/boats/{id}/activation", id)).andExpect(status().isNotFound());
+    mockMvc
+        .perform(post("/api/v1/boats/{id}/activation", id).with(as(Role.OPERATOR)))
+        .andExpect(status().isNotFound());
   }
 
   @Test
@@ -224,7 +238,7 @@ class BoatControllerTest {
     when(boatService.deactivate(boat.id())).thenReturn(boat);
 
     mockMvc
-        .perform(post("/api/v1/boats/{id}/deactivation", boat.id()))
+        .perform(post("/api/v1/boats/{id}/deactivation", boat.id()).with(as(Role.OPERATOR)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.state").value("INACTIVE"));
   }
@@ -235,6 +249,8 @@ class BoatControllerTest {
     when(boatService.deactivate(id))
         .thenThrow(new BoatTransitionRefusedException("B-16 is IN_USE."));
 
-    mockMvc.perform(post("/api/v1/boats/{id}/deactivation", id)).andExpect(status().isConflict());
+    mockMvc
+        .perform(post("/api/v1/boats/{id}/deactivation", id).with(as(Role.OPERATOR)))
+        .andExpect(status().isConflict());
   }
 }

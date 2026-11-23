@@ -13,8 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.domain.Berth;
 import pt.ua.tqs.barkito.fleet.domain.BerthRepository;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
@@ -34,6 +36,8 @@ import pt.ua.tqs.barkito.fleet.domain.TestDocks;
 public class FindAvailableBoatsSteps {
 
   @Autowired private MockMvc mockMvc;
+
+  @Autowired private DevTokens devTokens;
 
   @Autowired private DockRepository docks;
 
@@ -71,13 +75,19 @@ public class FindAvailableBoatsSteps {
 
   @When("the user looks for boats at the dock {string}")
   public void theUserLooksForBoats(String dock) throws Exception {
-    response = mockMvc.perform(get("/api/v1/docks/{dockId}/boats", dockIds.get(dock)));
+    response =
+        mockMvc.perform(
+            get("/api/v1/docks/{dockId}/boats", dockIds.get(dock))
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.END_USER)));
   }
 
   @When("the user looks for boats of type {string} at the dock {string}")
   public void theUserLooksForBoatsOfType(String type, String dock) throws Exception {
     response =
-        mockMvc.perform(get("/api/v1/docks/{dockId}/boats", dockIds.get(dock)).param("type", type));
+        mockMvc.perform(
+            get("/api/v1/docks/{dockId}/boats", dockIds.get(dock))
+                .param("type", type)
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.END_USER)));
   }
 
   @Then("the boat {string} is listed")

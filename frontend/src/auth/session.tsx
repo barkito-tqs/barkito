@@ -74,6 +74,7 @@ export const ROLE_LABEL: Record<Role, string> = {
   OPERATOR: 'Operator',
   TECHNICIAN: 'Field Technician',
   CLIENT_MANAGER: 'Client manager',
+  ADMIN: 'Platform admin',
 };
 
 export const HOME_BY_ROLE: Record<Role, string> = {
@@ -81,4 +82,5 @@ export const HOME_BY_ROLE: Record<Role, string> = {
   OPERATOR: '/fleet',
   TECHNICIAN: '/my-tickets',
   CLIENT_MANAGER: '/kpis',
+  ADMIN: '/admin',
 };

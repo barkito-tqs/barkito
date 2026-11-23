@@ -40,6 +40,15 @@ export const USERS: User[] = [
     hasPaymentMethod: false,
     debtCents: 0,
   },
+  {
+    id: 'u-admin',
+    name: 'Admin Barkito',
+    email: 'admin@barkito.example',
+    role: 'ADMIN',
+    birthDate: '1985-01-01',
+    hasPaymentMethod: false,
+    debtCents: 0,
+  },
 ];
 
 /** The ids of the seed docks, the same as the backend's dev seed (DevDockSeeder). */

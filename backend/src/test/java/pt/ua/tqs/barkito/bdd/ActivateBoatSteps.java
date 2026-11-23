@@ -7,8 +7,10 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.UUID;
+import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import pt.ua.tqs.barkito.accounts.domain.Role;
 import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.telemetry.adapter.simulator.SimulatedTelemetrySource;
 
@@ -20,14 +22,19 @@ public class ActivateBoatSteps {
   private static final int BATTERY_PERCENT = 80;
 
   private final MockMvc mockMvc;
+  private final DevTokens devTokens;
   private final BoatRepository boats;
   private final SimulatedTelemetrySource telemetry;
 
   private ResultActions response;
 
   public ActivateBoatSteps(
-      MockMvc mockMvc, BoatRepository boats, SimulatedTelemetrySource telemetry) {
+      MockMvc mockMvc,
+      DevTokens devTokens,
+      BoatRepository boats,
+      SimulatedTelemetrySource telemetry) {
     this.mockMvc = mockMvc;
+    this.devTokens = devTokens;
     this.boats = boats;
     this.telemetry = telemetry;
   }
@@ -49,17 +56,26 @@ public class ActivateBoatSteps {
 
   @When("the operator activates the boat {string}")
   public void theOperatorActivatesTheBoat(String code) throws Exception {
-    response = mockMvc.perform(post("/api/v1/boats/{id}/activation", idOf(code)));
+    response =
+        mockMvc.perform(
+            post("/api/v1/boats/{id}/activation", idOf(code))
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
   }
 
   @When("the operator deactivates the boat {string}")
   public void theOperatorDeactivatesTheBoat(String code) throws Exception {
-    response = mockMvc.perform(post("/api/v1/boats/{id}/deactivation", idOf(code)));
+    response =
+        mockMvc.perform(
+            post("/api/v1/boats/{id}/deactivation", idOf(code))
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
   }
 
   @When("the operator activates a boat that does not exist")
   public void theOperatorActivatesABoatThatDoesNotExist() throws Exception {
-    response = mockMvc.perform(post("/api/v1/boats/{id}/activation", UUID.randomUUID()));
+    response =
+        mockMvc.perform(
+            post("/api/v1/boats/{id}/activation", UUID.randomUUID())
+                .header(HttpHeaders.AUTHORIZATION, devTokens.bearer(Role.OPERATOR)));
   }
 
   @Then("the operator's request is refused with the status {int}")
