@@ -1,5 +1,6 @@
 import {
   batteryAlert,
+  berthsLeftToAdd,
   canReserveAt,
   canUnlockAt,
   fitsCapacity,
@@ -122,5 +123,13 @@ describe('berths and nearest dock (BR14)', () => {
   it('returns null when every dock is full', () => {
     const full = dock({ berthsInService: 1 });
     expect(nearestDockWithFreeBerth({ x: 0, y: 0 }, [full], [boat()])).toBeNull();
+  });
+});
+
+describe('adding berths to a dock (BRK-321)', () => {
+  it('leaves room up to 10 berths per dock', () => {
+    expect(berthsLeftToAdd(dock({ berths: 4 }))).toBe(6);
+    expect(berthsLeftToAdd(dock({ berths: 9 }))).toBe(1);
+    expect(berthsLeftToAdd(dock({ berths: 10 }))).toBe(0);
   });
 });

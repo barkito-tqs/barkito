@@ -19,10 +19,17 @@ export const RULES = {
   /** BR12: maximum trip duration and its warnings. */
   maxTripMinutes: 90,
   tripWarnMinutes: [80, 90],
+  /** US-04, BRK-321: a dock has at most 10 berths. */
+  maxBerthsPerDock: 10,
 } as const;
 
 export function isBookable(boat: Boat): boolean {
   return boat.state === 'AVAILABLE' && boat.battery >= RULES.minBattery;
+}
+
+/** BRK-321: how many berths can still be added to a dock. */
+export function berthsLeftToAdd(dock: Dock): number {
+  return Math.max(0, RULES.maxBerthsPerDock - dock.berths);
 }
 
 export function freeBerths(dock: Dock, boats: Boat[]): number {
