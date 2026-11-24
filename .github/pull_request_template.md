@@ -1,12 +1,24 @@
 ## Jira story
 
-<!-- e.g. BRK-12 -->
+BRK-<n>
 
-## Summary
+## What changes and why
 
-## Checklist
+<!-- One to three lines. -->
 
-- [ ] Branch name and commits include the Jira story key
-- [ ] Tests added or updated according to the definition of done
-- [ ] CI is green and the quality gate passes
-- [ ] AI use in this change follows the team AI policy
+## How to test
+
+<!-- Command or steps. -->
+
+## Definition of Done
+
+- [ ] Acceptance criteria met
+- [ ] Tests for the new logic (unit; integration if API or persistence; Gherkin if core story)
+- [ ] CI and quality gate green (coverage on new code ≥ 80%)
+- [ ] Story linked to its tests in Xray
+- [ ] Docs updated, if applicable
+- [ ] One `ai:*` label; AI review findings below
+
+## AI-assisted review findings
+
+<!-- Each finding: accepted or rejected, with a reason. "None" if there was no AI review. -->

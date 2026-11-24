@@ -1,0 +1,275 @@
+Project barkito {
+  database_type: 'PostgreSQL'
+  Note: 'Barkito data model, from the Product Specification: conceptual model (3.1), business rules (3.2) and boat lifecycle (3.3). Money in cents; timestamps in UTC. The points balance is the sum of points_entry.'
+}
+
+// ---------- Accounts ----------
+Table customer {
+  id uuid [pk]
+  idp_subject varchar [unique, not null, note: 'subject of the OpenID Connect token']
+  name varchar [not null]
+  email varchar [unique, not null]
+  birth_date date [not null, note: 'BR1 minimum age']
+  payment_method_id varchar [note: 'Stripe payment method, null until saved (BR2)']
+  debt_cents int [not null, default: 0, note: 'BR2: > 0 blocks reserve and unlock']
+  created_at timestamptz [not null, note: 'BR21, BR22 account age']
+}
+
+// ---------- Fleet ----------
+Table boat_type {
+  code varchar [pk, note: 'STANDARD, XL']
+  capacity int [not null, note: 'BR4: 5 / 10']
+}
+
+Table dock {
+  id uuid [pk]
+  name varchar(64) [unique, not null, note: 'unique ignoring case (US-04)']
+  district varchar(64)
+  latitude decimal(9,6) [not null]
+  longitude decimal(9,6) [not null]
+  Note: 'US-04: 1 to 10 berths per dock'
+}
+
+Table berth {
+  id uuid [pk]
+  dock_id uuid [not null, ref: > dock.id]
+  number int [not null, note: 'from 1']
+  in_service boolean [not null, default: true, note: 'BR14; US-04 default true, the municipality changes it (US-27)']
+
+  indexes {
+    (dock_id, number) [unique]
+  }
+}
+
+Table boat {
+  id uuid [pk]
+  code varchar [unique, not null, note: 'hull marking, e.g. B-16 (US-03)']
+  type_code varchar [not null, ref: > boat_type.code]
+  state varchar [not null, note: 'one of the 10 lifecycle states (3.3)']
+  home_dock_id uuid [not null, ref: > dock.id]
+  berth_id uuid [unique, ref: - berth.id, note: 'null on the canal; one boat per berth (BR14)']
+  unlock_code varchar [unique, not null, note: 'printed below the QR code (US-12)']
+  battery_level int [not null, note: 'from telemetry, BR5 BR7']
+  plugged_in boolean [not null, default: false]
+  latitude decimal(9,6)
+  longitude decimal(9,6)
+  last_reading_at timestamptz
+  retirement_reason varchar [note: 'IRREPARABLE, LOST, SUNK, STOLEN; set only when RETIRED (US-06)']
+  version bigint [not null, default: 0, note: 'optimistic lock: a boat is never reserved twice (SLO4)']
+}
+
+// ---------- Telemetry ----------
+Table telemetry_reading {
+  id uuid [pk]
+  boat_id uuid [not null, ref: > boat.id]
+  recorded_at timestamptz [not null]
+  battery_level int [not null]
+  latitude decimal(9,6)
+  longitude decimal(9,6)
+  berth_id uuid [ref: > berth.id, note: 'null when not moored']
+  locked boolean [not null]
+  plugged_in boolean [not null]
+  faults varchar [note: 'null when none']
+
+  indexes {
+    (boat_id, recorded_at)
+  }
+}
+
+// ---------- Trips ----------
+Table reservation {
+  id uuid [pk]
+  customer_id uuid [not null, ref: > customer.id]
+  boat_id uuid [not null, ref: > boat.id]
+  status varchar [not null, note: 'ACTIVE, CANCELLED, EXPIRED, CONVERTED']
+  created_at timestamptz [not null]
+  expires_at timestamptz [not null, note: 'created_at + 15 min (BR8)']
+  ended_at timestamptz
+  hold_fee_cents int [note: 'BR8']
+
+  Note: 'BR3: partial unique index on (customer_id) WHERE status = ACTIVE'
+}
+
+Table trip {
+  id uuid [pk]
+  customer_id uuid [not null, ref: > customer.id]
+  boat_id uuid [not null, ref: > boat.id]
+  reservation_id uuid [unique, ref: - reservation.id, note: 'null for an immediate trip']
+  start_dock_id uuid [not null, ref: > dock.id]
+  end_dock_id uuid [ref: > dock.id, note: 'null while in progress']
+  status varchar [not null, note: 'IN_PROGRESS, ENDED']
+  end_reason varchar [note: 'AT_DOCK, ABANDONED, EMPTY_BATTERY, FAULT (BR15, BR16)']
+  passengers int [not null, note: 'BR4']
+  started_at timestamptz [not null]
+  ended_at timestamptz
+  max_duration_minutes int [not null, note: 'rules in force at the start (US-26)']
+  unlock_fee_cents int [note: 'BR11']
+  normal_minutes int
+  overtime_minutes int [note: 'BR12']
+  hold_fee_cents int [note: 'BR8']
+  total_cents int [note: 'after any discount in trip_discount']
+
+  Note: 'BR3: partial unique index on (customer_id) WHERE status = IN_PROGRESS'
+}
+
+Table problem_report {
+  id uuid [pk]
+  trip_id uuid [not null, ref: > trip.id]
+  category varchar [not null, note: 'ENGINE, HULL, BATTERY, OTHER (US-38)']
+  note varchar
+  reported_at timestamptz [not null]
+}
+
+// ---------- Payments ----------
+Table payment {
+  id uuid [pk]
+  customer_id uuid [not null, ref: > customer.id]
+  trip_id uuid [ref: > trip.id, note: 'null for a reservation fee']
+  reservation_id uuid [ref: > reservation.id, note: 'null for a trip']
+  kind varchar [not null, note: 'DEPOSIT, CAPTURE, RELEASE, HOLD_FEE, RECOVERY_FEE']
+  status varchar [not null, note: 'AUTHORISED, CAPTURED, RELEASED, FAILED']
+  amount_cents int [not null]
+  gateway_reference varchar [note: 'Stripe payment intent id']
+  created_at timestamptz [not null]
+}
+
+// ---------- Maintenance ----------
+Table field_technician {
+  id uuid [pk]
+  idp_subject varchar [unique, not null]
+  name varchar [not null]
+}
+
+Table technician_dock {
+  technician_id uuid [ref: > field_technician.id]
+  dock_id uuid [ref: > dock.id]
+
+  indexes {
+    (technician_id, dock_id) [pk]
+  }
+}
+
+Table sla_policy {
+  ticket_type varchar [pk, note: 'CHARGE, REPAIR, TOW, RETURN']
+  deadline_minutes int [not null, note: 'BR18']
+  on_site_minutes int [note: 'TOW only: 30 (BR18)']
+  clock_runs_outside_hours boolean [not null, default: false, note: 'true only for TOW (BR18)']
+}
+
+Table ticket {
+  id uuid [pk]
+  boat_id uuid [not null, ref: > boat.id]
+  technician_id uuid [not null, ref: > field_technician.id]
+  type varchar [not null, ref: > sla_policy.ticket_type]
+  status varchar [not null, note: 'OPEN, CLOSED']
+  opened_at timestamptz [not null]
+  due_at timestamptz [not null, note: 'from sla_policy (BR18)']
+  on_site_due_at timestamptz [note: 'TOW only']
+  arrived_at timestamptz [note: 'TOW only (US-25)']
+  closed_at timestamptz [note: 'time-to-repair KPI']
+  problem_report_id uuid [unique, ref: - problem_report.id, note: 'null unless opened by a user report']
+}
+
+Table ticket_note {
+  id uuid [pk]
+  ticket_id uuid [not null, ref: > ticket.id]
+  technician_id uuid [not null, ref: > field_technician.id]
+  text varchar [not null]
+  created_at timestamptz [not null]
+}
+
+// ---------- Rules ----------
+Table usage_rules {
+  id uuid [pk, note: 'single row, set by the municipality']
+  max_trip_minutes int [not null, default: 90, note: 'BR12']
+  opens_at time [not null, default: '08:00', note: 'BR6']
+  closes_at time [not null, default: '22:00', note: 'BR6']
+  reservation_hold_minutes int [not null, default: 15, note: 'BR8']
+  min_battery_percent int [not null, default: 30, note: 'BR5']
+  user_warn_battery_percent int [not null, default: 20, note: 'BR7']
+  operator_alert_battery_percent int [not null, default: 10, note: 'BR7']
+  max_open_tickets_per_technician int [not null, note: 'BR17']
+  updated_at timestamptz [not null, note: 'new values apply to the next trips']
+}
+
+Table boat_type_rules {
+  type_code varchar [pk, ref: - boat_type.code]
+  min_driver_age int [not null, note: 'BR1: 18 / 21, set by the municipality']
+  unlock_fee_cents int [not null, note: 'BR11']
+  price_per_minute_cents int [not null, note: 'BR11']
+  overtime_per_minute_cents int [not null, note: 'BR12']
+  hold_fee_per_minute_cents int [not null, note: 'BR8']
+  deposit_cents int [not null, note: 'BR13']
+  recovery_fee_cents int [not null, note: 'BR15']
+}
+
+// ---------- Extensions ----------
+Table promotion {
+  id uuid [pk]
+  kind varchar [not null, note: 'NEW_CUSTOMER, SEASONAL']
+  name varchar [not null]
+  discount_percent int [not null, note: 'BR21, BR22']
+  starts_at timestamptz
+  ends_at timestamptz
+}
+
+Table trip_discount {
+  trip_id uuid [pk, ref: - trip.id, note: 'pk: at most one discount per trip (BR24)']
+  promotion_id uuid [ref: > promotion.id, note: 'null when the discount is a reward']
+  points_entry_id uuid [unique, ref: - points_entry.id, note: 'the redemption, null for a promotion']
+  discount_cents int [not null, note: 'BR23: on the unlock fee and normal minutes only']
+}
+
+Table points_entry {
+  id uuid [pk]
+  customer_id uuid [not null, ref: > customer.id]
+  trip_id uuid [ref: > trip.id, note: 'null for a redemption']
+  points int [not null, note: '+ earned (BR25), - redeemed (BR26)']
+  reason varchar [not null, note: 'PLUGGED_IN, FREE_UNLOCK, FREE_MINUTES']
+  created_at timestamptz [not null]
+}
+
+// ---------- Modules (section 4.3) ----------
+TableGroup accounts {
+  customer
+}
+
+TableGroup fleet {
+  boat_type
+  dock
+  berth
+  boat
+}
+
+TableGroup telemetry {
+  telemetry_reading
+}
+
+TableGroup trips {
+  reservation
+  trip
+  problem_report
+}
+
+TableGroup payments {
+  payment
+}
+
+TableGroup maintenance {
+  field_technician
+  technician_dock
+  sla_policy
+  ticket
+  ticket_note
+}
+
+TableGroup rules {
+  usage_rules
+  boat_type_rules
+}
+
+TableGroup extensions {
+  promotion
+  points_entry
+  trip_discount
+}

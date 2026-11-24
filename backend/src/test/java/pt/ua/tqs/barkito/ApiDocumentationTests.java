@@ -1,0 +1,44 @@
+package pt.ua.tqs.barkito;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class ApiDocumentationTests {
+
+  @Autowired private MockMvc mockMvc;
+
+  @Test
+  void openApiDocumentDescribesTheFleetEndpoints() throws Exception {
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.info.title").value("Barkito API"))
+        .andExpect(jsonPath("$.paths['/api/v1/boats'].post").exists())
+        .andExpect(jsonPath("$.paths['/api/v1/boats'].get").exists());
+  }
+
+  @Test
+  void openApiDocumentDeclaresTheBearerScheme() throws Exception {
+    mockMvc
+        .perform(get("/v3/api-docs"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.type").value("http"))
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.scheme").value("bearer"))
+        .andExpect(jsonPath("$.components.securitySchemes.bearer.bearerFormat").value("JWT"))
+        .andExpect(jsonPath("$.security[0].bearer").exists());
+  }
+
+  @Test
+  void swaggerUiIsServed() throws Exception {
+    mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
+  }
+}

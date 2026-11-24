@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  False positives reported by OWASP Dependency-Check (QA Manual 3.4, Security).
+  Every suppression needs a note with the reason and who reviewed it.
+-->
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+</suppressions>
