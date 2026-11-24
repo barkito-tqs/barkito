@@ -23,7 +23,7 @@
 		<springdoc.version>3.2.1</springdoc.version>
 		<spotless.version>2.46.1</spotless.version>
 		<google-java-format.version>1.28.0</google-java-format.version>
-		<dependency-check.version>12.1.3</dependency-check.version>
+		<dependency-check.version>13.0.0</dependency-check.version>
 		<!-- OWASP Dependency-Check (Q3): fail on critical vulnerabilities only -->
 		<dependency-check.failBuildOnCVSS>9</dependency-check.failBuildOnCVSS>
 	</properties>
