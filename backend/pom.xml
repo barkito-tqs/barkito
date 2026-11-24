@@ -21,7 +21,7 @@
 		<archunit.version>1.4.1</archunit.version>
 		<json-schema-validator.version>3.0.9</json-schema-validator.version>
 		<springdoc.version>3.2.1</springdoc.version>
-		<spotless.version>2.46.1</spotless.version>
+		<spotless.version>3.12.0</spotless.version>
 		<google-java-format.version>1.28.0</google-java-format.version>
 		<dependency-check.version>12.1.3</dependency-check.version>
 		<!-- OWASP Dependency-Check (Q3): fail on critical vulnerabilities only -->
