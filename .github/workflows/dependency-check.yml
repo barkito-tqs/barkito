@@ -32,10 +32,10 @@ jobs:
       run:
         working-directory: backend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "21"
@@ -44,7 +44,7 @@ jobs:
       # Restore and save are separate steps so the database is kept even when the check fails,
       # which is when it is needed most; otherwise every run downloads it again.
       - name: Restore the vulnerability database
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
           key: dependency-check-${{ runner.os }}-${{ github.run_id }}
@@ -59,14 +59,14 @@ jobs:
 
       - name: Save the vulnerability database
         if: always()
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: ~/.m2/repository/org/owasp/dependency-check-data
           key: dependency-check-${{ runner.os }}-${{ github.run_id }}
 
       - name: Upload the report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dependency-check-report
           path: backend/target/dependency-check-report.*
