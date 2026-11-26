@@ -23,8 +23,8 @@ jobs:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
           status=0
-          if ! [[ "$BRANCH" =~ ^(feature|fix)/BRK-[0-9]+- ]]; then
-            echo "::error::Branch name '$BRANCH' must be feature/BRK-<n>-<slug> or fix/BRK-<n>-<slug>, e.g. feature/BRK-12-dock-availability"
+          if ! [[ "$BRANCH" =~ ^(feature|fix|docs)/BRK-[0-9]+- ]]; then
+            echo "::error::Branch name '$BRANCH' must be feature/BRK-<n>-<slug>, fix/BRK-<n>-<slug> or docs/BRK-<n>-<slug>, e.g. feature/BRK-12-dock-availability"
             status=1
           fi
           if ! [[ "$TITLE" =~ ^BRK-[0-9]+[[:space:]] ]]; then

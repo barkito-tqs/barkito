@@ -13,9 +13,10 @@ Stack: Java 21, Spring Boot (stable), Maven, GitHub Actions, SonarQube, JaCoCo, 
 | Branch | Purpose | Rules |
 |--------|---------|-------|
 | `main` | Stable, deployable releases | Protected. Updated only by a PR from `develop` at the end of an iteration, and only if stable. |
-| `develop` | Integration branch of the current iteration | Protected. Updated only by PRs from feature/fix branches. |
+| `develop` | Integration branch of the current iteration | Protected. Updated only by PRs from feature/fix/docs branches. |
 | `feature/BRK-<n>-<slug>` | One branch per user story | Created from `develop`. Short-lived. |
 | `fix/BRK-<n>-<slug>` | Bug fixes | Created from `develop`. Short-lived. |
+| `docs/BRK-<n>-<slug>` | Changes to documentation only | Created from `develop`. Short-lived. |
 
 Example: `feature/BRK-12-dock-availability`.
 
@@ -32,7 +33,7 @@ A pull request is merged only when **all** of the following hold:
 
 Merge types:
 
-- feature/fix → `develop`: **squash merge**; the branch is deleted afterwards. The squash commit message is the PR title, so it carries the Jira key.
+- feature/fix/docs → `develop`: **squash merge**; the branch is deleted afterwards. The squash commit message is the PR title, so it carries the Jira key.
 - `develop` → `main`: **merge commit** (no squash), so that `develop` does not diverge from `main` after each release.
 
 Nobody pushes directly to `main` or `develop`, administrators included (D1).

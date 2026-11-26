@@ -25,7 +25,7 @@ Follow the Google Java Style Guide and avoid magic numbers. Details and the revi
 
 ## Workflow rules
 
-- Branch from `develop` as `feature/BRK-<n>-<slug>` or `fix/BRK-<n>-<slug>`. The PR title starts with the Jira key.
+- Branch from `develop` as `feature/BRK-<n>-<slug>`, `fix/BRK-<n>-<slug>`, or `docs/BRK-<n>-<slug>` for changes that touch only documentation. The PR title starts with the Jira key.
 - Never push directly to `main` or `develop`. All changes go through a pull request.
 - A human must approve every PR. Agents cannot approve or merge.
 
