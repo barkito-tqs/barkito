@@ -30,10 +30,11 @@ Each module is a package `pt.ua.tqs.barkito.<module>` with three layers:
 | Module | Holds | Status |
 |---|---|---|
 | `accounts` | `Role`, JWT security, the rules for who can reach each endpoint | in code |
-| `fleet` | boats, docks, berths, boat lifecycle | in code |
+| `fleet` | boats, docks, berths, boat lifecycle; publishes `BoatStateChanged` | in code |
 | `telemetry` | parses telemetry readings and applies them to boats | in code |
-| `trips`, `payments`, `maintenance`, `rules`, `extensions` | see the ER diagram's "Tables by module" | planned |
-| `config` | cross-cutting Spring config (OpenAPI, dev data seeding) | in code |
+| `maintenance` | tickets opened when a boat needs a Field Technician, their assignment (BR17) and SLA deadlines (BR18) | in code |
+| `trips`, `payments`, `rules`, `extensions` | see the ER diagram's "Tables by module" | planned |
+| `config` | cross-cutting Spring config (OpenAPI, the `Clock`, dev data seeding) | in code |
 
 ### Dependency rules
 
@@ -45,6 +46,8 @@ Each module is a package `pt.ua.tqs.barkito.<module>` with three layers:
 - There are no dependency cycles between modules.
 
 A module uses another module through its `application` services or `domain` types. For example, `TelemetryService` calls `fleet.application.BoatService.recordStatus`, and `TelemetryReading` carries a `fleet.domain.BoatStatus`.
+
+The fleet publishes every change of a boat's state as a `BoatStateChanged` event through Spring's `ApplicationEventPublisher`; other modules react with an `@EventListener` in their `application` layer (for example `TicketService` opens a ticket when a boat enters `REPAIR_REQUIRED`). Listeners run synchronously, inside the lock of `BoatService`.
 
 ### Conventions
 
