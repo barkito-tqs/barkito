@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.BoatState;
@@ -31,6 +32,8 @@ class BoatServiceActivationTest {
   @Mock private BoatRepository boats;
 
   @Mock private DockRepository docks;
+
+  @Mock private ApplicationEventPublisher events;
 
   @InjectMocks private BoatService service;
 
