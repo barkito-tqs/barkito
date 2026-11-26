@@ -16,6 +16,9 @@ jobs:
     # Release PRs (develop -> main) and Dependabot updates have no story key.
     if: github.head_ref != 'develop' && github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Check branch name and PR title
         env:
@@ -32,6 +35,23 @@ jobs:
             status=1
           fi
           exit $status
+
+      # A docs/ branch may change only documentation (Markdown, docs/) and the process
+      # configuration in .github/; application code goes through a feature/ or fix/ branch.
+      - name: Check that a docs branch changes only documentation
+        if: startsWith(github.head_ref, 'docs/')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          others=$(gh api --paginate "repos/$REPO/pulls/$PR/files" --jq '.[].filename' \
+            | grep -vE '(\.md$|^docs/|^\.github/)' || true)
+          if [ -n "$others" ]; then
+            echo "::error::A docs/ branch changes only documentation. Move these files to a feature/ or fix/ branch:"
+            echo "$others"
+            exit 1
+          fi
 
   ai-label:
     name: AI use label

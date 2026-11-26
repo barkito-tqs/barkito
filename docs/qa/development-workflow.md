@@ -16,7 +16,7 @@ Stack: Java 21, Spring Boot (stable), Maven, GitHub Actions, SonarQube, JaCoCo, 
 | `develop` | Integration branch of the current iteration | Protected. Updated only by PRs from feature/fix/docs branches. |
 | `feature/BRK-<n>-<slug>` | One branch per user story | Created from `develop`. Short-lived. |
 | `fix/BRK-<n>-<slug>` | Bug fixes | Created from `develop`. Short-lived. |
-| `docs/BRK-<n>-<slug>` | Changes to documentation only | Created from `develop`. Short-lived. |
+| `docs/BRK-<n>-<slug>` | Changes to documentation only | Created from `develop`. Short-lived. CI refuses files other than Markdown, `docs/` and `.github/`. |
 
 Example: `feature/BRK-12-dock-availability`.
 
