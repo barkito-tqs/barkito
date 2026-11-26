@@ -37,12 +37,19 @@ import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockService;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
+import pt.ua.tqs.barkito.maintenance.adapter.web.TicketController;
+import pt.ua.tqs.barkito.maintenance.application.TicketService;
 
 /**
  * The authorization matrix (US-02): every endpoint lets in only its role. Add a row to {@link
  * #ENDPOINTS} for every new endpoint.
  */
-@WebMvcTest({BoatController.class, AvailableBoatController.class, DockController.class})
+@WebMvcTest({
+  BoatController.class,
+  AvailableBoatController.class,
+  DockController.class,
+  TicketController.class
+})
 @Import(SecuredWebMvcTestConfig.class)
 class EndpointAuthorizationTest {
 
@@ -59,6 +66,7 @@ class EndpointAuthorizationTest {
     new Endpoint(HttpMethod.POST, "/api/v1/docks", Role.OPERATOR),
     new Endpoint(HttpMethod.GET, "/api/v1/docks/" + ID, Role.OPERATOR),
     new Endpoint(HttpMethod.POST, "/api/v1/docks/" + ID + "/berths", Role.OPERATOR),
+    new Endpoint(HttpMethod.GET, "/api/v1/tickets", Role.OPERATOR),
   };
 
   @Autowired private MockMvc mockMvc;
@@ -68,6 +76,8 @@ class EndpointAuthorizationTest {
   @MockitoBean private AvailableBoatService availableBoatService;
 
   @MockitoBean private DockService dockService;
+
+  @MockitoBean private TicketService ticketService;
 
   private record Endpoint(HttpMethod method, String path, Role allowed) {
 
