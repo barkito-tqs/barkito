@@ -5,7 +5,7 @@ Short contributor guidelines (Q5). The full workflow, Definition of Done and qua
 ## Workflow in short
 
 1. Pick a story from the Jira iteration board (project `BRK`).
-2. Branch from `develop`: `feature/BRK-<n>-<slug>` (or `fix/BRK-<n>-<slug>`).
+2. Branch from `develop`: `feature/BRK-<n>-<slug>` (or `fix/BRK-<n>-<slug>` for a bug fix, `docs/BRK-<n>-<slug>` for documentation only).
 3. Commit often. Starting commit messages with the story key is recommended (e.g. `BRK-12 add dock availability endpoint`).
 4. Open a PR to `develop`. The title **must** start with the story key (`BRK-12 <title>`). Fill in the PR template.
 5. Wait for green CI and the quality gate, and for approval by another member.

@@ -13,13 +13,19 @@ cd backend && ./mvnw spotless:apply verify        # format, build, tests, covera
 cd frontend && npm run format && npm run lint && npm test
 ```
 
+## Reference docs
+
+- Before implementing a story: read it in Jira (project `BRK`) by the key in the branch name, and look up every BRx it cites in [`docs/business-rules.md`](docs/business-rules.md).
+- [`docs/CONTEXT.md`](docs/CONTEXT.md): domain glossary. Read it before naming a class, field, endpoint, test or UI label.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): modules, layers and dependency rules. Read it before adding an endpoint, entity, module or screen.
+
 ## Code style
 
 Follow the Google Java Style Guide and avoid magic numbers. Details and the review checklist are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Workflow rules
 
-- Branch from `develop` as `feature/BRK-<n>-<slug>` or `fix/BRK-<n>-<slug>`. The PR title starts with the Jira key.
+- Branch from `develop` as `feature/BRK-<n>-<slug>`, `fix/BRK-<n>-<slug>`, or `docs/BRK-<n>-<slug>` for changes that touch only documentation. The PR title starts with the Jira key.
 - Never push directly to `main` or `develop`. All changes go through a pull request.
 - A human must approve every PR. Agents cannot approve or merge.
 
