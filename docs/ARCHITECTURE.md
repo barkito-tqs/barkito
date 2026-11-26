@@ -39,7 +39,7 @@ Each module is a package `pt.ua.tqs.barkito.<module>` with three layers:
 
 [`ArchitectureTest`](../backend/src/test/java/pt/ua/tqs/barkito/ArchitectureTest.java) (ArchUnit) enforces these, and the build fails when one is broken:
 
-- `domain` depends on nothing outside itself: no `application`, no `adapter`, no Spring. It is plain Java.
+- `domain` does not depend on its own `application` or `adapter`, or on Spring. It may use other modules' `domain` types.
 - `application` depends on no `adapter`.
 - A module's adapters do not depend on another module's adapters.
 - There are no dependency cycles between modules.
