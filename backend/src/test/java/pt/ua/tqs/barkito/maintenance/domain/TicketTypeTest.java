@@ -33,7 +33,7 @@ class TicketTypeTest {
   @Test
   void everyTypeHasADefaultSlaPolicy() {
     for (TicketType type : TicketType.values()) {
-      assertThat(SlaPolicy.defaultFor(type).type()).isEqualTo(type);
+      assertThat(MaintenanceRules.DEFAULT.slaPolicyFor(type).type()).isEqualTo(type);
     }
   }
 }

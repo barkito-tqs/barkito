@@ -26,12 +26,6 @@ public record TechnicianAssignment(
     Map<UUID, Position> dockPositions,
     int maxOpenTickets) {
 
-  /**
-   * BR17: the maximum of open tickets per technician until the operator sets it in the rules of use
-   * (US-26). The specification leaves the value to the operator; 5 is the team's default.
-   */
-  public static final int DEFAULT_MAX_OPEN_TICKETS = 5;
-
   public TechnicianAssignment {
     technicians = List.copyOf(technicians);
     openTickets = Map.copyOf(openTickets);

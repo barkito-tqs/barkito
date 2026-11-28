@@ -10,7 +10,8 @@ import java.util.Optional;
 /**
  * BR18: how long a Field Technician has to close a ticket of each type. The clock runs only within
  * the operating hours, except for towing, which also has to reach the boat within 30 minutes. The
- * client will set the agreed deadlines (US-28); until then the defaults apply.
+ * defaults below apply through {@link MaintenanceRules} until the client sets the agreed SLAs
+ * (US-28).
  */
 public record SlaPolicy(
     TicketType type, Duration deadline, Duration onSiteDeadline, boolean clockRunsOutsideHours) {
@@ -32,10 +33,6 @@ public record SlaPolicy(
   public SlaPolicy {
     Objects.requireNonNull(type);
     Objects.requireNonNull(deadline);
-  }
-
-  public static SlaPolicy defaultFor(TicketType type) {
-    return DEFAULTS.get(type);
   }
 
   /** BR18: the SLA deadline of a ticket opened at {@code openedAt}. */
