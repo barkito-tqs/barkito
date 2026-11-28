@@ -41,6 +41,9 @@ class SecurityConfig {
                     // US-04: registering and reading docks; after the end-user rule above
                     .requestMatchers("/api/v1/docks/**")
                     .hasRole(Role.OPERATOR.name())
+                    // US-21: the operator follows the tickets
+                    .requestMatchers("/api/v1/tickets/**")
+                    .hasRole(Role.OPERATOR.name())
                     .anyRequest()
                     .denyAll())
         .oauth2ResourceServer(
