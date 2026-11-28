@@ -226,6 +226,19 @@ class TicketServiceTest {
         .doesNotThrowAnyException();
   }
 
+  @Test
+  void aFailureWhileChoosingTheTechnicianStillOpensTheTicketUnassigned() {
+    when(technicians.findAll()).thenThrow(new IllegalStateException("technicians unavailable"));
+    Boat boat = boat(BoatState.TOW_REQUIRED, mooredAt(MARKET_BERTH));
+
+    service.onBoatStateChanged(new BoatStateChanged(boat, BoatState.IN_USE));
+
+    Ticket ticket = openedTicket();
+    assertThat(ticket.type()).isEqualTo(TicketType.TOW);
+    assertThat(ticket.technicianId()).isNull();
+    assertThat(ticket.dueAt()).isEqualTo(Instant.parse("2026-11-26T12:00:00Z"));
+  }
+
   /** The fleet's state change succeeds even when maintenance fails while handling it. */
   @Test
   void aTelemetryReadingIsStoredEvenWhenTheTicketCannotBeOpened() {

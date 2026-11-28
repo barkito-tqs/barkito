@@ -64,7 +64,8 @@ public class TicketService {
    *
    * <p>The listener runs inside the fleet's state change, after the boat is stored. A failure here
    * is logged and not thrown, so that a maintenance problem never fails a telemetry reading or an
-   * operator action that already happened.
+   * operator action that already happened. A failure to pick the technician still opens the ticket,
+   * unassigned; only a failure to store the ticket loses it.
    */
   @EventListener
   public synchronized void onBoatStateChanged(BoatStateChanged event) {
@@ -79,10 +80,7 @@ public class TicketService {
   }
 
   private void open(Boat boat, TicketType type) {
-    Optional<FieldTechnician> technician = chooseTechnician(boat);
-    if (technician.isEmpty()) {
-      LOG.warn("No Field Technician to assign the {} ticket of boat {}", type, boat.code());
-    }
+    Optional<FieldTechnician> technician = technicianFor(boat, type);
     tickets.save(
         Ticket.open(
             boat.id(),
@@ -95,9 +93,28 @@ public class TicketService {
   }
 
   /**
-   * BR17: assigns the open tickets that were opened while no Field Technician could take them.
-   * BRK-62 calls it when the operator assigns technicians to docks. The SLA deadlines do not
-   * change.
+   * The technician for a new ticket (BR17), or empty when none can take it. A failure while
+   * choosing is logged and leaves the ticket unassigned, so that {@link #assignUnassignedTickets}
+   * can assign it later.
+   */
+  private Optional<FieldTechnician> technicianFor(Boat boat, TicketType type) {
+    try {
+      Optional<FieldTechnician> technician = chooseTechnician(boat);
+      if (technician.isEmpty()) {
+        LOG.warn("No Field Technician to assign the {} ticket of boat {}", type, boat.code());
+      }
+      return technician;
+    } catch (RuntimeException e) {
+      LOG.error(
+          "Could not assign the {} ticket of boat {}; it stays unassigned", type, boat.code(), e);
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * BR17: assigns the open tickets that were opened while no Field Technician could take them. The
+   * SLA deadlines do not change. Nothing calls it yet: US-39 will, when the operator assigns
+   * technicians to docks.
    *
    * @return how many tickets were assigned
    */
