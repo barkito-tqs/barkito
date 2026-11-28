@@ -31,7 +31,7 @@ class DevTechnicianSeederTest {
             .map(seed -> UUID.fromString(seed.id()))
             .collect(Collectors.toSet());
 
-    assertThat(DevTechnicianSeeder.TECHNICIANS)
+    assertThat(DevTechnicianSeeder.SEEDED_TECHNICIANS)
         .flatExtracting(t -> t.coveredDockIds())
         .containsExactlyInAnyOrderElementsOf(seededDocks);
   }

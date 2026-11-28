@@ -19,7 +19,7 @@ import pt.ua.tqs.barkito.maintenance.domain.FieldTechnicianRepository;
 @Profile("dev")
 public class DevTechnicianSeeder implements ApplicationRunner {
 
-  static final List<FieldTechnician> TECHNICIANS =
+  static final List<FieldTechnician> SEEDED_TECHNICIANS =
       List.of(
           new FieldTechnician(
               UUID.fromString("7ec40000-0000-4000-8000-000000000001"),
@@ -43,6 +43,6 @@ public class DevTechnicianSeeder implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments args) {
-    TECHNICIANS.forEach(technicians::save);
+    SEEDED_TECHNICIANS.forEach(technicians::save);
   }
 }
