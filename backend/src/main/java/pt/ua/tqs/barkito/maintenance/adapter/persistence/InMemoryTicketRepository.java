@@ -35,6 +35,14 @@ public class InMemoryTicketRepository implements TicketRepository {
   }
 
   @Override
+  public List<Ticket> findOpenUnassigned() {
+    return findAll().stream()
+        .filter(Ticket::isOpen)
+        .filter(ticket -> ticket.technicianId() == null)
+        .toList();
+  }
+
+  @Override
   public boolean existsOpen(UUID boatId, TicketType type) {
     return tickets.values().stream()
         .anyMatch(

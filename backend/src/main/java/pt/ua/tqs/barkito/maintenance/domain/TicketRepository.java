@@ -14,6 +14,9 @@ public interface TicketRepository {
   /** The open tickets assigned to a technician. */
   long countOpenByTechnician(UUID technicianId);
 
+  /** The open tickets that have no technician, ordered by SLA deadline. */
+  List<Ticket> findOpenUnassigned();
+
   /** Whether the boat already has an open ticket of this type. */
   boolean existsOpen(UUID boatId, TicketType type);
 }

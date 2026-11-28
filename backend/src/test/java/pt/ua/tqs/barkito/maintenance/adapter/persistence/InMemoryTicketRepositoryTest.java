@@ -41,6 +41,25 @@ class InMemoryTicketRepositoryTest {
   }
 
   @Test
+  void findsTheOpenTicketsWithoutTechnician() {
+    Ticket assigned =
+        tickets.save(ticket(TicketType.REPAIR, TicketStatus.OPEN, "2026-11-27T20:00:00Z"));
+    Ticket pending = tickets.save(assigned.assignTo(null));
+    tickets.save(
+        new Ticket(
+            UUID.randomUUID(),
+            BOAT,
+            TicketType.TOW,
+            TicketStatus.CLOSED,
+            null,
+            pending.openedAt(),
+            pending.dueAt(),
+            null));
+
+    assertThat(tickets.findOpenUnassigned()).containsExactly(pending);
+  }
+
+  @Test
   void findsAnOpenTicketOfABoatByType() {
     tickets.save(ticket(TicketType.REPAIR, TicketStatus.OPEN, "2026-11-27T20:00:00Z"));
     tickets.save(ticket(TicketType.CHARGE, TicketStatus.CLOSED, "2026-11-26T12:00:00Z"));

@@ -1,15 +1,21 @@
 package pt.ua.tqs.barkito.maintenance.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,18 +26,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.context.ApplicationEventPublisher;
+import pt.ua.tqs.barkito.fleet.application.BoatService;
 import pt.ua.tqs.barkito.fleet.application.DockDetails;
 import pt.ua.tqs.barkito.fleet.application.DockService;
 import pt.ua.tqs.barkito.fleet.domain.Berth;
 import pt.ua.tqs.barkito.fleet.domain.Boat;
+import pt.ua.tqs.barkito.fleet.domain.BoatRepository;
 import pt.ua.tqs.barkito.fleet.domain.BoatState;
 import pt.ua.tqs.barkito.fleet.domain.BoatStateChanged;
 import pt.ua.tqs.barkito.fleet.domain.BoatStatus;
 import pt.ua.tqs.barkito.fleet.domain.BoatType;
 import pt.ua.tqs.barkito.fleet.domain.Dock;
+import pt.ua.tqs.barkito.fleet.domain.DockRepository;
 import pt.ua.tqs.barkito.fleet.domain.Position;
 import pt.ua.tqs.barkito.maintenance.domain.FieldTechnician;
 import pt.ua.tqs.barkito.maintenance.domain.FieldTechnicianRepository;
+import pt.ua.tqs.barkito.maintenance.domain.MaintenanceRules;
+import pt.ua.tqs.barkito.maintenance.domain.OperatingHours;
+import pt.ua.tqs.barkito.maintenance.domain.SlaPolicy;
 import pt.ua.tqs.barkito.maintenance.domain.Ticket;
 import pt.ua.tqs.barkito.maintenance.domain.TicketRepository;
 import pt.ua.tqs.barkito.maintenance.domain.TicketStatus;
@@ -62,11 +75,13 @@ class TicketServiceTest {
 
   @Mock private DockService docks;
 
+  @Mock private BoatService boats;
+
   private TicketService service;
 
   @BeforeEach
   void setUp() {
-    service = new TicketService(tickets, technicians, docks, Clock.fixed(TEN_AM, ZONE));
+    service = serviceWith(MaintenanceRules.DEFAULT);
     when(docks.findAll())
         .thenReturn(
             List.of(
@@ -74,6 +89,10 @@ class TicketServiceTest {
                 new DockDetails(UNIVERSITY, List.of())));
     when(technicians.findAll()).thenReturn(List.of(RUI, TIAGO));
     when(tickets.save(any(Ticket.class))).thenAnswer(call -> call.getArgument(0));
+  }
+
+  private TicketService serviceWith(MaintenanceRules rules) {
+    return new TicketService(tickets, technicians, docks, boats, rules, Clock.fixed(TEN_AM, ZONE));
   }
 
   private static Boat boat(BoatState state, BoatStatus status) {
@@ -181,6 +200,86 @@ class TicketServiceTest {
         technicianId,
         TEN_AM,
         TEN_AM,
+        null);
+  }
+
+  @Test
+  void theDeadlineComesFromTheConfiguredRules() {
+    Map<TicketType, SlaPolicy> policies = new EnumMap<>(SlaPolicy.DEFAULTS);
+    policies.put(
+        TicketType.REPAIR, new SlaPolicy(TicketType.REPAIR, Duration.ofHours(1), null, false));
+    MaintenanceRules rules = new MaintenanceRules(5, OperatingHours.DEFAULT, policies);
+    Boat boat = boat(BoatState.REPAIR_REQUIRED, mooredAt(MARKET_BERTH));
+
+    serviceWith(rules).onBoatStateChanged(new BoatStateChanged(boat, BoatState.AVAILABLE));
+
+    assertThat(openedTicket().dueAt()).isEqualTo(Instant.parse("2026-11-26T11:00:00Z"));
+  }
+
+  @Test
+  void aFailureWhileOpeningATicketIsLoggedAndNotThrown() {
+    when(tickets.save(any(Ticket.class))).thenThrow(new IllegalStateException("store is down"));
+    Boat boat = boat(BoatState.REPAIR_REQUIRED, mooredAt(MARKET_BERTH));
+
+    assertThatCode(
+            () -> service.onBoatStateChanged(new BoatStateChanged(boat, BoatState.AVAILABLE)))
+        .doesNotThrowAnyException();
+  }
+
+  /** The fleet's state change succeeds even when maintenance fails while handling it. */
+  @Test
+  void aTelemetryReadingIsStoredEvenWhenTheTicketCannotBeOpened() {
+    when(tickets.save(any(Ticket.class))).thenThrow(new IllegalStateException("store is down"));
+    BoatRepository boatRepository = mock(BoatRepository.class);
+    Boat available = boat(BoatState.AVAILABLE, mooredAt(MARKET_BERTH));
+    when(boatRepository.findByCode("B-07")).thenReturn(Optional.of(available));
+    when(boatRepository.save(any(Boat.class))).thenAnswer(call -> call.getArgument(0));
+    ApplicationEventPublisher events =
+        event -> service.onBoatStateChanged((BoatStateChanged) event);
+    BoatService fleet = new BoatService(boatRepository, mock(DockRepository.class), events);
+
+    Optional<Boat> updated = fleet.recordStatus("B-07", mooredAt(MARKET_BERTH));
+
+    assertThat(updated).map(Boat::state).contains(BoatState.REPAIR_REQUIRED);
+    verify(boatRepository).save(updated.get());
+  }
+
+  @Test
+  void anUnassignedTicketIsAssignedOnceATechnicianCanTakeIt() {
+    Boat boat = boat(BoatState.REPAIR_REQUIRED, mooredAt(MARKET_BERTH));
+    Ticket pending = ticketForBoat(boat.id(), null);
+    when(tickets.findOpenUnassigned()).thenReturn(List.of(pending));
+    when(boats.findById(boat.id())).thenReturn(Optional.of(boat));
+
+    int assigned = service.assignUnassignedTickets();
+
+    assertThat(assigned).isEqualTo(1);
+    Ticket ticket = openedTicket();
+    assertThat(ticket.id()).isEqualTo(pending.id());
+    assertThat(ticket.technicianId()).isEqualTo(TIAGO.id());
+    assertThat(ticket.dueAt()).isEqualTo(pending.dueAt());
+  }
+
+  @Test
+  void aTicketStaysUnassignedWhileNoTechnicianExists() {
+    when(technicians.findAll()).thenReturn(List.of());
+    Boat boat = boat(BoatState.REPAIR_REQUIRED, mooredAt(MARKET_BERTH));
+    when(tickets.findOpenUnassigned()).thenReturn(List.of(ticketForBoat(boat.id(), null)));
+    when(boats.findById(boat.id())).thenReturn(Optional.of(boat));
+
+    assertThat(service.assignUnassignedTickets()).isZero();
+    verify(tickets, never()).save(any());
+  }
+
+  private static Ticket ticketForBoat(UUID boatId, UUID technicianId) {
+    return new Ticket(
+        UUID.randomUUID(),
+        boatId,
+        TicketType.REPAIR,
+        TicketStatus.OPEN,
+        technicianId,
+        TEN_AM,
+        TEN_AM.plus(Duration.ofHours(24)),
         null);
   }
 }

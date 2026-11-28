@@ -48,6 +48,11 @@ public record Ticket(
         policy.onSiteDueAt(openedAt).orElse(null));
   }
 
+  /** The same ticket, assigned to a technician (BR17). */
+  public Ticket assignTo(UUID newTechnicianId) {
+    return new Ticket(id, boatId, type, status, newTechnicianId, openedAt, dueAt, onSiteDueAt);
+  }
+
   public boolean isOpen() {
     return status == TicketStatus.OPEN;
   }

@@ -23,7 +23,7 @@ class TicketTest {
             TicketType.TOW,
             technician,
             TEN_AM,
-            SlaPolicy.defaultFor(TicketType.TOW),
+            MaintenanceRules.DEFAULT.slaPolicyFor(TicketType.TOW),
             OperatingHours.DEFAULT,
             ZONE);
 
@@ -36,6 +36,28 @@ class TicketTest {
   }
 
   @Test
+  void assigningATicketKeepsItsDeadlines() {
+    Ticket unassigned =
+        Ticket.open(
+            UUID.randomUUID(),
+            TicketType.REPAIR,
+            null,
+            TEN_AM,
+            MaintenanceRules.DEFAULT.slaPolicyFor(TicketType.REPAIR),
+            OperatingHours.DEFAULT,
+            ZONE);
+    UUID technician = UUID.randomUUID();
+
+    Ticket assigned = unassigned.assignTo(technician);
+
+    assertThat(assigned.technicianId()).isEqualTo(technician);
+    assertThat(assigned)
+        .usingRecursiveComparison()
+        .ignoringFields("technicianId")
+        .isEqualTo(unassigned);
+  }
+
+  @Test
   void aTicketWithoutOnSiteDeadlineHasNone() {
     Ticket ticket =
         Ticket.open(
@@ -43,7 +65,7 @@ class TicketTest {
             TicketType.CHARGE,
             null,
             TEN_AM,
-            SlaPolicy.defaultFor(TicketType.CHARGE),
+            MaintenanceRules.DEFAULT.slaPolicyFor(TicketType.CHARGE),
             OperatingHours.DEFAULT,
             ZONE);
 
